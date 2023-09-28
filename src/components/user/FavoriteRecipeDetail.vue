@@ -8,8 +8,9 @@
             <router-link to="/favorites">
                 <i class="bi bi-reply-fill" style="font-size: 24px; color: grey;"></i>
             </router-link>
-            <img :src="'http://localhost:3000/' + recipe.user.avatar" alt="User Avatar" class="ml-3 click user-avatar"
+            <img :src="apiURL(recipe.user.avatar)" alt="User Avatar" class="ml-3 click user-avatar"
                 @click="goToUserProfile(recipe.user_id)">
+
             <span class="click ml-3 font-weight-bold" @click="goToUserProfile(recipe.user_id)">
                 {{ recipe.user.name }}
             </span>
@@ -55,8 +56,7 @@
                 <div class="carousel-inner">
                     <div v-for="(image, index) in recipe.images" :key="index"
                         :class="{ 'carousel-item': true, 'active': index === 0 }">
-                        <img :src="'http://localhost:3000/' + image" class="d-block w-100" alt="Recipe image"
-                            style="height: 333px">
+                        <img :src="apiURL(image)" class="d-block w-100" alt="Recipe image" style="height: 333px">
                     </div>
                 </div>
                 <a class="carousel-control-prev" href="#recipe-carousel" role="button" data-slide="prev">
@@ -158,8 +158,8 @@
             <div class="card-body">
                 <div v-for="comment in recipe.comments" :key="comment.id">
                     <div class="d-flex flex-start mb-2">
-                        <img :src="'http://localhost:3000/' + comment.userAvatar" alt="User Avatar"
-                            class="rounded-circle shadow-1-strong me-3" width="40" height="40">
+                        <img :src="apiURL(comment.userAvatar)" alt="User Avatar" class="rounded-circle shadow-1-strong me-3"
+                            width="40" height="40">
                         <div class="flex-grow-1 flex-shrink-1 ml-3">
                             <div>
                                 <div class="d-flex justify-content-between align-items-center">
@@ -179,7 +179,7 @@
 
             <div class="card-footer">
                 <div class="d-flex align-items-center">
-                    <img :src="userAvatar" class="rounded-circle mr-2" width="40">
+                    <img :src="apiURL(userStore.user.avatar)" class="rounded-circle mr-2" width="40">
 
                     <textarea class="form-control" v-model="newCommentText[recipe.id]" rows="3"
                         placeholder="Viết bình luận..."></textarea>
@@ -197,135 +197,155 @@
 
 <script>
 import axios from 'axios';
-import { useUserStore } from '../../store/userStore';
-import { computed } from 'vue';
+import { ref, onMounted, computed, nextTick } from 'vue';
 import moment from 'moment';
 import 'moment/locale/vi';
+import { useUserStore } from '../../store/userStore';
+import { useRoute, useRouter } from 'vue-router';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
-const BASE_URL = 'http://localhost:3000';
+const ROUTES = {
+    favoriteDetail: id => `favorite/${id}`,
+    comment: id => `newsfeed/${id}/comments`,
+    unlike: id => `newsfeed/unlike/${id}`,
+    like: id => `newsfeed/like/${id}`
+};
 
 export default {
     name: 'FavoriteRecipeDetail',
     setup() {
         const userStore = useUserStore();
-        const { user } = userStore;
+        const route = useRoute();
+        const router = useRouter();
+        const recipe = ref(null);
+        const newCommentText = ref({});
+        const showComments = ref({});
+        const showSteps = ref({});
 
-        return {
-            userAvatar: computed(() => `${BASE_URL}/${user?.avatar}`),
-            userName: computed(() => user?.name),
-            userStore,
+        const apiURL = (relativePath) => {
+            return window.baseURL + '/' + relativePath;
         };
-    },
 
-    data() {
-        return {
-            recipe: null,
-            newCommentText: {},
-            showComments: {},
-            showSteps: {}
-        };
-    },
+        onMounted(async () => {
+            await fetchInitialData();
+        });
 
-    async mounted() {
-        const userId = this.userStore.user.id;
-        const { id: recipeId } = this.$route.params;
-        try {
-            const response = await axios.get(`${BASE_URL}/favorite/${recipeId}?userId=${userId}`);
-
-            // Cập nhật thông tin recipe từ API vào data property của component
-            this.recipe = {
-                ...response.data,
-                isLiked: response.data.isLikedByCurrentUser,
-                likesCount: response.data.totalLikes,
-                comments: response.data.comments || [],
-            };
-
-            // Tải comments cho recipe
+        const fetchInitialData = async () => {
+            const userId = userStore.user.id;
+            const { id: recipeId } = route.params;
             try {
-                const { data: commentsData } = await axios.get(`${BASE_URL}/newsfeed/${recipeId}/comments`);
-                this.recipe.comments = commentsData;
+                const { data: recipeData } = await axios.get(apiURL(ROUTES.favoriteDetail(recipeId)), { params: { userId } });
+                recipe.value = {
+                    ...recipeData,
+                    isLiked: recipeData.isLikedByCurrentUser,
+                    likesCount: recipeData.totalLikes,
+                    comments: recipeData.comments || []
+                };
+
+                // Load comments for the recipe
+                try {
+                    const { data: commentsData } = await axios.get(apiURL(ROUTES.comment(recipeId)));
+                    recipe.value.comments = commentsData;
+                } catch (error) {
+                    console.error(`Error loading comments for recipe ${recipeId}:`, error);
+                }
+
             } catch (error) {
-                console.error(`Error loading comments for recipe ${recipeId}:`, error);
+                console.error('Lỗi khi tải công thức:', error);
             }
+        };
 
-        } catch (error) {
-            console.error('Lỗi khi tải công thức:', error);
-        }
-    },
-
-    methods: {
-        formatTime(time) {
+        const formatTime = (time) => {
             moment.locale('vi');
             return moment(time).fromNow();
-        },
-        toggleComments(recipe) {
-            this.$nextTick(() => {
-                this.showComments[recipe.id] = !this.showComments[recipe.id];
+        };
+
+        const toggleComments = (recipe) => {
+            nextTick(() => {
+                showComments.value[recipe.id] = !showComments.value[recipe.id];
             });
-        },
-        async toggleLike(recipe) {
+        };
+
+        const toggleLike = async (recipe) => {
             try {
                 if (recipe.isLiked) {
-                    await axios.delete(`${BASE_URL}/newsfeed/unlike/${recipe.id}`, {
-                        data: { userId: this.userStore.user.id }
-                    });
+                    await axios.delete(apiURL(ROUTES.unlike(recipe.id)), { data: { userId: userStore.user.id } });
                     recipe.isLiked = false;
                     recipe.likesCount -= 1;
                 } else {
-                    await axios.post(`${BASE_URL}/newsfeed/like/${recipe.id}`, {
-                        userId: this.userStore.user.id,
-                    });
+                    await axios.post(apiURL(ROUTES.like(recipe.id)), { userId: userStore.user.id });
                     recipe.isLiked = true;
                     recipe.likesCount += 1;
                 }
             } catch (error) {
                 console.error('Lỗi khi thích/bỏ thích bài viết:', error);
             }
-        },
+        };
 
-        async addComment(recipe) {
+        const addComment = async (recipe) => {
             try {
-                const { data } = await axios.post(`${BASE_URL}/newsfeed/${recipe.id}/comments`, {
-                    userId: this.userStore.user.id,
-                    content: this.newCommentText[recipe.id],
+                const { data } = await axios.post(apiURL(ROUTES.comment(recipe.id)), {
+                    userId: userStore.user.id,
+                    content: newCommentText.value[recipe.id],
                 });
 
                 recipe.comments.push(data);
-                this.newCommentText[recipe.id] = '';
-                this.reloadComments(recipe.id);
+                newCommentText.value[recipe.id] = '';
+                reloadComments(recipe.id);
             } catch (error) {
                 console.error('Lỗi khi thêm bình luận:', error);
             }
-        },
+        };
 
-        async reloadComments(recipeId) {
+        const reloadComments = async (recipeId) => {
             try {
-                const { data: commentsData } = await axios.get(`${BASE_URL}/newsfeed/${recipeId}/comments`);
-                if (this.recipe && this.recipe.id === recipeId) {
-                    this.recipe.comments = commentsData;
+                const { data: commentsData } = await axios.get(apiURL(ROUTES.comment(recipeId)));
+                if (recipe.value && recipe.value.id === recipeId) {
+                    recipe.value.comments = commentsData;
                 }
             } catch (error) {
                 console.error(`Error loading comments for recipe ${recipeId}:`, error);
             }
-        },
+        };
 
-        difficultyToStars(difficulty) {
+        const difficultyToStars = (difficulty) => {
             const difficultyMap = { 'dễ': 1, 'trung bình': 2, 'khó': 3 };
             return difficultyMap[difficulty] || 1;
-        },
-        getMainIngredientsArray(ingredients = []) {
+        };
+
+        const getMainIngredientsArray = (ingredients = []) => {
             return ingredients.map(ingredient => ({
                 name: ingredient.name,
                 amount: ingredient.amount
             }));
-        },
-        getHashtags(tags = []) {
+        };
+
+        const getHashtags = (tags = []) => {
             return tags.length ? tags.map(tag => `#${tag}`).join(', ') : '';
-        },
-        goToUserProfile(userId) {
-            this.$router.push(userId === this.userStore.user.id ? '/myprofile' : `/otherprofile/${userId}`);
-        },
+        };
+
+        const goToUserProfile = (userId) => {
+            router.push(userId === userStore.user.id ? '/myprofile' : `/otherprofile/${userId}`);
+        };
+
+        return {
+            apiURL,
+            recipe,
+            newCommentText,
+            showComments,
+            showSteps,
+            formatTime,
+            toggleComments,
+            toggleLike,
+            addComment,
+            reloadComments,
+            difficultyToStars,
+            getMainIngredientsArray,
+            getHashtags,
+            goToUserProfile,
+            userName: computed(() => user?.name),
+            userStore,
+        };
     }
 }
 </script>
