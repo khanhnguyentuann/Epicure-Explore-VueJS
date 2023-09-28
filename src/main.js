@@ -5,12 +5,11 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import App from './App.vue';
 import router from './router';
 import { useUserStore } from './store/userStore';
-import VTooltip from 'v-tooltip';
 
 const app = createApp(App);
 
-// Sử dụng VTooltip cho instance của ứng dụng
-app.use(VTooltip);
+app.config.globalProperties.$baseURL = 'http://localhost:3000';
+window.baseURL = 'http://localhost:3000';
 
 const pinia = createPinia();
 app.use(pinia);
