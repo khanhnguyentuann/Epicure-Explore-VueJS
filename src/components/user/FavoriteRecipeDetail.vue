@@ -1,0 +1,395 @@
+<!-- eslint-disable vue/attributes-order -->
+<!-- eslint-disable vue/first-attribute-linebreak -->
+<template>
+    <div v-if="recipe" class="recipe-card card mt-3 p-3">
+
+        <!-- Post Header -->
+        <div class="d-flex align-items-center mb-1">
+            <router-link to="/favorites">
+                <i class="bi bi-reply-fill" style="font-size: 24px; color: grey;"></i>
+            </router-link>
+            <img :src="'http://localhost:3000/' + recipe.user.avatar" alt="User Avatar" class="ml-3 click user-avatar"
+                @click="goToUserProfile(recipe.user_id)">
+            <span class="click ml-3 font-weight-bold" @click="goToUserProfile(recipe.user_id)">
+                {{ recipe.user.name }}
+            </span>
+
+            <span class="ml-2 text-muted">{{ formatTime(recipe.created_at) }}</span>
+        </div>
+
+        <hr>
+
+        <!-- Post Body -->
+        <div class="card-body p-0">
+            <h5 class="card-title mb-3 text-center">{{ recipe.name }}</h5>
+            <div class="row">
+                <p class="col-6 font-weight-bold">
+                    Độ khó:
+                    <i v-for="n in difficultyToStars(recipe.difficulty)" :key="n" class="fas fa-star"></i>
+                </p>
+
+                <p class="col-6 text-right font-weight-bold">
+                    <i class="fas fa-users mr-2"></i>
+                    Dành cho: {{ recipe.servingFor }} người
+                </p>
+            </div>
+
+            <p class="font-weight-bold">
+                <i class="fas fa-utensils mr-2"></i>
+                Nguyên liệu chính:
+            </p>
+            <div class="row ml-2 mb-3">
+                <div class="col-4 font-italic" v-for="ingredient in getMainIngredientsArray(recipe.ingredients)"
+                    :key="ingredient.name">
+                    > {{ ingredient.name }}: {{ ingredient.amount }}
+                </div>
+            </div>
+
+            <!-- Carousel hiển thị ảnh bài viết -->
+            <div v-if="recipe && recipe.images && recipe.images.length" class="carousel slide" data-ride="carousel"
+                id="recipe-carousel">
+                <ol class="carousel-indicators">
+                    <li v-for="(image, index) in recipe.images" :key="index" data-target="#recipe-carousel"
+                        :data-slide-to="index" :class="{ 'active': index === 0 }"></li>
+                </ol>
+                <div class="carousel-inner">
+                    <div v-for="(image, index) in recipe.images" :key="index"
+                        :class="{ 'carousel-item': true, 'active': index === 0 }">
+                        <img :src="'http://localhost:3000/' + image" class="d-block w-100" alt="Recipe image"
+                            style="height: 333px">
+                    </div>
+                </div>
+                <a class="carousel-control-prev" href="#recipe-carousel" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#recipe-carousel" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </div>
+
+            <div class="row mt-3">
+                <p class="col-6 font-weight-bold">
+                    <i class="fas fa-clock"></i>
+                    Thời gian chuẩn bị: {{ recipe.preparationTime }} phút
+                </p>
+                <p class="col-6 text-right font-weight-bold">
+                    <i class="fas fa-clock"></i>
+                    Thời gian chế biến: {{ recipe.cookingTime }} phút
+                </p>
+            </div>
+
+            <div class="text-justify mb-3">
+                <p class="font-weight-bold mb-2">
+                    <i class="fas fa-list-ul"></i> Các bước chế biến:
+                </p>
+
+                <span class="click font-weight-bold font-italic text-primary mb-2 d-block" v-if="!showSteps[recipe.id]"
+                    @click="showSteps[recipe.id] = true">Xem thêm</span>
+
+                <div v-if="showSteps[recipe.id]">
+                    <ul class="list-group list-group-flush">
+                        <li v-for="(step, index) in recipe.steps" :key="index" class="list-group-item">
+                            <strong>Bước {{ index + 1 }}:</strong> {{ step }}
+                        </li>
+                    </ul>
+                    <span class="click font-weight-bold font-italic text-primary mt-2 d-block"
+                        @click="showSteps[recipe.id] = false">Ẩn bớt</span>
+                </div>
+            </div>
+
+            <div class="row" v-if="getHashtags(recipe.tags).length">
+                <div class="col-3 font-weight-bold text-center">
+                    <i class="fas fa-hashtag"></i> Hashtags:
+                </div>
+                <div class="col-9">
+                    {{ getHashtags(recipe.tags) }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Post Footer -->
+        <div class="card-footer mt-3">
+
+            <div class="row">
+                <div class="col-6">
+                    <i class="btn" :class="{ 'btn-primary': recipe.isLiked, '': !recipe.isLiked }">
+                        <i class="fas fa-thumbs-up"></i>
+                        {{ recipe.likesCount }} Thích
+                    </i>
+                </div>
+
+                <div class="col-6 text-right">
+                    <i class="far fa-comment"></i>
+                    {{ recipe.commentsCount }} Bình luận
+                </div>
+            </div>
+
+            <div class="row mt-3 text-center">
+                <div class="col-4">
+                    <button class="btn btn-hover" @click="toggleLike(recipe)">
+                        <i class="far fa-thumbs-up"></i> Thích
+                    </button>
+                </div>
+
+                <div class="col-4">
+                    <button class="btn btn-hover" @click="toggleComments(recipe)">
+                        <i class="far fa-comment-alt"></i> Bình luận
+                    </button>
+                </div>
+
+                <div class="col-4">
+                    <button class="btn btn-hover">
+                        <i class="fas fa-share"></i> Chia sẻ
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="card mt-3" v-if="showComments[recipe.id]">
+
+            <div class="card-header">
+                <i class="far fa-comment-alt mr-2"></i>
+                <span class="ml-2">Bình luận</span>
+            </div>
+
+            <div class="card-body">
+                <div v-for="comment in recipe.comments" :key="comment.id">
+                    <div class="d-flex flex-start mb-2">
+                        <img :src="'http://localhost:3000/' + comment.userAvatar" alt="User Avatar"
+                            class="rounded-circle shadow-1-strong me-3" width="40" height="40">
+                        <div class="flex-grow-1 flex-shrink-1 ml-3">
+                            <div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <p class="mb-1">
+                                        <strong>{{ comment.userName }}</strong>
+                                        - <span class="small">{{ formatTime(comment.created_at) }}</span>
+                                    </p>
+                                </div>
+                                <p class="small mb-0">
+                                    {{ comment.content }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-footer">
+                <div class="d-flex align-items-center">
+                    <img :src="userAvatar" class="rounded-circle mr-2" width="40">
+
+                    <textarea class="form-control" v-model="newCommentText[recipe.id]" rows="3"
+                        placeholder="Viết bình luận..."></textarea>
+
+                    <button class="btn btn-primary btn-sm ml-2" @click="addComment(recipe)">Gửi</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div v-else>
+        <p>Đang tải...</p>
+    </div>
+</template>
+
+<script>
+import axios from 'axios';
+import { useUserStore } from '../../store/userStore';
+import { computed } from 'vue';
+import moment from 'moment';
+import 'moment/locale/vi';
+import 'bootstrap-icons/font/bootstrap-icons.css';
+
+const BASE_URL = 'http://localhost:3000';
+
+export default {
+    name: 'FavoriteRecipeDetail',
+    setup() {
+        const userStore = useUserStore();
+        const { user } = userStore;
+
+        return {
+            userAvatar: computed(() => `${BASE_URL}/${user?.avatar}`),
+            userName: computed(() => user?.name),
+            userStore,
+        };
+    },
+
+    data() {
+        return {
+            recipe: null,
+            newCommentText: {},
+            showComments: {},
+            showSteps: {}
+        };
+    },
+
+    async mounted() {
+        const userId = this.userStore.user.id;
+        const { id: recipeId } = this.$route.params;
+        try {
+            const response = await axios.get(`${BASE_URL}/favorite/${recipeId}?userId=${userId}`);
+
+            // Cập nhật thông tin recipe từ API vào data property của component
+            this.recipe = {
+                ...response.data,
+                isLiked: response.data.isLikedByCurrentUser,
+                likesCount: response.data.totalLikes,
+                comments: response.data.comments || [],
+            };
+
+            // Tải comments cho recipe
+            try {
+                const { data: commentsData } = await axios.get(`${BASE_URL}/newsfeed/${recipeId}/comments`);
+                this.recipe.comments = commentsData;
+            } catch (error) {
+                console.error(`Error loading comments for recipe ${recipeId}:`, error);
+            }
+
+        } catch (error) {
+            console.error('Lỗi khi tải công thức:', error);
+        }
+    },
+
+    methods: {
+        formatTime(time) {
+            moment.locale('vi');
+            return moment(time).fromNow();
+        },
+        toggleComments(recipe) {
+            this.$nextTick(() => {
+                this.showComments[recipe.id] = !this.showComments[recipe.id];
+            });
+        },
+        async toggleLike(recipe) {
+            try {
+                if (recipe.isLiked) {
+                    await axios.delete(`${BASE_URL}/newsfeed/unlike/${recipe.id}`, {
+                        data: { userId: this.userStore.user.id }
+                    });
+                    recipe.isLiked = false;
+                    recipe.likesCount -= 1;
+                } else {
+                    await axios.post(`${BASE_URL}/newsfeed/like/${recipe.id}`, {
+                        userId: this.userStore.user.id,
+                    });
+                    recipe.isLiked = true;
+                    recipe.likesCount += 1;
+                }
+            } catch (error) {
+                console.error('Lỗi khi thích/bỏ thích bài viết:', error);
+            }
+        },
+
+        async addComment(recipe) {
+            try {
+                const { data } = await axios.post(`${BASE_URL}/newsfeed/${recipe.id}/comments`, {
+                    userId: this.userStore.user.id,
+                    content: this.newCommentText[recipe.id],
+                });
+
+                recipe.comments.push(data);
+                this.newCommentText[recipe.id] = '';
+                this.reloadComments(recipe.id);
+            } catch (error) {
+                console.error('Lỗi khi thêm bình luận:', error);
+            }
+        },
+
+        async reloadComments(recipeId) {
+            try {
+                const { data: commentsData } = await axios.get(`${BASE_URL}/newsfeed/${recipeId}/comments`);
+                if (this.recipe && this.recipe.id === recipeId) {
+                    this.recipe.comments = commentsData;
+                }
+            } catch (error) {
+                console.error(`Error loading comments for recipe ${recipeId}:`, error);
+            }
+        },
+
+        difficultyToStars(difficulty) {
+            const difficultyMap = { 'dễ': 1, 'trung bình': 2, 'khó': 3 };
+            return difficultyMap[difficulty] || 1;
+        },
+        getMainIngredientsArray(ingredients = []) {
+            return ingredients.map(ingredient => ({
+                name: ingredient.name,
+                amount: ingredient.amount
+            }));
+        },
+        getHashtags(tags = []) {
+            return tags.length ? tags.map(tag => `#${tag}`).join(', ') : '';
+        },
+        goToUserProfile(userId) {
+            this.$router.push(userId === this.userStore.user.id ? '/myprofile' : `/otherprofile/${userId}`);
+        },
+    }
+}
+</script>
+
+<style scoped>
+.recipe-card {
+    border-radius: 8px;
+    padding: 20px;
+    border: 1px solid #e5e5e5;
+    box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.05);
+}
+
+.user-avatar {
+    width: 48px;
+    height: 48px;
+    margin-right: 10px;
+    border-radius: 50%;
+}
+
+.back-button {
+    display: flex;
+    align-items: center;
+}
+
+.back-button .btn {
+    display: flex;
+    align-items: center;
+}
+
+.back-button .btn i.fas.fa-arrow-left {
+    margin-right: 8px;
+}
+
+.click {
+    cursor: pointer;
+}
+
+.btn-hover:hover {
+    background-color: #e2e6ea;
+}
+
+.liked {
+    color: blue;
+}
+
+.recipe-image {
+    width: 100%;
+    max-height: 400px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.star-container {
+    display: flex;
+    align-items: center;
+    min-height: 38px;
+}
+
+i.fas.fa-star {
+    color: gold;
+}
+
+i.far.fa-star {
+    color: lightgray;
+}
+</style>
