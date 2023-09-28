@@ -9,7 +9,7 @@
 
         <!-- Post Header -->
         <div class="d-flex align-items-center mb-1">
-            <img :src="'http://localhost:3000/' + recipe.user.avatar" alt="User Avatar" class="user-avatar">
+            <img :src="apiURL(recipe.user.avatar)" alt="User Avatar" class="user-avatar">
             <span class="ml-3 font-weight-bold">
                 {{ recipe.user.name }}
             </span>
@@ -57,9 +57,6 @@
                     > {{ ingredient.name }}: {{ ingredient.amount }}
                 </div>
             </div>
-            <!-- 
-            <img :src="'http://localhost:3000/' + recipe.image" alt="Recipe image"
-                class="recipe-image img-fluid mb-3 rounded" v-if="recipe.image"> -->
 
             <!-- Carousel hiển thị ảnh bài viết -->
             <div v-if="recipe.images && recipe.images.length" :id="`carousel-${recipe.id}`" class="carousel slide"
@@ -71,8 +68,7 @@
                 <div class="carousel-inner">
                     <div v-for="(image, index) in recipe.images" :key="index"
                         :class="{ 'carousel-item': true, 'active': index === 0 }">
-                        <img :src="'http://localhost:3000/' + image" class="d-block w-100" alt="Recipe image"
-                            style="height: 333px">
+                        <img :src="apiURL(image)" class="d-block w-100" alt="Recipe image" style="height: 333px">
                     </div>
                 </div>
                 <a class="carousel-control-prev" :href="`#carousel-${recipe.id}`" role="button" data-slide="prev">
@@ -174,8 +170,8 @@
             <div class="card-body">
                 <div v-for="comment in recipe.comments" :key="comment.id">
                     <div class="d-flex flex-start mb-2">
-                        <img :src="'http://localhost:3000/' + comment.userAvatar" alt="User Avatar"
-                            class="rounded-circle shadow-1-strong me-3" width="40" height="40">
+                        <img :src="apiURL(comment.userAvatar)" alt="User Avatar" class="rounded-circle shadow-1-strong me-3"
+                            width="40" height="40">
                         <div class="flex-grow-1 flex-shrink-1 ml-3">
                             <div>
                                 <div class="d-flex justify-content-between align-items-center">
@@ -195,7 +191,7 @@
 
             <div class="card-footer">
                 <div class="d-flex align-items-center">
-                    <img :src="userAvatar" class="rounded-circle mr-2" width="40">
+                    <img :src="apiURL(userStore.user.avatar)" class="rounded-circle mr-2" width="40">
 
                     <textarea class="form-control" v-model="newCommentText[recipe.id]" rows="3"
                         placeholder="Viết bình luận..."></textarea>
@@ -210,12 +206,20 @@
 
 <script>
 import { useUserStore } from '../../store/userStore';
-import { ref, onMounted, nextTick, computed } from 'vue';
+import { ref, onMounted, nextTick } from 'vue';
 import axios from 'axios';
 import moment from 'moment';
 import 'moment/locale/vi';
 
-const BASE_URL = 'http://localhost:3000';
+const ROUTES = {
+    myProfile: userId => `myprofile/${userId}`,
+    favorite: 'favorite',
+    unlike: id => `newsfeed/unlike/${id}`,
+    like: id => `newsfeed/like/${id}`,
+    comment: id => `newsfeed/${id}/comments`,
+    save: id => `favorite/${id}`,
+    unsave: id => `favorite/${id}`,
+};
 
 export default {
     name: 'MyPostCard',
@@ -227,26 +231,53 @@ export default {
         const newCommentText = ref({});
         const showComments = ref({});
 
+        const apiURL = (relativePath) => {
+            return window.baseURL + '/' + relativePath;
+        };
+
         onMounted(async () => {
             await loadUserRecipes(user, userRecipes);
             await loadFavoriteRecipes(user, userRecipes);
         });
 
-        const handleError = (message, error) => console.error(message, error);
+        const loadUserRecipes = async ({ id: userId } = {}, userRecipes) => {
+            try {
+                const { data } = await axios.get(apiURL(ROUTES.myProfile(userId)));
+                userRecipes.value = data;
+            } catch (error) {
+                console.error('Lỗi khi tải công thức của người dùng:', error?.response?.data?.message || error.message);
+            }
+        }
+
+        const loadFavoriteRecipes = async ({ id: userId }, userRecipes) => {
+            try {
+                const { data } = await axios.get(apiURL(ROUTES.favorite), { params: { userId } });
+                const savedRecipes = new Set(data.map(recipe => recipe.id));
+                userRecipes.value = userRecipes.value.map(recipe => ({
+                    ...recipe,
+                    isSaved: savedRecipes.has(recipe.id),
+                    isLiked: recipe.isLikedByCurrentUser,
+                    likesCount: recipe.totalLikes,
+                    comments: recipe.comments || [],
+                }));
+
+                for (const recipe of userRecipes.value) {
+                    try {
+                        const { data: commentsData } = await axios.get(apiURL(ROUTES.comment(recipe.id)));
+                        recipe.comments = commentsData;
+                    } catch (error) {
+                        console.error(`Error loading comments for recipe ${recipe.id}:`, error);
+                    }
+                }
+            } catch (error) {
+                console.error('Lỗi khi tải danh sách bài viết đã lưu:', error);
+            }
+        }
 
         const formatTime = time => {
             moment.locale('vi');
             return moment(time).fromNow();
         };
-
-        async function deleteRecipe(recipeId) {
-            try {
-                await axios.delete(`${BASE_URL}/myprofile/${user.id}/${recipeId}`);
-                userRecipes.value = userRecipes.value.filter(recipe => recipe.id !== recipeId);
-            } catch (error) {
-                console.error('Lỗi khi xóa bài viết:', error.response?.data?.message || error.message);
-            }
-        }
 
         const toggleComments = async recipe => {
             await nextTick();
@@ -256,26 +287,26 @@ export default {
         const toggleLike = async recipe => {
             try {
                 if (recipe.isLiked) {
-                    await axios.delete(`${BASE_URL}/newsfeed/unlike/${recipe.id}`, {
+                    await axios.delete(apiURL(ROUTES.unlike(recipe.id)), {
                         data: { userId: userStore.user.id }
                     });
                     recipe.isLiked = false;
                     recipe.likesCount -= 1;
                 } else {
-                    await axios.post(`${BASE_URL}/newsfeed/like/${recipe.id}`, {
+                    await axios.post(apiURL(ROUTES.like(recipe.id)), {
                         userId: userStore.user.id,
                     });
                     recipe.isLiked = true;
                     recipe.likesCount += 1;
                 }
             } catch (error) {
-                handleError('Lỗi khi thích/bỏ thích bài viết:', error);
+                console.error('Lỗi khi thích/bỏ thích bài viết:', error);
             }
         };
 
         const addComment = async recipe => {
             try {
-                const { data } = await axios.post(`${BASE_URL}/newsfeed/${recipe.id}/comments`, {
+                const { data } = await axios.post(apiURL(ROUTES.comment(recipe.id)), {
                     userId: userStore.user.id,
                     content: newCommentText.value[recipe.id],
                 });
@@ -284,59 +315,89 @@ export default {
                 newCommentText.value[recipe.id] = '';
                 reloadComments(recipe.id);
             } catch (error) {
-                handleError('Lỗi khi thêm bình luận:', error);
+                console.error('Lỗi khi thêm bình luận:', error);
             }
         };
 
         const reloadComments = async recipeId => {
             try {
-                const { data: commentsData } = await axios.get(`${BASE_URL}/newsfeed/${recipeId}/comments`);
+                const { data: commentsData } = await axios.get(apiURL(ROUTES.comment(recipeId)));
                 const recipe = userRecipes.value.find(r => r.id === recipeId);
                 if (recipe) {
                     recipe.comments = commentsData;
                 }
             } catch (error) {
-                handleError(`Error loading comments for recipe ${recipeId}:`, error);
+                console.error(`Error loading comments for recipe ${recipeId}:`, error);
             }
         };
 
-        async function saveRecipe(recipeId) {
+        const deleteRecipe = async recipeId => {
             try {
-                await axios.post(`${BASE_URL}/favorite/${recipeId}`, {
-                    userId: user.id,
+                await axios.delete(apiURL(ROUTES.myProfile(userStore.user.id) + `/${recipeId}`));
+                userRecipes.value = userRecipes.value.filter(recipe => recipe.id !== recipeId);
+            } catch (error) {
+                console.error('Lỗi khi xóa bài viết:', error);
+            }
+        };
+
+        const saveRecipe = async recipeId => {
+            try {
+                await axios.post(apiURL(ROUTES.save(recipeId)), {
+                    userId: userStore.user.id,
                 });
                 updateRecipeSaveStatus(recipeId, true);
             } catch (error) {
                 console.error('Lỗi khi lưu bài viết:', error);
             }
-        }
+        };
 
-        async function unsaveRecipe(recipeId) {
+        const unsaveRecipe = async recipeId => {
             try {
-                await axios.delete(`${BASE_URL}/favorite/${recipeId}`, {
-                    params: { userId: user.id }
+                await axios.delete(apiURL(ROUTES.unsave(recipeId)), {
+                    params: { userId: userStore.user.id }
                 });
                 updateRecipeSaveStatus(recipeId, false);
             } catch (error) {
                 console.error('Lỗi khi hủy lưu bài viết:', error);
             }
-        }
+        };
 
-        function updateRecipeSaveStatus(recipeId, isSaved) {
+        const updateRecipeSaveStatus = (recipeId, isSaved) => {
             const recipe = userRecipes.value.find(r => r.id === recipeId);
             if (recipe) {
                 recipe.isSaved = isSaved;
             }
-        }
+        };
+
+        const difficultyToStars = (difficulty) => {
+            const difficultyMap = { 'dễ': 1, 'trung bình': 2, 'khó': 3 };
+            return difficultyMap[difficulty] || 1;
+        };
+
+        const getMainIngredientsArray = (ingredients = []) => {
+            return ingredients.map(ingredient => ({
+                name: ingredient.name,
+                amount: ingredient.amount
+            }));
+        };
+
+        const getHashtags = (tags = []) => {
+            return tags.length
+                ? tags.map(tag => `#${tag}`).join(', ')
+                : '';
+        };
 
         return {
             userRecipes,
-            userAvatar: computed(() => `${BASE_URL}/${userStore.user.avatar}`),
+            userStore,
             showSteps,
             toggleComments,
+            loadUserRecipes,
             newCommentText,
             showComments,
             addComment,
+            loadFavoriteRecipes,
+            apiURL,
             toggleLike,
             formatTime,
             getMainIngredientsArray,
@@ -348,56 +409,6 @@ export default {
         };
     }
 };
-
-function difficultyToStars(difficulty) {
-    const difficultyMap = { 'dễ': 1, 'trung bình': 2, 'khó': 3 };
-    return difficultyMap[difficulty] || 1;
-}
-
-async function loadUserRecipes({ id: userId } = {}, userRecipes) {
-    try {
-        const { data } = await axios.get(`${BASE_URL}/myprofile/${userId}`);
-        userRecipes.value = data;
-    } catch (error) {
-        console.error('Lỗi khi tải công thức của người dùng:', error?.response?.data?.message || error.message);
-    }
-}
-
-async function loadFavoriteRecipes({ id: userId }, userRecipes) {
-    try {
-        const { data } = await axios.get(`${BASE_URL}/favorite`, { params: { userId } });
-        const savedRecipes = new Set(data.map(recipe => recipe.id));
-        userRecipes.value = userRecipes.value.map(recipe => ({
-            ...recipe,
-            isSaved: savedRecipes.has(recipe.id),
-            isLiked: recipe.isLikedByCurrentUser,
-            likesCount: recipe.totalLikes,
-            comments: recipe.comments || [],
-        }));
-
-        for (const recipe of userRecipes.value) {
-            try {
-                const { data: commentsData } = await axios.get(`${BASE_URL}/newsfeed/${recipe.id}/comments`);
-                recipe.comments = commentsData;
-            } catch (error) {
-                console.error(`Error loading comments for recipe ${recipe.id}:`, error);
-            }
-        }
-    } catch (error) {
-        console.error('Lỗi khi tải danh sách bài viết đã lưu:', error);
-    }
-}
-
-function getMainIngredientsArray(ingredients = []) {
-    return ingredients.map(ingredient => ({
-        name: ingredient.name,
-        amount: ingredient.amount
-    }));
-}
-
-function getHashtags(tags) {
-    return tags.length ? tags.map(tag => `#${tag}`).join(', ') : '';
-}
 </script>
 
 <style scoped>
