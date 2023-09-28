@@ -11,7 +11,7 @@
 
         <!-- Post Header -->
         <div class="d-flex align-items-center mb-1">
-            <img :src="'http://localhost:3000/' + recipe.user.avatar" alt="User Avatar" class="user-avatar">
+            <img :src="apiURL(recipe.user.avatar)" alt="User Avatar" class="user-avatar">
             <span class="ml-3 font-weight-bold">
                 {{ recipe.user.name }}
             </span>
@@ -69,8 +69,7 @@
                 <div class="carousel-inner">
                     <div v-for="(image, index) in recipe.images" :key="index"
                         :class="{ 'carousel-item': true, 'active': index === 0 }">
-                        <img :src="'http://localhost:3000/' + image" class="d-block w-100" alt="Recipe image"
-                            style="height: 333px">
+                        <img :src="apiURL(image)" class="d-block w-100" alt="Recipe image" style="height: 333px">
                     </div>
                 </div>
                 <a class="carousel-control-prev" :href="`#carousel-${recipe.id}`" role="button" data-slide="prev">
@@ -172,8 +171,8 @@
             <div class="card-body">
                 <div v-for="comment in recipe.comments" :key="comment.id">
                     <div class="d-flex flex-start mb-2">
-                        <img :src="'http://localhost:3000/' + comment.userAvatar" alt="User Avatar"
-                            class="rounded-circle shadow-1-strong me-3" width="40" height="40">
+                        <img :src="apiURL(comment.userAvatar)" alt="User Avatar" class="rounded-circle shadow-1-strong me-3"
+                            width="40" height="40">
                         <div class="flex-grow-1 flex-shrink-1 ml-3">
                             <div>
                                 <div class="d-flex justify-content-between align-items-center">
@@ -193,7 +192,7 @@
 
             <div class="card-footer">
                 <div class="d-flex align-items-center">
-                    <img :src="userAvatar" class="rounded-circle mr-2" width="40">
+                    <img :src="apiURL(userStore.user.avatar)" class="rounded-circle mr-2" width="40">
 
                     <textarea class="form-control" v-model="newCommentText[recipe.id]" rows="3"
                         placeholder="Viết bình luận..."></textarea>
@@ -207,29 +206,20 @@
 </template>
 
 <script>
-import { onMounted, watch, ref, nextTick, computed } from 'vue';
 import axios from 'axios';
-import { useUserStore } from '../../store/userStore';
+import { ref, onMounted, watch, nextTick } from 'vue';
 import moment from 'moment';
 import 'moment/locale/vi';
+import { useUserStore } from '../../store/userStore';
 
-const BASE_URL = 'http://localhost:3000';
-
-function difficultyToStars(difficulty) {
-    const difficultyMap = { 'dễ': 1, 'trung bình': 2, 'khó': 3 };
-    return difficultyMap[difficulty] || 1;
-}
-
-function getMainIngredientsArray(ingredients = []) {
-    return ingredients.map(ingredient => ({
-        name: ingredient.name,
-        amount: ingredient.amount
-    }));
-}
-
-function getHashtags(tags = []) {
-    return tags.length ? tags.map(tag => `#${tag}`).join(', ') : '';
-}
+const ROUTES = {
+    favorite: `favorite`,
+    newsfeedComments: id => `newsfeed/${id}/comments`,
+    unlike: id => `newsfeed/unlike/${id}`,
+    like: id => `newsfeed/like/${id}`,
+    save: id => `favorite/${id}`,
+    unsave: id => `favorite/${id}`
+};
 
 export default {
     name: 'OthersPostCard',
@@ -244,6 +234,10 @@ export default {
         const newCommentText = ref({});
         const showComments = ref({});
 
+        const apiURL = (relativePath) => {
+            return window.baseURL + '/' + relativePath;
+        };
+
         const handleError = (message, error) => console.error(message, error);
 
         const formatTime = time => {
@@ -253,7 +247,7 @@ export default {
 
         const loadRecipesList = async () => {
             try {
-                const response = await axios.get(`${BASE_URL}/favorite`, {
+                const response = await axios.get(apiURL(ROUTES.favorite), {
                     params: { userId: userStore.user.id },
                     headers: { Authorization: `Bearer ${userStore.token}` },
                 });
@@ -268,7 +262,7 @@ export default {
 
                 for (const recipe of props.userRecipes) {
                     try {
-                        const { data: commentsData } = await axios.get(`${BASE_URL}/newsfeed/${recipe.id}/comments`);
+                        const { data: commentsData } = await axios.get(apiURL(ROUTES.newsfeedComments(recipe.id)));
                         recipe.comments = commentsData;
                     } catch (error) {
                         console.error(`Error loading comments for recipe ${recipe.id}:`, error);
@@ -287,13 +281,13 @@ export default {
         const toggleLike = async recipe => {
             try {
                 if (recipe.isLiked) {
-                    await axios.delete(`${BASE_URL}/newsfeed/unlike/${recipe.id}`, {
+                    await axios.delete(apiURL(ROUTES.unlike(recipe.id)), {
                         data: { userId: userStore.user.id }
                     });
                     recipe.isLiked = false;
                     recipe.likesCount -= 1;
                 } else {
-                    await axios.post(`${BASE_URL}/newsfeed/like/${recipe.id}`, {
+                    await axios.post(apiURL(ROUTES.like(recipe.id)), {
                         userId: userStore.user.id,
                     });
                     recipe.isLiked = true;
@@ -306,7 +300,7 @@ export default {
 
         const addComment = async recipe => {
             try {
-                const { data } = await axios.post(`${BASE_URL}/newsfeed/${recipe.id}/comments`, {
+                const { data } = await axios.post(apiURL(ROUTES.newsfeedComments(recipe.id)), {
                     userId: userStore.user.id,
                     content: newCommentText.value[recipe.id],
                 });
@@ -321,7 +315,7 @@ export default {
 
         const reloadComments = async recipeId => {
             try {
-                const { data: commentsData } = await axios.get(`${BASE_URL}/newsfeed/${recipeId}/comments`);
+                const { data: commentsData } = await axios.get(apiURL(ROUTES.newsfeedComments(recipeId)));
                 const recipe = props.userRecipes.find(r => r.id === recipeId);
                 if (recipe) {
                     recipe.comments = commentsData;
@@ -333,7 +327,7 @@ export default {
 
         const saveRecipe = async recipeId => {
             try {
-                await axios.post(`${BASE_URL}/favorite/${recipeId}`, { userId: userStore.user.id });
+                await axios.post(apiURL(ROUTES.save(recipeId)), { userId: userStore.user.id });
                 updateRecipeSaveStatus(recipeId, true);
                 alert('Lưu bài viết thành công!')
             } catch (error) {
@@ -343,7 +337,7 @@ export default {
 
         const unsaveRecipe = async recipeId => {
             try {
-                await axios.delete(`${BASE_URL}/favorite/${recipeId}`, { params: { userId: userStore.user.id } });
+                await axios.delete(apiURL(ROUTES.unsave(recipeId)), { params: { userId: userStore.user.id } });
                 updateRecipeSaveStatus(recipeId, false);
                 alert('Đã huỷ lưu bài viết này!')
             } catch (error) {
@@ -358,6 +352,26 @@ export default {
             }
         };
 
+        const difficultyToStars = (difficulty) => {
+            const difficultyMap = { 'dễ': 1, 'trung bình': 2, 'khó': 3 };
+            return difficultyMap[difficulty] || 1;
+        };
+
+
+        const getMainIngredientsArray = (ingredients = []) => {
+            return ingredients.map(ingredient => ({
+                name: ingredient.name,
+                amount: ingredient.amount
+            }));
+        };
+
+        const getHashtags = (tags = []) => {
+            return tags.length
+                ? tags.map(tag => `#${tag}`).join(', ')
+                : '';
+        };
+
+
         watch(() => props.userRecipes, loadRecipesList);
 
         onMounted(async () => {
@@ -368,9 +382,11 @@ export default {
         });
 
         return {
-            userAvatar: computed(() => `${BASE_URL}/${userStore.user.avatar}`),
-            getMainIngredientsArray,
             formatTime,
+            getMainIngredientsArray,
+            difficultyToStars,
+            apiURL,
+            getHashtags,
             newCommentText,
             showComments,
             toggleComments,
@@ -378,11 +394,10 @@ export default {
             addComment,
             reloadComments,
             showSteps,
-            getHashtags,
             saveRecipe,
             unsaveRecipe,
-            difficultyToStars,
             loadRecipesList,
+            userStore
         };
     },
 };
