@@ -1,138 +1,174 @@
 <!-- eslint-disable vue/attributes-order -->
 <!-- eslint-disable vue/first-attribute-linebreak -->
 <template>
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <button class="navbar-toggler mr-2" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01"
-                aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <a class="navbar-brand ml-2 mr-3" href="#">
-                <img src="@/assets/logos/main_logo.png" alt="Logo" width="50" height="40">
-            </a>
-
-            <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
-
-                <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-
-                    <li class="nav-item icon-item" data-toggle="tooltip" data-placement="bottom" title="Trang chủ">
-                        <router-link class="nav-link" to="/">
-                            <i class="fas bi bi-house-fill"></i>
-                        </router-link>
-                    </li>
-                    <li class="nav-item icon-item" data-toggle="tooltip" data-placement="bottom" title="Tạo công thức">
-                        <router-link class="nav-link" to="/create-recipe">
-                            <i class="fas bi bi-patch-plus-fill"></i>
-                        </router-link>
-                    </li>
-                    <li class="nav-item icon-item position-relative" data-toggle="tooltip" data-placement="bottom"
-                        title="Yêu cầu kết bạn">
-                        <router-link class="nav-link" to="/friends/requests">
-                            <i class="fas bi bi-person-plus-fill"></i>
-                            <span v-if="friendRequestsCount > 0" class="badge-notification">
-                                {{ friendRequestsCount }}
-                            </span>
-                        </router-link>
-                    </li>
-
-                </ul>
-
-                <ul class="navbar-nav">
-                    <li class="nav-item icon-item" data-toggle="tooltip" data-placement="bottom" title="Trò chuyện">
-                        <router-link class="nav-link" to="/">
-                            <i class="fas bi bi-wechat"></i>
-                        </router-link>
-                    </li>
-                    <li class="nav-item icon-item" data-toggle="tooltip" data-placement="bottom" title="Thông báo">
-                        <router-link class="nav-link" to="/">
-                            <i class="fas bi bi-bell-fill"></i>
-                        </router-link>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <img v-if="userAvatar" :src="userAvatar" alt="User Avatar" width="32" height="32"
-                                class="rounded-circle">
-                        </a>
-
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                    <li class="hover-li" @click="goTo('/myprofile')">
-                        <a type="button" class="dropdown-item">
-                            <img v-if="userAvatar" :src="userAvatar" alt="User Avatar" width="32" height="32"
-                                class="rounded-circle">
-                            <span class="ml-2">{{ userName }}</span>
-                        </a>
-                    </li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-                    <li>
-                        <a class="dropdown-item" href="#">
-                            <i class="fas fa-cogs mr-3"></i> Cài đặt
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item" href="#">
-                            <i class="fas fa-question-circle mr-3"></i> Trợ giúp & hỗ trợ
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item" href="#">
-                            <i class="fas fa-desktop mr-3"></i> Màn hình & trợ năng
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item" href="#">
-                            <i class="fas fa-comment-dots mr-3"></i> Đóng góp ý kiến
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item" href="#" @click.prevent="logout">
-                            <i class="fas fa-sign-out-alt mr-3"></i> Đăng xuất
-                        </a>
-                    </li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-                    <li class="container">
-                        <p class="mb-0 text-muted small">Quyền riêng tư . Điều khoản . Quảng cáo . Lựa chọn
-                            quảng cáo . Cookie . Xem thêm.</p>
-                    </li>
+    <div class="app-layout">
+        <!-- Header -->
+        <header class="app-layout-navbar">
+            <div class="navbar-left">
+                <a class="ml-2 mr-3" href="#">
+                    <img src="@/assets/logos/main_logo.png" alt="Logo" width="50" height="40">
+                </a>
+                <div class="d-flex align-items-center justify-content-center">
+                    <strong>Epicure Explore</strong>
+                </div>
             </div>
-            </li>
-            </ul>
+            <div class="navbar-center">
 
+                <!-- Trang chủ -->
+                <div @click="navigateTo('/', 'NewsFeed')"
+                    :class="['sidebar-item', selectedTab === 'NewsFeed' ? 'selected' : '']" data-toggle="tooltip"
+                    data-placement="bottom" title="Trang chủ">
+                    <i class="bi bi-house-fill mr-2"></i>
+                </div>
+
+                <!-- Đăng bài -->
+                <div @click="navigateTo('/create-recipe', 'CreatePost')"
+                    :class="['sidebar-item', selectedTab === 'CreatePost' ? 'selected' : '']" data-toggle="tooltip"
+                    data-placement="bottom" title="Tạo bài viết">
+                    <i class="bi bi-patch-plus-fill mr-2"></i>
+                </div>
+
+                <!-- Yêu cầu kết bạn -->
+                <div @click="navigateTo('/friends/requests', 'FriendRequest')"
+                    :class="['sidebar-item', selectedTab === 'FriendRequest' ? 'selected' : '']" data-toggle="tooltip"
+                    data-placement="bottom" title="Yêu cầu kết bạn">
+                    <i class="bi bi-person-plus-fill mr-2"></i>
+                    <span v-if="friendRequestsCount > 0" class="badge-notification">
+                        {{ friendRequestsCount }}
+                    </span>
+                </div>
+
+                <!-- Message -->
+                <div @click="navigateTo('/', 'Message')"
+                    :class="['sidebar-item', selectedTab === 'Message' ? 'selected' : '']" data-toggle="tooltip"
+                    data-placement="bottom" title="Trò chuyện">
+                    <i class="bi bi-wechat mr-2"></i>
+                </div>
+
+                <!-- Thông báo -->
+                <div @click="navigateTo('/', 'Notification')"
+                    :class="['sidebar-item', selectedTab === 'Notification' ? 'selected' : '']" data-toggle="tooltip"
+                    data-placement="bottom" title="Thông báo">
+                    <i class="bi bi-bell-fill mr-2"></i>
+                </div>
             </div>
-        </nav>
-    </header>
-    <main class="main-content container-fluid h-100">
-        <div class="row h-100" style="background-color: rgb(240 242 245);">
-            <!-- Cột 1: Layout (Bên trái) -->
-            <div class="col-md-3 h-100 overflow-auto">
-                <!-- Trang cá nhân -->
-                <div @mouseover="hover = 'myprofile'" @mouseout="hover = ''" @click="goTo('/myprofile')"
-                    class="hover-div d-flex align-items-center mt-4">
-                    <img v-if="userAvatar" :src="userAvatar" alt="User Avatar" width="40" height="40"
-                        class="rounded-circle ml-2">
-                    <span class="ml-2">{{ userName }}</span>
-                </div>
+            <div class="navbar-right">
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="Profile" role="button" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        <img :src="apiURL(userStore.user?.avatar)" alt="User Avatar" width="32" height="32"
+                            class="rounded-circle">
+                    </a>
 
-                <!-- Bạn bè -->
-                <div @mouseover="hover = 'friends'" @mouseout="hover = ''" @click="goTo('/friends')"
-                    class="hover-div d-flex align-items-center">
-                    <i class="bi bi-people ml-2" style="font-size: 40px;"></i>
-                    <span class="ml-2">Bạn bè</span>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="Profile">
+                        <li class="hover-li" @click="goTo('/myprofile')">
+                            <a type="button" class="dropdown-item">
+                                <img :src="apiURL(userStore.user?.avatar)" alt="User Avatar" width="32" height="32"
+                                    class="rounded-circle">
+                                <span class="ml-2">{{ userName }}</span>
+                            </a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                <i class="fas fa-cogs mr-3"></i> Cài đặt
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                <i class="fas fa-question-circle mr-3"></i> Trợ giúp & hỗ trợ
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                <i class="fas fa-desktop mr-3"></i> Màn hình & trợ năng
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                <i class="fas fa-comment-dots mr-3"></i> Đóng góp ý kiến
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#" @click.prevent="logout">
+                                <i class="fas fa-sign-out-alt mr-3"></i> Đăng xuất
+                            </a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li class="container">
+                            <p class="mb-0 text-muted small">Quyền riêng tư . Điều khoản . Quảng cáo . Lựa chọn
+                                quảng cáo . Cookie . Xem thêm.</p>
+                        </li>
+                    </div>
                 </div>
+            </div>
+        </header>
+        <!-- Body -->
+        <div class="app-layout-content">
 
-                <!-- Yêu thích -->
-                <div @mouseover="hover = 'favorites'" @mouseout="hover = ''" @click="goTo('/favorites')"
-                    class="hover-div d-flex align-items-center">
-                    <i class="bi bi-bookmarks-fill ml-2" style="font-size: 40px;"></i>
-                    <span class="ml-2">Yêu thích</span>
-                </div>
+            <div class="app-layout-sidebar col-3">
+                <div class="sidebar-menu">
+                    <!-- Trang cá nhân -->
+                    <div @click="navigateTo('/myprofile', 'MyProfile')"
+                        :class="['sidebar-item', selectedTab === 'MyProfile' ? 'selected' : '']">
+                        <img :src="apiURL(userStore.user?.avatar)" alt="User Avatar" width="40" height="40"
+                            class="rounded-circle mr-2">
+                        <div>{{ userName }}</div>
+                    </div>
 
-                <div>
+                    <!-- Bạn bè -->
+                    <div @click="navigateTo('/friends', 'Friends')"
+                        :class="['sidebar-item', selectedTab === 'Friends' ? 'selected' : '']">
+                        <i class="bi bi-people mr-2"></i>
+                        <div>Bạn bè</div>
+                    </div>
+
+                    <!-- Yêu thích -->
+                    <div @click="navigateTo('/favorites', 'Favorites')"
+                        :class="['sidebar-item', selectedTab === 'Favorites' ? 'selected' : '']">
+                        <i class="bi bi-bookmarks-fill mr-2"></i>
+                        <div>Yêu thích</div>
+                    </div>
+                    <!-- Yêu thích -->
+                    <div @click="navigateTo('/favorites', 'Favorites')"
+                        :class="['sidebar-item', selectedTab === 'Favorites' ? 'selected' : '']">
+                        <i class="bi bi-bookmarks-fill mr-2"></i>
+                        <div>Yêu thích</div>
+                    </div>
+                    <!-- Yêu thích -->
+                    <div @click="navigateTo('/favorites', 'Favorites')"
+                        :class="['sidebar-item', selectedTab === 'Favorites' ? 'selected' : '']">
+                        <i class="bi bi-bookmarks-fill mr-2"></i>
+                        <div>Yêu thích</div>
+                    </div>
+                    <!-- Yêu thích -->
+                    <div @click="navigateTo('/favorites', 'Favorites')"
+                        :class="['sidebar-item', selectedTab === 'Favorites' ? 'selected' : '']">
+                        <i class="bi bi-bookmarks-fill mr-2"></i>
+                        <div>Yêu thích</div>
+                    </div>
+                    <!-- Yêu thích -->
+                    <div @click="navigateTo('/favorites', 'Favorites')"
+                        :class="['sidebar-item', selectedTab === 'Favorites' ? 'selected' : '']">
+                        <i class="bi bi-bookmarks-fill mr-2"></i>
+                        <div>Yêu thích</div>
+                    </div>
+                    <!-- Yêu thích -->
+                    <div @click="navigateTo('/favorites', 'Favorites')"
+                        :class="['sidebar-item', selectedTab === 'Favorites' ? 'selected' : '']">
+                        <i class="bi bi-bookmarks-fill mr-2"></i>
+                        <div>Yêu thích</div>
+                    </div>
+                    <!-- Yêu thích -->
+                    <div @click="navigateTo('/favorites', 'Favorites')"
+                        :class="['sidebar-item', selectedTab === 'Favorites' ? 'selected' : '']">
+                        <i class="bi bi-bookmarks-fill mr-2"></i>
+                        <div>Yêu thích</div>
+                    </div>
                     <footer class="footer">
                         <div class="container">
                             <p class="mb-0">Quyền riêng tư . Điều khoản . Quảng cáo . Lựa chọn quảng cáo . Cookie . Xem
@@ -143,27 +179,34 @@
                 </div>
             </div>
 
-            <!-- col 2: Main content -->
-            <div class="col-md-6 h-100 overflow-auto">
+            <div class="app-layout-page col-6">
                 <router-view />
             </div>
 
-            <!-- col 3: Right layout -->
-            <div class="col-md-3 h-100 overflow-auto">
+            <div class="app-layout-right-sidebar col-3">
+                <FriendRequestCard />
+                <hr class="my-4 hr-thick">
+                <FriendRequestCard />
+                <hr class="my-4 hr-thick">
+                <FriendRequestCard />
+                <hr class="my-4 hr-thick">
+                <FriendRequestCard />
+                <hr class="my-4 hr-thick">
                 <FriendRequestCard />
                 <hr class="my-4 hr-thick">
             </div>
         </div>
-    </main>
+    </div>
 </template>
 
 <script>
-import FriendRequestCard from '@/components/user/FriendRequestCard.vue';
 import { useUserStore } from '../store/userStore';
 import { useFriendshipStore } from '../store/friendshipStore';
-import { computed, onMounted } from 'vue';
 import $ from 'jquery';
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import FriendRequestCard from '@/components/user/FriendRequestCard.vue';
+import { computed, ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 
 export default {
     name: 'UserLayout',
@@ -173,104 +216,165 @@ export default {
     setup() {
         const userStore = useUserStore();
         const friendshipStore = useFriendshipStore();
+        const router = useRouter();
+        const selectedTab = ref('MyProfile');
+
+        const apiURL = (relativePath) => {
+            return window.baseURL + '/' + relativePath;
+        };
+
+        const navigateTo = (route, tabName) => {
+            router.push(route);
+            selectedTab.value = tabName;
+        };
 
         onMounted(async () => {
             await friendshipStore.fetchFriendRequestsCount(userStore.user.id);
             $('[data-toggle="tooltip"]').tooltip();
         });
 
-        return {
-            userAvatar: computed(() => {
-                return userStore.user && userStore.user.avatar
-                    ? `http://localhost:3000/${userStore.user.avatar}` : null;
-            }),
-
-            userName: computed(() => {
-                return userStore.user?.name || '';
-            }),
-            friendRequestsCount: computed(() => friendshipStore.friendRequestsCount),
-        }
-    },
-    methods: {
-        async logout() {
-            const userStore = useUserStore();
+        const logout = async () => {
             userStore.clearData();
             localStorage.removeItem('authToken');
             localStorage.removeItem('user');
-            this.$router.push('/login');
-        },
-        goTo(route) {
-            this.$router.push(route);
-        },
+            router.push('/login');
+        };
+
+        const userName = computed(() => {
+            return userStore.user?.name || '';
+        });
+
+        const friendRequestsCount = computed(() => {
+            return friendshipStore.friendRequestsCount;
+        });
+
+        return {
+            apiURL,
+            userStore,
+            userName,
+            friendRequestsCount,
+            selectedTab,
+            navigateTo,
+            logout
+        };
     }
 }
 </script>
 
 <style scoped>
-header {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    height: 60px;
-    background-color: white;
+.app-layout-navbar {
+    position: relative;
+    height: 73px;
+    padding: 0.1rem 1rem;
+    background-color: rgb(255, 255, 255);
+    color: rgb(38, 40, 36);
+    fill: rgb(38, 40, 36);
+    box-shadow: 0 .25rem .5rem 0 rgba(0, 0, 0, 0.12);
+    z-index: 2;
+    display: grid;
+    grid-template: "left center right" /1fr auto 1fr;
 }
 
-.nav-item.icon-item {
-    margin: 0 8px;
-    /* Điều chỉnh khoảng cách giữa các mục */
+.navbar-left {
+    display: flex;
+    grid-area: left;
+    align-items: center;
 }
 
-.nav-item.icon-item .fas {
-    font-size: 30px;
-    /* Điều chỉnh kích thước biểu tượng */
+.navbar-center {
+    display: flex;
+    justify-content: center;
+    grid-area: center;
 }
 
-.dropdown-toggle::after {
-    display: none;
+.navbar-right {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    grid-area: right;
+    align-items: center;
 }
 
-.main-content {
-    height: calc(100vh - 60px);
-    overflow: hidden;
-}
-
-.main-content .col-3,
-.main-content .col-6 {
-    overflow-y: auto;
+.app-layout-sidebar {
+    position: relative;
     height: 100%;
+    flex-grow: 2;
+    overflow-y: scroll;
 }
 
-.hover-div {
-    cursor: pointer;
-    transition: background-color 0.1s;
+.sidebar-menu {
+    padding: 2rem 0;
+    border-radius: 5px;
 }
 
-.hover-div:hover {
-    background-color: #b6b0b0;
+.sidebar-item {
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    display: flex;
+    padding: 15px;
+    min-height: 58px;
+    transition: all 0.2s ease-in;
 }
 
-.hover-li:hover {
-    background-color: #f2f2f2;
-    cursor: pointer;
+.sidebar-item:hover {
+    /* background-color: #b3d4fc; */
+    background-color: rgb(68 73 80 / 15%);
 }
 
-.icon-item .nav-link {
-    font-size: 24px;
-    /* Điều chỉnh kích thước biểu tượng */
+.sidebar-item.selected {
+    background-color: #154EC1;
+    color: #fff;
 }
 
-.icon-item .nav-link:hover {
-    color: #007bff;
-    /* Màu sắc khi di chuột qua */
+.icon {
+    font-size: 19px;
+    height: 19px;
+    line-height: 19px;
+    width: 1.5rem;
+    display: flex;
+    margin-right: 15px;
 }
 
-@media (max-width: 992px) {
+i.bi.bi-house-fill.mr-2,
+i.bi.bi-patch-plus-fill.mr-2,
+i.bi.bi-person-plus-fill.mr-2,
+i.bi.bi-wechat.mr-2,
+i.bi.bi-bell-fill.mr-2,
+i.bi.bi-people.mr-2,
+i.bi.bi-bookmarks-fill.mr-2 {
+    font-size: 40px;
+    width: 40px;
+    height: 40px;
+}
 
-    .navbar .col-lg-3,
-    .navbar .col-lg-6 {
-        flex: 0 0 100%;
-        max-width: 100%;
-    }
+i.bi.bi-house-fill.mr-2::before,
+i.bi.bi-patch-plus-fill.mr-2::before,
+i.bi.bi-person-plus-fill.mr-2::before,
+i.bi.bi-wechat.mr-2::before,
+i.bi.bi-bell-fill.mr-2::before,
+i.bi.bi-people.mr-2::before,
+i.bi.bi-bookmarks-fill.mr-2::before {
+    vertical-align: top;
+}
+
+
+.app-layout-content {
+    background-color: #F0F2F5;
+    box-sizing: border-box;
+    display: flex;
+    height: calc(100vh - 73px);
+    flex: 1;
+}
+
+.app-layout-page {
+    flex-grow: 2;
+    overflow-y: scroll;
+}
+
+.app-layout-right-sidebar {
+    flex-grow: 2;
+    overflow-y: scroll;
 }
 
 .badge-notification {
