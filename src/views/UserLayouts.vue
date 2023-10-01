@@ -18,21 +18,21 @@
                 <div @click="navigateTo('/', 'NewsFeed')"
                     :class="['sidebar-item', selectedTab === 'NewsFeed' ? 'selected' : '']" data-toggle="tooltip"
                     data-placement="bottom" title="Trang chủ">
-                    <i class="bi bi-house-fill mr-2"></i>
+                    <i class="bi bi-house-fill"></i>
                 </div>
 
                 <!-- Đăng bài -->
                 <div @click="navigateTo('/create-recipe', 'CreatePost')"
                     :class="['sidebar-item', selectedTab === 'CreatePost' ? 'selected' : '']" data-toggle="tooltip"
                     data-placement="bottom" title="Tạo bài viết">
-                    <i class="bi bi-patch-plus-fill mr-2"></i>
+                    <i class="bi bi-patch-plus-fill"></i>
                 </div>
 
                 <!-- Yêu cầu kết bạn -->
                 <div @click="navigateTo('/friends/requests', 'FriendRequest')"
                     :class="['sidebar-item', selectedTab === 'FriendRequest' ? 'selected' : '']" data-toggle="tooltip"
                     data-placement="bottom" title="Yêu cầu kết bạn">
-                    <i class="bi bi-person-plus-fill mr-2"></i>
+                    <i class="bi bi-person-plus-fill"></i>
                     <span v-if="friendRequestsCount > 0" class="badge-notification">
                         {{ friendRequestsCount }}
                     </span>
@@ -42,21 +42,21 @@
                 <div @click="navigateTo('/', 'Message')"
                     :class="['sidebar-item', selectedTab === 'Message' ? 'selected' : '']" data-toggle="tooltip"
                     data-placement="bottom" title="Trò chuyện">
-                    <i class="bi bi-wechat mr-2"></i>
+                    <i class="bi bi-wechat"></i>
                 </div>
 
                 <!-- Thông báo -->
                 <div @click="navigateTo('/', 'Notification')"
                     :class="['sidebar-item', selectedTab === 'Notification' ? 'selected' : '']" data-toggle="tooltip"
                     data-placement="bottom" title="Thông báo">
-                    <i class="bi bi-bell-fill mr-2"></i>
+                    <i class="bi bi-bell-fill"></i>
                 </div>
             </div>
             <div class="navbar-right">
                 <div class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="Profile" role="button" data-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false">
-                        <img :src="apiURL(userStore.user?.avatar)" alt="User Avatar" width="32" height="32"
+                        <img :src="apiURL(userStore.user?.avatar)" alt="User Avatar" width="40" height="40"
                             class="rounded-circle">
                     </a>
 
@@ -336,11 +336,11 @@ export default {
     margin-right: 15px;
 }
 
-i.bi.bi-house-fill.mr-2,
-i.bi.bi-patch-plus-fill.mr-2,
-i.bi.bi-person-plus-fill.mr-2,
-i.bi.bi-wechat.mr-2,
-i.bi.bi-bell-fill.mr-2,
+i.bi.bi-house-fill,
+i.bi.bi-patch-plus-fill,
+i.bi.bi-person-plus-fill,
+i.bi.bi-wechat,
+i.bi.bi-bell-fill,
 i.bi.bi-people.mr-2,
 i.bi.bi-bookmarks-fill.mr-2 {
     font-size: 40px;
@@ -348,11 +348,11 @@ i.bi.bi-bookmarks-fill.mr-2 {
     height: 40px;
 }
 
-i.bi.bi-house-fill.mr-2::before,
-i.bi.bi-patch-plus-fill.mr-2::before,
-i.bi.bi-person-plus-fill.mr-2::before,
-i.bi.bi-wechat.mr-2::before,
-i.bi.bi-bell-fill.mr-2::before,
+i.bi.bi-house-fill::before,
+i.bi.bi-patch-plus-fill::before,
+i.bi.bi-person-plus-fill::before,
+i.bi.bi-wechat::before,
+i.bi.bi-bell-fill::before,
 i.bi.bi-people.mr-2::before,
 i.bi.bi-bookmarks-fill.mr-2::before {
     vertical-align: top;
@@ -393,5 +393,24 @@ i.bi.bi-bookmarks-fill.mr-2::before {
     line-height: 1;
     white-space: nowrap;
     vertical-align: baseline;
+}
+
+/* Ẩn scrollbar  */
+.app-layout-sidebar,
+.app-layout-page,
+.app-layout-right-sidebar {
+    overflow-y: hidden;
+}
+
+/* Hiện scrollbar khi hover */
+.app-layout-sidebar:hover,
+.app-layout-page:hover,
+.app-layout-right-sidebar:hover {
+    overflow-y: overlay;
+}
+
+/* Ẩn nút tam giác (caret) */
+.nav-link.dropdown-toggle::after {
+    display: none;
 }
 </style>

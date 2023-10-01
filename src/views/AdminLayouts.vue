@@ -218,4 +218,8 @@ export default {
   overflow-y: scroll;
   background-color: #f6f6f6;
 }
+
+.nav-link.dropdown-toggle::after {
+  display: none;
+}
 </style>
