@@ -16,21 +16,21 @@
 
                 <!-- Trang chủ -->
                 <div @click="navigateTo('/', 'NewsFeed')"
-                    :class="['sidebar-item', selectedTab === 'NewsFeed' ? 'selected' : '']" data-toggle="tooltip"
+                    :class="['navbar-center-item', selectedTab === 'NewsFeed' ? 'selected' : '']" data-toggle="tooltip"
                     data-placement="bottom" title="Trang chủ">
                     <i class="bi bi-house-fill"></i>
                 </div>
 
                 <!-- Đăng bài -->
                 <div @click="navigateTo('/create-recipe', 'CreatePost')"
-                    :class="['sidebar-item', selectedTab === 'CreatePost' ? 'selected' : '']" data-toggle="tooltip"
+                    :class="['navbar-center-item', selectedTab === 'CreatePost' ? 'selected' : '']" data-toggle="tooltip"
                     data-placement="bottom" title="Tạo bài viết">
                     <i class="bi bi-patch-plus-fill"></i>
                 </div>
 
                 <!-- Yêu cầu kết bạn -->
                 <div @click="navigateTo('/friends/requests', 'FriendRequest')"
-                    :class="['sidebar-item', selectedTab === 'FriendRequest' ? 'selected' : '']" data-toggle="tooltip"
+                    :class="['navbar-center-item', selectedTab === 'FriendRequest' ? 'selected' : '']" data-toggle="tooltip"
                     data-placement="bottom" title="Yêu cầu kết bạn">
                     <i class="bi bi-person-plus-fill"></i>
                     <span v-if="friendRequestsCount > 0" class="badge-notification">
@@ -40,14 +40,14 @@
 
                 <!-- Message -->
                 <div @click="navigateTo('/', 'Message')"
-                    :class="['sidebar-item', selectedTab === 'Message' ? 'selected' : '']" data-toggle="tooltip"
+                    :class="['navbar-center-item', selectedTab === 'Message' ? 'selected' : '']" data-toggle="tooltip"
                     data-placement="bottom" title="Trò chuyện">
                     <i class="bi bi-wechat"></i>
                 </div>
 
                 <!-- Thông báo -->
                 <div @click="navigateTo('/', 'Notification')"
-                    :class="['sidebar-item', selectedTab === 'Notification' ? 'selected' : '']" data-toggle="tooltip"
+                    :class="['navbar-center-item', selectedTab === 'Notification' ? 'selected' : '']" data-toggle="tooltip"
                     data-placement="bottom" title="Thông báo">
                     <i class="bi bi-bell-fill"></i>
                 </div>
@@ -123,7 +123,7 @@
                     <!-- Bạn bè -->
                     <div @click="navigateTo('/friends', 'Friends')"
                         :class="['sidebar-item', selectedTab === 'Friends' ? 'selected' : '']">
-                        <i class="bi bi-people mr-2"></i>
+                        <i class="bi bi-person-check-fill mr-2"></i>
                         <div>Bạn bè</div>
                     </div>
 
@@ -133,43 +133,43 @@
                         <i class="bi bi-bookmarks-fill mr-2"></i>
                         <div>Yêu thích</div>
                     </div>
-                    <!-- Yêu thích -->
-                    <div @click="navigateTo('/favorites', 'Favorites')"
-                        :class="['sidebar-item', selectedTab === 'Favorites' ? 'selected' : '']">
-                        <i class="bi bi-bookmarks-fill mr-2"></i>
-                        <div>Yêu thích</div>
+                    <!-- Nhóm -->
+                    <div @click="navigateTo('/', 'Groups')"
+                        :class="['sidebar-item', selectedTab === 'Groups' ? 'selected' : '']">
+                        <i class="bi bi-people-fill mr-2"></i>
+                        <div>Nhóm</div>
                     </div>
-                    <!-- Yêu thích -->
-                    <div @click="navigateTo('/favorites', 'Favorites')"
-                        :class="['sidebar-item', selectedTab === 'Favorites' ? 'selected' : '']">
-                        <i class="bi bi-bookmarks-fill mr-2"></i>
-                        <div>Yêu thích</div>
+                    <!-- Bảng Feed -->
+                    <div @click="navigateTo('/', 'NewsFeed')"
+                        :class="['sidebar-item', selectedTab === 'NewsFeed' ? 'selected' : '']">
+                        <i class="bi bi-newspaper mr-2"></i>
+                        <div>Bảng Feed</div>
                     </div>
-                    <!-- Yêu thích -->
-                    <div @click="navigateTo('/favorites', 'Favorites')"
-                        :class="['sidebar-item', selectedTab === 'Favorites' ? 'selected' : '']">
-                        <i class="bi bi-bookmarks-fill mr-2"></i>
-                        <div>Yêu thích</div>
+                    <!-- Videos -->
+                    <div @click="navigateTo('/', 'Videos')"
+                        :class="['sidebar-item', selectedTab === 'Videos' ? 'selected' : '']">
+                        <i class="bi bi-play-circle-fill mr-2"></i>
+                        <div>Video</div>
                     </div>
-                    <!-- Yêu thích -->
-                    <div @click="navigateTo('/favorites', 'Favorites')"
-                        :class="['sidebar-item', selectedTab === 'Favorites' ? 'selected' : '']">
-                        <i class="bi bi-bookmarks-fill mr-2"></i>
-                        <div>Yêu thích</div>
+                    <!-- Sự kiện -->
+                    <div @click="navigateTo('/', 'Events')"
+                        :class="['sidebar-item', selectedTab === 'Events' ? 'selected' : '']">
+                        <i class="bi bi-calendar-event-fill mr-2"></i>
+                        <div>Sự kiện</div>
                     </div>
-                    <!-- Yêu thích -->
-                    <div @click="navigateTo('/favorites', 'Favorites')"
-                        :class="['sidebar-item', selectedTab === 'Favorites' ? 'selected' : '']">
-                        <i class="bi bi-bookmarks-fill mr-2"></i>
-                        <div>Yêu thích</div>
+                    <!-- Trang -->
+                    <div @click="navigateTo('/', 'Pages')"
+                        :class="['sidebar-item', selectedTab === 'Pages' ? 'selected' : '']">
+                        <i class="bi bi-flag-fill mr-2"></i>
+                        <div>Trang</div>
                     </div>
-                    <!-- Yêu thích -->
-                    <div @click="navigateTo('/favorites', 'Favorites')"
-                        :class="['sidebar-item', selectedTab === 'Favorites' ? 'selected' : '']">
-                        <i class="bi bi-bookmarks-fill mr-2"></i>
-                        <div>Yêu thích</div>
+                    <!-- Kỷ niệm -->
+                    <div @click="navigateTo('/', 'Memories')"
+                        :class="['sidebar-item', selectedTab === 'Memories' ? 'selected' : '']">
+                        <i class="bi bi-clock-history mr-2"></i>
+                        <div>Kỷ niệm</div>
                     </div>
-                    <footer class="footer">
+                    <footer class="footer mt-3">
                         <div class="container">
                             <p class="mb-0">Quyền riêng tư . Điều khoản . Quảng cáo . Lựa chọn quảng cáo . Cookie . Xem
                                 thêm.
@@ -287,6 +287,38 @@ export default {
     grid-area: center;
 }
 
+.navbar-center-item {
+    background-color: #E4E6EB;
+    border-radius: 50%;
+    align-items: center;
+    margin-right: 10px;
+    display: flex;
+    padding: 20px;
+    transition: all 0.2s ease-in;
+}
+
+.navbar-center-item.selected {
+    background-color: #154EC1;
+    color: #fff;
+}
+
+.badge-notification {
+    border-radius: 50% !important;
+    position: relative;
+    bottom: 19px;
+    padding: 0.3em 0.5em;
+    min-width: 20px;
+    text-align: center;
+    color: #fff;
+    background-color: #dc3545;
+    display: inline-block;
+    font-weight: 700;
+    line-height: 1;
+    white-space: nowrap;
+    vertical-align: baseline;
+    margin-right: -25.22px;
+}
+
 .navbar-right {
     display: flex;
     flex-direction: row;
@@ -311,14 +343,12 @@ export default {
     border-radius: 18px;
     display: flex;
     align-items: center;
-    display: flex;
     padding: 15px;
     min-height: 58px;
     transition: all 0.2s ease-in;
 }
 
 .sidebar-item:hover {
-    /* background-color: #b3d4fc; */
     background-color: rgb(68 73 80 / 15%);
 }
 
@@ -341,11 +371,17 @@ i.bi.bi-patch-plus-fill,
 i.bi.bi-person-plus-fill,
 i.bi.bi-wechat,
 i.bi.bi-bell-fill,
-i.bi.bi-people.mr-2,
+i.bi.bi-person-check-fill.mr-2,
+i.bi.bi-people-fill.mr-2,
+i.bi.bi-newspaper.mr-2,
+i.bi.bi-play-circle-fill.mr-2,
+i.bi.bi-calendar-event-fill.mr-2,
+i.bi.bi-flag-fill.mr-2,
+i.bi.bi-clock-history.mr-2,
 i.bi.bi-bookmarks-fill.mr-2 {
-    font-size: 40px;
-    width: 40px;
-    height: 40px;
+    font-size: 30px;
+    width: 30px;
+    height: 30px;
 }
 
 i.bi.bi-house-fill::before,
@@ -353,7 +389,13 @@ i.bi.bi-patch-plus-fill::before,
 i.bi.bi-person-plus-fill::before,
 i.bi.bi-wechat::before,
 i.bi.bi-bell-fill::before,
-i.bi.bi-people.mr-2::before,
+i.bi.bi-person-check-fill.mr-2::before,
+i.bi.bi-people-fill.mr-2::before,
+i.bi.bi-newspaper.mr-2::before,
+i.bi.bi-play-circle-fill.mr-2::before,
+i.bi.bi-calendar-event-fill.mr-2::before,
+i.bi.bi-flag-fill.mr-2::before,
+i.bi.bi-clock-history.mr-2::before,
 i.bi.bi-bookmarks-fill.mr-2::before {
     vertical-align: top;
 }
@@ -375,24 +417,6 @@ i.bi.bi-bookmarks-fill.mr-2::before {
 .app-layout-right-sidebar {
     flex-grow: 2;
     overflow-y: scroll;
-}
-
-.badge-notification {
-    border-radius: 50% !important;
-    position: absolute !important;
-    bottom: 5px;
-    right: 5px;
-    font-size: 0.7rem;
-    padding: 0.3em 0.5em;
-    min-width: 20px;
-    text-align: center;
-    color: #fff;
-    background-color: #dc3545;
-    display: inline-block;
-    font-weight: 700;
-    line-height: 1;
-    white-space: nowrap;
-    vertical-align: baseline;
 }
 
 /* Ẩn scrollbar  */
