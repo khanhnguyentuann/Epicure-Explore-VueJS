@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/first-attribute-linebreak -->
 <!-- eslint-disable vue/attributes-order -->
 <template>
-    <div class="container mt-3">
+    <div class="mt-3">
         <div class="click thought-box card mb-4 p-3" @click="goToCreateRecipe">
             <div class="d-flex align-items-center">
                 <img :src="userAvatar" alt="User Avatar" class="user-avatar">

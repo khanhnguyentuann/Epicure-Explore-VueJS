@@ -50,6 +50,9 @@
                     :class="['navbar-center-item', selectedTab === 'Notification' ? 'selected' : '']" data-toggle="tooltip"
                     data-placement="bottom" title="Thông báo">
                     <i class="bi bi-bell-fill"></i>
+                    <span v-if="likeNotificationCount > 0" class="badge-notification">
+                        {{ likeNotificationCount }}
+                    </span>
                 </div>
             </div>
             <div class="navbar-right">
@@ -207,6 +210,11 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import FriendRequestCard from '@/components/user/FriendRequestCard.vue';
 import { computed, ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import axios from 'axios';
+
+const ROUTES = {
+    notificationcount: `notification/like-notifications-count`,
+};
 
 export default {
     name: 'UserLayout',
@@ -218,6 +226,7 @@ export default {
         const friendshipStore = useFriendshipStore();
         const router = useRouter();
         const selectedTab = ref('MyProfile');
+        const likeNotificationCount = ref(0);
 
         const apiURL = (relativePath) => {
             return window.baseURL + '/' + relativePath;
@@ -230,8 +239,22 @@ export default {
 
         onMounted(async () => {
             await friendshipStore.fetchFriendRequestsCount(userStore.user.id);
+            await fetchLikeNotificationsCount();
             $('[data-toggle="tooltip"]').tooltip();
         });
+
+        const fetchLikeNotificationsCount = async () => {
+            try {
+                const userId = userStore.user.id;
+                const response = await axios.get(apiURL(ROUTES.notificationcount), { params: { userId } });
+
+                if (response.data && response.data.count !== undefined) {
+                    likeNotificationCount.value = response.data.count;
+                }
+            } catch (error) {
+                console.error("Có lỗi khi tải số thông báo 'like':", error);
+            }
+        };
 
         const logout = async () => {
             userStore.clearData();
@@ -250,6 +273,8 @@ export default {
 
         return {
             apiURL,
+            fetchLikeNotificationsCount,
+            likeNotificationCount,
             userStore,
             userName,
             friendRequestsCount,
@@ -327,13 +352,6 @@ export default {
     align-items: center;
 }
 
-.app-layout-sidebar {
-    position: relative;
-    height: 100%;
-    flex-grow: 2;
-    overflow-y: scroll;
-}
-
 .sidebar-menu {
     padding: 2rem 0;
     border-radius: 5px;
@@ -407,16 +425,6 @@ i.bi.bi-bookmarks-fill.mr-2::before {
     display: flex;
     height: calc(100vh - 73px);
     flex: 1;
-}
-
-.app-layout-page {
-    flex-grow: 2;
-    overflow-y: scroll;
-}
-
-.app-layout-right-sidebar {
-    flex-grow: 2;
-    overflow-y: scroll;
 }
 
 /* Ẩn scrollbar  */
