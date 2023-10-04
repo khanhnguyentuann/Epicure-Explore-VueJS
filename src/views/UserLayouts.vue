@@ -44,18 +44,28 @@
                     data-placement="bottom" title="Trò chuyện">
                     <i class="bi bi-wechat"></i>
                 </div>
-
-                <!-- Thông báo -->
-                <div @click="navigateTo('/', 'Notification')"
+            </div>
+            <div class="navbar-right">
+                <div @click="selectTab('Notification')"
                     :class="['navbar-center-item', selectedTab === 'Notification' ? 'selected' : '']" data-toggle="tooltip"
-                    data-placement="bottom" title="Thông báo">
+                    data-placement="bottom" title="Thông báo" id="bell">
                     <i class="bi bi-bell-fill"></i>
                     <span v-if="likeNotificationCount > 0" class="badge-notification">
                         {{ likeNotificationCount }}
                     </span>
                 </div>
-            </div>
-            <div class="navbar-right">
+
+                <div :style="notificationStyle" class="notifications" id="box">
+                    <h2>Thông báo - <span>{{ likeNotificationCount }}</span></h2>
+                    <div v-for="notification in likeNotifications" :key="notification.id" class="notifications-item">
+                        <img :src="apiURL(notification.last_sender_avatar)" alt="User Avatar">
+                        <div class="text">
+                            <p>{{ notification.message }}</p>
+                            <small>{{ formatTime(notification.last_like_time) }}</small>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="Profile" role="button" data-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false">
@@ -211,9 +221,12 @@ import FriendRequestCard from '@/components/user/FriendRequestCard.vue';
 import { computed, ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
+import moment from 'moment';
+import 'moment/locale/vi';
 
 const ROUTES = {
     notificationcount: `notification/like-notifications-count`,
+    notifications: `notification/unread-like-notifications`,
 };
 
 export default {
@@ -227,9 +240,16 @@ export default {
         const router = useRouter();
         const selectedTab = ref('MyProfile');
         const likeNotificationCount = ref(0);
+        const isNotificationVisible = ref(false);
+        const likeNotifications = ref([]);
 
         const apiURL = (relativePath) => {
             return window.baseURL + '/' + relativePath;
+        };
+
+        const formatTime = (time) => {
+            moment.locale('vi');
+            return moment(time).fromNow();
         };
 
         const navigateTo = (route, tabName) => {
@@ -237,11 +257,58 @@ export default {
             selectedTab.value = tabName;
         };
 
+        const selectTab = (tabName) => {
+            selectedTab.value = tabName;
+            if (tabName === 'Notification') {
+                isNotificationVisible.value = !isNotificationVisible.value;
+            } else {
+                isNotificationVisible.value = false;
+            }
+        };
+
+
         onMounted(async () => {
             await friendshipStore.fetchFriendRequestsCount(userStore.user.id);
             await fetchLikeNotificationsCount();
+            await fetchUnreadLikeNotifications();
             $('[data-toggle="tooltip"]').tooltip();
         });
+
+        const fetchUnreadLikeNotifications = async () => {
+            try {
+                const userId = userStore.user.id;
+                const response = await axios.get(apiURL(ROUTES.notifications), { params: { userId } });
+
+                if (response.data) {
+                    likeNotifications.value = response.data.map(notification => {
+                        const count = notification.count;
+                        const lastLikeTime = notification.last_like_time;
+                        let message = "";
+                        switch (count) {
+                            case 1:
+                                message = `${notification.last_sender_name} đã thích công thức của bạn.`;
+                                break;
+                            case 2:
+                                message = `${notification.last_sender_name} và ${notification.second_last_sender_name} đã thích công thức của bạn.`;
+                                break;
+                            case 3:
+                                message = `${notification.last_sender_name}, ${notification.second_last_sender_name} và ${notification.third_last_sender_name} đã thích công thức của bạn.`;
+                                break;
+                            default:
+                                message = `${notification.last_sender_name} và ${count - 1} người khác đã thích công thức của bạn.`;
+                                break;
+                        }
+                        return {
+                            ...notification,
+                            message,
+                            lastLikeTime
+                        };
+                    });
+                }
+            } catch (error) {
+                console.error("Có lỗi khi tải thông báo 'like':", error);
+            }
+        };
 
         const fetchLikeNotificationsCount = async () => {
             try {
@@ -255,6 +322,20 @@ export default {
                 console.error("Có lỗi khi tải số thông báo 'like':", error);
             }
         };
+
+        const notificationStyle = computed(() => {
+            if (isNotificationVisible.value) {
+                return {
+                    height: 'auto',
+                    opacity: '1'
+                };
+            } else {
+                return {
+                    height: '0px',
+                    opacity: '0'
+                };
+            }
+        });
 
         const logout = async () => {
             userStore.clearData();
@@ -274,13 +355,18 @@ export default {
         return {
             apiURL,
             fetchLikeNotificationsCount,
+            likeNotifications,
+            fetchUnreadLikeNotifications,
             likeNotificationCount,
             userStore,
             userName,
             friendRequestsCount,
             selectedTab,
+            notificationStyle,
             navigateTo,
-            logout
+            selectTab,
+            logout,
+            formatTime
         };
     }
 }
@@ -444,5 +530,58 @@ i.bi.bi-bookmarks-fill.mr-2::before {
 /* Ẩn nút tam giác (caret) */
 .nav-link.dropdown-toggle::after {
     display: none;
+}
+
+.notifications {
+    width: 300px;
+    position: absolute;
+    top: 90px;
+    right: 30px;
+    border-radius: 5px 0px 5px 5px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)
+}
+
+.notifications h2 {
+    font-size: 14px;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    color: #999
+}
+
+.notifications h2 span {
+    color: #f00
+}
+
+.notifications-item {
+    display: flex;
+    border-bottom: 1px solid #eee;
+    padding: 6px 9px;
+    margin-bottom: 0px;
+    cursor: pointer
+}
+
+.notifications-item:hover {
+    background-color: #eee
+}
+
+.notifications-item img {
+    display: block;
+    width: 50px;
+    height: 50px;
+    margin-right: 9px;
+    border-radius: 50%;
+    margin-top: 2px
+}
+
+.notifications-item .text h4 {
+    color: #777;
+    font-size: 16px;
+    margin-top: 3px
+}
+
+.notifications-item .text p {
+    color: #aaa;
+    font-size: 12px
 }
 </style>
