@@ -34,6 +34,8 @@ export default {
         const router = useRouter();
 
         const fetchData = async () => {
+            if (!userStore.user) return;
+
             try {
                 const { data } = await axios.get(`${BASE_URL}/friendship/friends`, { params: { userId: userStore.user.id } });
                 friends.value = data;
@@ -42,7 +44,7 @@ export default {
             }
         };
 
-        watch(() => userStore.user.id, fetchData);
+        watch(() => (userStore.user ? userStore.user.id : null), fetchData);
 
         onMounted(fetchData);
 

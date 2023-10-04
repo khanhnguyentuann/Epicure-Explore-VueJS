@@ -74,7 +74,8 @@
                     </a>
 
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="Profile">
-                        <li class="hover-li" @click="goTo('/myprofile')">
+                        <li class="hover-li" @click="navigateTo('/myprofile', 'MyProfile')">
+                            <!-- <li class="hover-li" @click="goTo('/myprofile')"> -->
                             <a type="button" class="dropdown-item">
                                 <img :src="apiURL(userStore.user?.avatar)" alt="User Avatar" width="32" height="32"
                                     class="rounded-circle">
@@ -146,17 +147,17 @@
                         <i class="bi bi-bookmarks-fill mr-2"></i>
                         <div>Yêu thích</div>
                     </div>
-                    <!-- Nhóm -->
-                    <div @click="navigateTo('/', 'Groups')"
-                        :class="['sidebar-item', selectedTab === 'Groups' ? 'selected' : '']">
-                        <i class="bi bi-people-fill mr-2"></i>
-                        <div>Nhóm</div>
-                    </div>
                     <!-- Bảng Feed -->
                     <div @click="navigateTo('/', 'NewsFeed')"
                         :class="['sidebar-item', selectedTab === 'NewsFeed' ? 'selected' : '']">
                         <i class="bi bi-newspaper mr-2"></i>
                         <div>Bảng Feed</div>
+                    </div>
+                    <!-- Nhóm -->
+                    <div @click="navigateTo('/', 'Groups')"
+                        :class="['sidebar-item', selectedTab === 'Groups' ? 'selected' : '']">
+                        <i class="bi bi-people-fill mr-2"></i>
+                        <div>Nhóm</div>
                     </div>
                     <!-- Videos -->
                     <div @click="navigateTo('/', 'Videos')"
@@ -255,7 +256,8 @@ export default {
         const navigateTo = (route, tabName) => {
             router.push(route);
             selectedTab.value = tabName;
-        };
+            isNotificationVisible.value = false;
+        }
 
         const selectTab = (tabName) => {
             selectedTab.value = tabName;
