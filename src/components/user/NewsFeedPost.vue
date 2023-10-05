@@ -237,6 +237,7 @@ export default {
 
         onMounted(async () => {
             await fetchInitialData();
+            console.log("Loaded recipes:", recipes.value);
         });
 
         const fetchInitialData = async () => {

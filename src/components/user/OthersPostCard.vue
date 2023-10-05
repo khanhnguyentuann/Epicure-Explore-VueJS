@@ -282,13 +282,13 @@ export default {
             try {
                 if (recipe.isLiked) {
                     await axios.delete(apiURL(ROUTES.unlike(recipe.id)), {
-                        data: { userId: userStore.user.id }
+                        data: { sender_id: userStore.user.id }
                     });
                     recipe.isLiked = false;
                     recipe.likesCount -= 1;
                 } else {
                     await axios.post(apiURL(ROUTES.like(recipe.id)), {
-                        userId: userStore.user.id,
+                        sender_id: userStore.user.id,
                     });
                     recipe.isLiked = true;
                     recipe.likesCount += 1;
