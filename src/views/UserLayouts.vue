@@ -125,7 +125,7 @@
         <div class="app-layout-content">
 
             <div class="app-layout-sidebar col-3">
-                <div class="sidebar-menu">
+                <div class="sidebar-menu" ref="contentBox">
                     <!-- Trang cá nhân -->
                     <div @click="navigateTo('/myprofile', 'MyProfile')"
                         :class="['sidebar-item', selectedTab === 'MyProfile' ? 'selected' : '']">
@@ -183,6 +183,30 @@
                         <i class="bi bi-clock-history mr-2"></i>
                         <div>Kỷ niệm</div>
                     </div>
+                    <!-- Trang -->
+                    <div @click="navigateTo('/', 'Pages')"
+                        :class="['sidebar-item', selectedTab === 'Pages' ? 'selected' : '']">
+                        <i class="bi bi-flag-fill mr-2"></i>
+                        <div>Trang</div>
+                    </div>
+                    <!-- Kỷ niệm -->
+                    <div @click="navigateTo('/', 'Memories')"
+                        :class="['sidebar-item', selectedTab === 'Memories' ? 'selected' : '']">
+                        <i class="bi bi-clock-history mr-2"></i>
+                        <div>Kỷ niệm</div>
+                    </div>
+                    <!-- Trang -->
+                    <div @click="navigateTo('/', 'Pages')"
+                        :class="['sidebar-item', selectedTab === 'Pages' ? 'selected' : '']">
+                        <i class="bi bi-flag-fill mr-2"></i>
+                        <div>Trang</div>
+                    </div>
+                    <!-- Kỷ niệm -->
+                    <div @click="navigateTo('/', 'Memories')"
+                        :class="['sidebar-item', selectedTab === 'Memories' ? 'selected' : '']">
+                        <i class="bi bi-clock-history mr-2"></i>
+                        <div>Kỷ niệm</div>
+                    </div>
                     <footer class="footer mt-3">
                         <div class="container">
                             <p class="mb-0">Quyền riêng tư . Điều khoản . Quảng cáo . Lựa chọn quảng cáo . Cookie . Xem
@@ -191,23 +215,36 @@
                         </div>
                     </footer>
                 </div>
+                <div class="scroll-box" ref="scrollBox">
+                    <div class="scroll-content"></div>
+                </div>
             </div>
 
             <div class="app-layout-page col-6">
-                <router-view />
+                <div class="page-content" ref="pagecontentBox">
+                    <router-view />
+                </div>
+                <div class="page-scroll-box" ref="pagescrollBox">
+                    <div class="page-scroll-content"></div>
+                </div>
             </div>
 
             <div class="app-layout-right-sidebar col-3">
-                <FriendRequestCard />
-                <hr class="my-4 hr-thick">
-                <FriendRequestCard />
-                <hr class="my-4 hr-thick">
-                <FriendRequestCard />
-                <hr class="my-4 hr-thick">
-                <FriendRequestCard />
-                <hr class="my-4 hr-thick">
-                <FriendRequestCard />
-                <hr class="my-4 hr-thick">
+                <div class="rightsidebar-content" ref="rightsidebarcontentBox">
+                    <FriendRequestCard />
+                    <hr class="my-4 hr-thick">
+                    <FriendRequestCard />
+                    <hr class="my-4 hr-thick">
+                    <FriendRequestCard />
+                    <hr class="my-4 hr-thick">
+                    <FriendRequestCard />
+                    <hr class="my-4 hr-thick">
+                    <FriendRequestCard />
+                    <hr class="my-4 hr-thick">
+                </div>
+                <div class="rightsidebar-scroll-box" ref="rightsidebarscrollBox">
+                    <div class="rightsidebar-scroll-content"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -243,6 +280,14 @@ export default {
         const likeNotificationCount = ref(0);
         const isNotificationVisible = ref(false);
         const likeNotifications = ref([]);
+        const contentBox = ref(null);
+        const scrollBox = ref(null);
+
+        const pagecontentBox = ref(null);
+        const pagescrollBox = ref(null);
+
+        const rightsidebarcontentBox = ref(null);
+        const rightsidebarscrollBox = ref(null);
 
         const apiURL = (relativePath) => {
             return window.baseURL + '/' + relativePath;
@@ -274,6 +319,38 @@ export default {
             await fetchLikeNotificationsCount();
             await fetchUnreadLikeNotifications();
             $('[data-toggle="tooltip"]').tooltip();
+
+            // đồng bộ hóa việc cuộn chuột giữa scrollBox và contentBox
+            scrollBox.value.addEventListener('scroll', function () {
+                contentBox.value.scrollTop = scrollBox.value.scrollTop;
+            });
+
+            pagescrollBox.value.addEventListener('scroll', function () {
+                pagecontentBox.value.scrollTop = pagescrollBox.value.scrollTop;
+            });
+
+            rightsidebarscrollBox.value.addEventListener('scroll', function () {
+                rightsidebarcontentBox.value.scrollTop = rightsidebarscrollBox.value.scrollTop;
+            });
+
+            // Đặt chiều cao cho .scroll-content bằng với chiều cao "scrollable" của .sidebar-menu
+            const sidebarMenu = document.querySelector('.sidebar-menu');
+            const scrollContent = document.querySelector('.scroll-content');
+            if (sidebarMenu && scrollContent) {
+                scrollContent.style.height = `${sidebarMenu.scrollHeight}px`;
+            }
+
+            const pageContent = document.querySelector('.page-content');
+            const pagescrollContent = document.querySelector('.page-scroll-content');
+            if (pageContent && pagescrollContent) {
+                pagescrollContent.style.height = `${pageContent.scrollHeight}px`;
+            }
+
+            const rightsidebarContent = document.querySelector('.rightsidebar-content');
+            const rightsidebarscrollContent = document.querySelector('.rightsidebar-scroll-content');
+            if (rightsidebarContent && rightsidebarscrollContent) {
+                rightsidebarscrollContent.style.height = `${rightsidebarContent.scrollHeight}px`;
+            }
         });
 
         const fetchUnreadLikeNotifications = async () => {
@@ -368,7 +445,13 @@ export default {
             navigateTo,
             selectTab,
             logout,
-            formatTime
+            formatTime,
+            contentBox,
+            scrollBox,
+            pagecontentBox,
+            pagescrollBox,
+            rightsidebarcontentBox,
+            rightsidebarscrollBox
         };
     }
 }
@@ -440,9 +523,52 @@ export default {
     align-items: center;
 }
 
+.app-layout-content {
+    background-color: #F0F2F5;
+    box-sizing: border-box;
+    display: flex;
+    height: calc(100vh - 73px);
+    flex: 1;
+}
+
+.app-layout-sidebar,
+.app-layout-page,
+.app-layout-right-sidebar {
+    position: relative;
+    display: flex;
+}
+
+.sidebar-menu,
+.page-content,
+.rightsidebar-content {
+    width: 100%;
+    height: 100%;
+    padding-right: 10px;
+    overflow: hidden;
+    position: relative;
+    flex-grow: 1;
+}
+
+.scroll-box,
+.page-scroll-box,
+.rightsidebar-scroll-box {
+    height: 100%;
+    width: 20px;
+    overflow-y: hidden;
+    position: absolute;
+    right: 0;
+    z-index: 1;
+}
+
 .sidebar-menu {
-    padding: 2rem 0;
+    padding-top: 20px;
     border-radius: 5px;
+}
+
+.scroll-box:hover,
+.page-scroll-box:hover,
+.rightsidebar-scroll-box:hover {
+    overflow-y: scroll;
 }
 
 .sidebar-item {
@@ -504,29 +630,6 @@ i.bi.bi-flag-fill.mr-2::before,
 i.bi.bi-clock-history.mr-2::before,
 i.bi.bi-bookmarks-fill.mr-2::before {
     vertical-align: top;
-}
-
-
-.app-layout-content {
-    background-color: #F0F2F5;
-    box-sizing: border-box;
-    display: flex;
-    height: calc(100vh - 73px);
-    flex: 1;
-}
-
-/* Ẩn scrollbar  */
-.app-layout-sidebar,
-.app-layout-page,
-.app-layout-right-sidebar {
-    overflow-y: hidden;
-}
-
-/* Hiện scrollbar khi hover */
-.app-layout-sidebar:hover,
-.app-layout-page:hover,
-.app-layout-right-sidebar:hover {
-    overflow-y: overlay;
 }
 
 /* Ẩn nút tam giác (caret) */
