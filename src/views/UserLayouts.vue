@@ -56,12 +56,19 @@
                 </div>
 
                 <div :style="notificationStyle" class="notifications" id="box">
-                    <h2>Thông báo - <span>{{ likeNotificationCount }}</span></h2>
-                    <div v-for="notification in likeNotifications" :key="notification.id" class="notifications-item">
-                        <img :src="apiURL(notification.last_sender_avatar)" alt="User Avatar">
-                        <div class="text">
-                            <p>{{ notification.message }}</p>
-                            <small>{{ formatTime(notification.last_like_time) }}</small>
+                    <h2>Thông báo</h2>
+                    <div v-if="likeNotifications.length > 0">
+                        <div v-for="notification in likeNotifications" :key="notification.id" class="notifications-item">
+                            <img :src="apiURL(notification.last_sender_avatar)" alt="User Avatar">
+                            <div class="text">
+                                <p>{{ notification.message }}</p>
+                                <small>{{ formatTime(notification.last_like_time) }}</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div v-else>
+                        <div class="no-notifications">
+                            <p class="text-center">Bạn chưa có thông báo nào.</p>
                         </div>
                     </div>
                 </div>
@@ -75,7 +82,6 @@
 
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="Profile">
                         <li class="hover-li" @click="navigateTo('/myprofile', 'MyProfile')">
-                            <!-- <li class="hover-li" @click="goTo('/myprofile')"> -->
                             <a type="button" class="dropdown-item">
                                 <img :src="apiURL(userStore.user?.avatar)" alt="User Avatar" width="32" height="32"
                                     class="rounded-circle">
@@ -329,10 +335,10 @@ export default {
                     });
 
                     observer.observe(element, {
-                        attributes: true,
-                        childList: true,
-                        subtree: true,
-                        characterData: true
+                        attributes: true, // theo dõi sự thay đổi của các thuộc tính
+                        childList: true,  // theo dõi sự thay đổi của các node con
+                        subtree: true,     // theo dõi sự thay đổi trong toàn bộ cây con của node
+                        characterData: true // theo dõi sự thay đổi của dữ liệu ký tự của node
                     });
                 }
             };
