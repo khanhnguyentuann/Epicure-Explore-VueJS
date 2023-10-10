@@ -15,7 +15,7 @@
                 <button class="btn btn-light btn-sm" type="button" data-toggle="dropdown">
                     ...
                 </button>
-                <div class="click dropdown-menu">
+                <div class=" click dropdown-menu dropdown-menu-right">
                     <a class="dropdown-item" v-if="!recipe.isSaved" @click="saveRecipe(recipe.id)">Lưu bài viết</a>
                     <a class="dropdown-item" v-else @click="unsaveRecipe(recipe.id)">Hủy lưu bài viết</a>
                     <a class="dropdown-item" v-if="userStore.user && recipe.user_id === userStore.user.id"
