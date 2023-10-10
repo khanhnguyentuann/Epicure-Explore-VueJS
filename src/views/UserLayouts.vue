@@ -313,14 +313,49 @@ export default {
             }
         };
 
-
         onMounted(async () => {
+            await initializeFriendshipStore();
+            await initializeLikeNotifications();
+            initializeTooltips();
+            synchronizeScrolling();
+            setScrollContentHeight();
+
+            // Đoạn mã này để theo dõi sự thay đổi
+            const observeHeightChange = (elementSelector, callback) => {
+                const element = document.querySelector(elementSelector);
+                if (element) {
+                    const observer = new MutationObserver(() => {
+                        callback();
+                    });
+
+                    observer.observe(element, {
+                        attributes: true,
+                        childList: true,
+                        subtree: true,
+                        characterData: true
+                    });
+                }
+            };
+
+            observeHeightChange('.sidebar-menu', setScrollContentHeight);
+            observeHeightChange('.page-content', setScrollContentHeight);
+            observeHeightChange('.rightsidebar-content', setScrollContentHeight);
+        });
+
+        const initializeFriendshipStore = async () => {
             await friendshipStore.fetchFriendRequestsCount(userStore.user.id);
+        };
+
+        const initializeLikeNotifications = async () => {
             await fetchLikeNotificationsCount();
             await fetchUnreadLikeNotifications();
-            $('[data-toggle="tooltip"]').tooltip();
+        };
 
-            // đồng bộ hóa việc cuộn chuột giữa scrollBox và contentBox
+        const initializeTooltips = () => {
+            $('[data-toggle="tooltip"]').tooltip();
+        };
+
+        const synchronizeScrolling = () => {
             scrollBox.value.addEventListener('scroll', function () {
                 contentBox.value.scrollTop = scrollBox.value.scrollTop;
             });
@@ -332,8 +367,9 @@ export default {
             rightsidebarscrollBox.value.addEventListener('scroll', function () {
                 rightsidebarcontentBox.value.scrollTop = rightsidebarscrollBox.value.scrollTop;
             });
+        };
 
-            // Đặt chiều cao cho .scroll-content bằng với chiều cao "scrollable" của .sidebar-menu
+        const setScrollContentHeight = () => {
             const sidebarMenu = document.querySelector('.sidebar-menu');
             const scrollContent = document.querySelector('.scroll-content');
             if (sidebarMenu && scrollContent) {
@@ -351,7 +387,7 @@ export default {
             if (rightsidebarContent && rightsidebarscrollContent) {
                 rightsidebarscrollContent.style.height = `${rightsidebarContent.scrollHeight}px`;
             }
-        });
+        };
 
         const fetchUnreadLikeNotifications = async () => {
             try {

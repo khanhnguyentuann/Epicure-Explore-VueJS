@@ -31,8 +31,8 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div @click="acceptRequest(request.user_id1)" class="btn btn-primary col-6">Chấp nhận</div>
-                        <div @click="declineRequest(request.user_id1)" class="btn btn-secondary col-5 ml-1">Xoá</div>
+                        <div @click="acceptRequest(request.user_id1)" class="btn btn-primary col-7 mr-1">Chấp nhận</div>
+                        <div @click="declineRequest(request.user_id1)" class="btn btn-secondary col-4">Xoá</div>
                     </div>
                 </div>
             </li>
