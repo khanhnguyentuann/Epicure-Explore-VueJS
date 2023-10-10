@@ -149,10 +149,15 @@
                 </div>
 
                 <div class="col-4">
-                    <button class="btn btn-hover">
+                    <button type="button" class="btn btn-hover" data-toggle="modal" data-target="#shareModal">
                         <i class="fas fa-share"></i> Chia sẻ
                     </button>
                 </div>
+            </div>
+
+            <div class="modal fade" id="shareModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <ShareModal @shareLinkCopy="shareLinkCopy" />
             </div>
 
         </div>
@@ -202,6 +207,7 @@
 </template>
 
 <script>
+import ShareModal from './ShareModal.vue';
 import axios from 'axios';
 import { ref, onMounted, nextTick } from 'vue';
 import moment from 'moment';
@@ -222,6 +228,9 @@ const ROUTES = {
 
 export default {
     name: 'NewsFeedPost',
+    components: {
+        ShareModal,
+    },
     setup() {
         const userStore = useUserStore();
         const router = useRouter();
@@ -238,6 +247,15 @@ export default {
         onMounted(async () => {
             await fetchInitialData();
             console.log("Loaded recipes:", recipes.value);
+            $(document).ready(function () {
+                $('#exampleModal').modal({
+                    show: false
+                });
+
+                $(".btn-primary").click(function () {
+                    $('#exampleModal').modal('show');
+                });
+            });
         });
 
         const fetchInitialData = async () => {
@@ -270,6 +288,10 @@ export default {
                 console.error('Lỗi khi tải công thức:', error);
             }
         };
+
+        const shareLinkCopy = () => {
+            $(".message").text("link copied");
+        }
 
         const formatTime = (time) => {
             moment.locale('vi');
@@ -407,7 +429,8 @@ export default {
             getMainIngredientsArray,
             getHashtags,
             goToUserProfile,
-            userStore
+            userStore,
+            shareLinkCopy
         };
     }
 };

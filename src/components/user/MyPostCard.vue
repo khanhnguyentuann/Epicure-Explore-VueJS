@@ -152,10 +152,15 @@
                 </div>
 
                 <div class="col-4">
-                    <button class="btn btn-hover">
+                    <button type="button" class="btn btn-hover" data-toggle="modal" data-target="#shareModal">
                         <i class="fas fa-share"></i> Chia sẻ
                     </button>
                 </div>
+            </div>
+
+            <div class="modal fade" id="shareModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <ShareModal @shareLinkCopy="shareLinkCopy" />
             </div>
 
         </div>
@@ -205,6 +210,7 @@
 </template>
 
 <script>
+import ShareModal from './ShareModal.vue';
 import { useUserStore } from '../../store/userStore';
 import { ref, onMounted, nextTick } from 'vue';
 import axios from 'axios';
@@ -223,6 +229,9 @@ const ROUTES = {
 
 export default {
     name: 'MyPostCard',
+    components: {
+        ShareModal,
+    },
     setup() {
         const userStore = useUserStore();
         const userRecipes = ref([]);
@@ -238,7 +247,20 @@ export default {
         onMounted(async () => {
             await loadUserRecipes(user, userRecipes);
             await loadFavoriteRecipes(user, userRecipes);
+            $(document).ready(function () {
+                $('#exampleModal').modal({
+                    show: false
+                });
+
+                $(".btn-primary").click(function () {
+                    $('#exampleModal').modal('show');
+                });
+            });
         });
+
+        const shareLinkCopy = () => {
+            $(".message").text("link copied");
+        }
 
         const loadUserRecipes = async ({ id: userId } = {}, userRecipes) => {
             try {
@@ -406,6 +428,7 @@ export default {
             difficultyToStars,
             saveRecipe,
             unsaveRecipe,
+            shareLinkCopy
         };
     }
 };

@@ -153,10 +153,15 @@
                 </div>
 
                 <div class="col-4">
-                    <button class="btn btn-hover">
+                    <button type="button" class="btn btn-hover" data-toggle="modal" data-target="#shareModal">
                         <i class="fas fa-share"></i> Chia sẻ
                     </button>
                 </div>
+            </div>
+
+            <div class="modal fade" id="shareModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <ShareModal @shareLinkCopy="shareLinkCopy" />
             </div>
 
         </div>
@@ -206,6 +211,7 @@
 </template>
 
 <script>
+import ShareModal from './ShareModal.vue';
 import axios from 'axios';
 import { ref, onMounted, watch, nextTick } from 'vue';
 import moment from 'moment';
@@ -223,6 +229,9 @@ const ROUTES = {
 
 export default {
     name: 'OthersPostCard',
+    components: {
+        ShareModal,
+    },
     props: {
         userRecipes: { type: Array, required: true },
         userId: { type: String, required: true },
@@ -371,6 +380,9 @@ export default {
                 : '';
         };
 
+        const shareLinkCopy = () => {
+            $(".message").text("link copied");
+        }
 
         watch(() => props.userRecipes, loadRecipesList);
 
@@ -379,10 +391,20 @@ export default {
             props.userRecipes.forEach(recipe => {
                 showSteps.value[recipe.id] = false;
             });
+            $(document).ready(function () {
+                $('#exampleModal').modal({
+                    show: false
+                });
+
+                $(".btn-primary").click(function () {
+                    $('#exampleModal').modal('show');
+                });
+            });
         });
 
         return {
             formatTime,
+            shareLinkCopy,
             getMainIngredientsArray,
             difficultyToStars,
             apiURL,
