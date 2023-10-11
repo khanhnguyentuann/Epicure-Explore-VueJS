@@ -135,4 +135,4 @@ export default {
 };
 </script>
 
-<style src="./AuthStyles.css" scoped></style>
+<style src="../assets/css/AuthStyles.css" scoped></style>
