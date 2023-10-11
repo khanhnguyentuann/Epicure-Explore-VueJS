@@ -168,6 +168,12 @@
                         <i class="bi bi-search mr-2"></i>
                         <div>Tìm kiếm Theo Tag</div>
                     </div>
+                    <!-- Tìm kiếm theo title -->
+                    <div @click="navigateTo('/titlesearch', 'TitleSearch')"
+                        :class="['sidebar-item', selectedTab === 'TitleSearch' ? 'selected' : '']">
+                        <i class="bi bi-search mr-2"></i>
+                        <div>Tìm kiếm Theo Title</div>
+                    </div>
                     <!-- Nhóm -->
                     <div @click="navigateTo('/', 'Groups')"
                         :class="['sidebar-item', selectedTab === 'Groups' ? 'selected' : '']">
@@ -185,30 +191,6 @@
                         :class="['sidebar-item', selectedTab === 'Events' ? 'selected' : '']">
                         <i class="bi bi-calendar-event-fill mr-2"></i>
                         <div>Sự kiện</div>
-                    </div>
-                    <!-- Trang -->
-                    <div @click="navigateTo('/', 'Pages')"
-                        :class="['sidebar-item', selectedTab === 'Pages' ? 'selected' : '']">
-                        <i class="bi bi-flag-fill mr-2"></i>
-                        <div>Trang</div>
-                    </div>
-                    <!-- Kỷ niệm -->
-                    <div @click="navigateTo('/', 'Memories')"
-                        :class="['sidebar-item', selectedTab === 'Memories' ? 'selected' : '']">
-                        <i class="bi bi-clock-history mr-2"></i>
-                        <div>Kỷ niệm</div>
-                    </div>
-                    <!-- Trang -->
-                    <div @click="navigateTo('/', 'Pages')"
-                        :class="['sidebar-item', selectedTab === 'Pages' ? 'selected' : '']">
-                        <i class="bi bi-flag-fill mr-2"></i>
-                        <div>Trang</div>
-                    </div>
-                    <!-- Kỷ niệm -->
-                    <div @click="navigateTo('/', 'Memories')"
-                        :class="['sidebar-item', selectedTab === 'Memories' ? 'selected' : '']">
-                        <i class="bi bi-clock-history mr-2"></i>
-                        <div>Kỷ niệm</div>
                     </div>
                     <!-- Trang -->
                     <div @click="navigateTo('/', 'Pages')"

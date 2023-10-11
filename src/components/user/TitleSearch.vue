@@ -1,19 +1,17 @@
-<!-- eslint-disable vue/first-attribute-linebreak -->
 <!-- eslint-disable vue/attributes-order -->
 <template>
     <div class="container mt-3">
-        <h3 class="display-4">Tìm kiếm theo hashtag:</h3>
-        <form @submit.prevent="searchByTag" class="mb-3">
+        <h3 class="display-4">Tìm kiếm theo Title:</h3>
+        <form @submit.prevent="searchByTitle" class="mb-3">
             <div class="inner-form">
-                <div class="input-field first-wrap">Hashtag</div>
+                <div class="input-field first-wrap">Title</div>
                 <div class="input-field second-wrap">
                     <div class="input-field second-wrap position-relative">
-                        <input id="search" type="text" placeholder="Enter Hashtag?" v-model="tag" />
-                        <span v-if="tag" class="clear-btn position-absolute" @click="clearSearch">
+                        <input id="search" type="text" placeholder="Enter Title?" v-model="title" />
+                        <span v-if="title" class="clear-btn position-absolute" @click="clearSearch">
                             <i class="fas fa-times"></i>
                         </span>
                     </div>
-
                 </div>
                 <div class="input-field third-wrap">
                     <button class="btn-search" type="submit">
@@ -22,19 +20,6 @@
                 </div>
             </div>
         </form>
-
-        <!-- Below the form -->
-        <div v-if="!searchAttempted">
-            <h3 class="display-5">Hashtag phổ biến:</h3>
-            <div class="d-flex flex-wrap">
-                <span class="badge badge-success m-1" style="cursor: pointer;" v-for="tagItem in allTags" :key="tagItem.id"
-                    @click="selectTag(tagItem.tag_name)">
-                    {{ tagItem.tag_name }}
-                </span>
-            </div>
-        </div>
-
-        <!-- Display the search results -->
         <div v-if="recipes.length > 0">
             <h2 class="display-6">Search Results:</h2>
             <ul class="list-group">
@@ -43,93 +28,66 @@
                 </li>
             </ul>
         </div>
-        <!-- Message when no results are found -->
+        <!-- Thêm thông báo khi không có kết quả -->
         <div v-else-if="searchAttempted" class="alert alert-warning mt-3" role="alert">
-            <p>No results found for the tag "{{ tag }}".</p>
+            <p>No results found for the title "{{ title }}"</p>
         </div>
     </div>
 </template>
 
 <script>
-import { ref, onMounted, watch } from 'vue';
+import { ref, watch } from 'vue';
 import axios from 'axios';
 
 const ROUTES = {
-    searchByTag: `search/searchByTag`,
-    getAllTags: `search/getAllTags`,
+    searchByTitle: `search/searchByTitle`,
 };
 
 export default {
-    name: 'TagSearch',
+    name: "TitleSearch",
     setup() {
-        const tag = ref('');
+        const title = ref('');
         const recipes = ref([]);
         const searchAttempted = ref(false);
-        const allTags = ref([]);
-        const selectedTags = ref([]);
 
         const apiURL = (relativePath) => {
             return window.baseURL + '/' + relativePath;
         };
 
-        const selectTag = (tagItem) => {
-            const index = selectedTags.value.indexOf(tagItem);
-            if (index === -1) {
-                selectedTags.value.push(tagItem);
-            } else {
-                selectedTags.value.splice(index, 1);
+        const searchByTitle = async () => {
+            searchAttempted.value = true;
+            try {
+                const response = await axios.get(apiURL(ROUTES.searchByTitle), {
+                    params: { title: title.value }
+                });
+                recipes.value = response.data.recipes;
+            } catch (error) {
+                console.error('An error occurred while fetching data: ', error);
             }
-            tag.value = selectedTags.value.join(', ');
         };
 
         const clearSearch = () => {
-            tag.value = '';
-            selectedTags.value = []; // Xoá các tag đã được chọn
+            title.value = '';
         };
 
-
-        onMounted(async () => {
-            try {
-                const { data } = await axios.get(apiURL(ROUTES.getAllTags));
-                allTags.value = data.tags;
-            } catch (error) {
-                console.error('An error occurred while fetching tags:', error);
-            }
-        });
-
-        // Thêm cảnh quan sát cho biến 'tag'
-        watch(tag, (newVal) => {
+        // Thêm cảnh quan sát cho biến 'title'
+        watch(title, (newVal) => {
             if (newVal === '') {
                 searchAttempted.value = false;
                 recipes.value = []; // Xoá các kết quả tìm kiếm
             }
         });
 
-        const searchByTag = async () => {
-            searchAttempted.value = true;
-            try {
-                const { data } = await axios.get(apiURL(ROUTES.searchByTag), {
-                    params: { tag: tag.value }
-                });
-                recipes.value = data.recipes;
-            } catch (error) {
-                console.error('An error occurred while fetching data:', error);
-            }
-        };
-
         return {
-            tag,
-            recipes,
-            selectedTags,
-            searchAttempted,
-            searchByTag,
             apiURL,
-            selectTag,
-            allTags,
-            clearSearch
+            searchByTitle,
+            searchAttempted,
+            clearSearch,
+            title,
+            recipes
         };
     }
-};
+}
 </script>
 
 <style scoped>

@@ -82,6 +82,11 @@ const routes = [
         name: 'TagSearch',
         component: () => import('../components/user/TagSearch.vue')
       },
+      {
+        path: 'titlesearch',
+        name: 'TitleSearch',
+        component: () => import('../components/user/TitleSearch.vue')
+      },
     ]
   },
   {
