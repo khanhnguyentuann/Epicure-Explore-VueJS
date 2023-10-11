@@ -57,6 +57,9 @@
 
                 <div :style="notificationStyle" class="notifications" id="box">
                     <h2>Thông báo</h2>
+                    <div type="button" class="btn btn-secondary" style="width:90%; margin-left: 5%;" @click="markAllAsRead">
+                        <i class="bi bi-check2-all"></i> Đánh dấu tất cả là đã đọc
+                    </div>
                     <div v-if="likeNotifications.length > 0">
                         <div v-for="notification in likeNotifications" :key="notification.id" class="notifications-item">
                             <img :src="apiURL(notification.last_sender_avatar)" alt="User Avatar">
@@ -68,7 +71,7 @@
                     </div>
                     <div v-else>
                         <div class="no-notifications">
-                            <p class="text-center">Bạn chưa có thông báo nào.</p>
+                            <p class="text-center">Không có thông báo nào chưa đọc.</p>
                         </div>
                     </div>
                 </div>
@@ -159,6 +162,12 @@
                         <i class="bi bi-newspaper mr-2"></i>
                         <div>Bảng Feed</div>
                     </div>
+                    <!-- Tìm kiếm theo tag -->
+                    <div @click="navigateTo('/tagsearch', 'TagSearch')"
+                        :class="['sidebar-item', selectedTab === 'TagSearch' ? 'selected' : '']">
+                        <i class="bi bi-search mr-2"></i>
+                        <div>Tìm kiếm Theo Tag</div>
+                    </div>
                     <!-- Nhóm -->
                     <div @click="navigateTo('/', 'Groups')"
                         :class="['sidebar-item', selectedTab === 'Groups' ? 'selected' : '']">
@@ -206,12 +215,6 @@
                         :class="['sidebar-item', selectedTab === 'Pages' ? 'selected' : '']">
                         <i class="bi bi-flag-fill mr-2"></i>
                         <div>Trang</div>
-                    </div>
-                    <!-- Kỷ niệm -->
-                    <div @click="navigateTo('/', 'Memories')"
-                        :class="['sidebar-item', selectedTab === 'Memories' ? 'selected' : '']">
-                        <i class="bi bi-clock-history mr-2"></i>
-                        <div>Kỷ niệm</div>
                     </div>
                     <footer class="footer mt-3">
                         <div class="container">
@@ -271,6 +274,7 @@ import 'moment/locale/vi';
 const ROUTES = {
     notificationcount: `notification/like-notifications-count`,
     notifications: `notification/unread-like-notifications`,
+    markallasread: `notification/mark-all-as-read`,
 };
 
 export default {
@@ -444,6 +448,18 @@ export default {
             }
         };
 
+        const markAllAsRead = async () => {
+            try {
+                await axios.post(apiURL(ROUTES.markallasread), {
+                    userId: userStore.user.id
+                });
+                likeNotificationCount.value = 0;
+                likeNotifications.value = [];
+            } catch (error) {
+                console.error("Có lỗi khi đánh dấu tất cả thông báo là đã đọc:", error);
+            }
+        };
+
         const notificationStyle = computed(() => {
             if (isNotificationVisible.value) {
                 return {
@@ -493,7 +509,8 @@ export default {
             pagecontentBox,
             pagescrollBox,
             rightsidebarcontentBox,
-            rightsidebarscrollBox
+            rightsidebarscrollBox,
+            markAllAsRead
         };
     }
 }
@@ -652,6 +669,7 @@ i.bi.bi-play-circle-fill.mr-2,
 i.bi.bi-calendar-event-fill.mr-2,
 i.bi.bi-flag-fill.mr-2,
 i.bi.bi-clock-history.mr-2,
+i.bi.bi-search.mr-2,
 i.bi.bi-bookmarks-fill.mr-2 {
     font-size: 30px;
     width: 30px;
@@ -670,6 +688,7 @@ i.bi.bi-play-circle-fill.mr-2::before,
 i.bi.bi-calendar-event-fill.mr-2::before,
 i.bi.bi-flag-fill.mr-2::before,
 i.bi.bi-clock-history.mr-2::before,
+i.bi.bi-search.mr-2::before,
 i.bi.bi-bookmarks-fill.mr-2::before {
     vertical-align: top;
 }
