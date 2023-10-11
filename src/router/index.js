@@ -87,6 +87,11 @@ const routes = [
         name: 'TitleSearch',
         component: () => import('../components/user/TitleSearch.vue')
       },
+      {
+        path: 'advancedsearch',
+        name: 'AdvancedSearch',
+        component: () => import('../components/user/AdvancedSearch.vue')
+      },
     ]
   },
   {
