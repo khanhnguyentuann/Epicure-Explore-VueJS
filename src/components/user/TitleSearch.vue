@@ -36,8 +36,9 @@
 </template>
 
 <script>
-import { ref, watch } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import axios from 'axios';
+import { useRouter } from 'vue-router';
 
 const ROUTES = {
     searchByTitle: `search/searchByTitle`,
@@ -49,20 +50,32 @@ export default {
         const title = ref('');
         const recipes = ref([]);
         const searchAttempted = ref(false);
+        const route = useRouter();
 
         const apiURL = (relativePath) => {
             return window.baseURL + '/' + relativePath;
         };
 
+        onMounted(() => {
+            const titleFromQuery = route.currentRoute.value.query.title;
+            console.log("Title from onMounted:", titleFromQuery);
+            if (titleFromQuery) {
+                title.value = titleFromQuery;
+                searchByTitle();
+            }
+        });
+
         const searchByTitle = async () => {
+            console.log("Searching by title:", title.value);
             searchAttempted.value = true;
             try {
                 const response = await axios.get(apiURL(ROUTES.searchByTitle), {
                     params: { title: title.value }
                 });
                 recipes.value = response.data.recipes;
+                console.log("Received recipes:", recipes.value);
             } catch (error) {
-                console.error('An error occurred while fetching data: ', error);
+                console.error('Error while fetching data:', error);
             }
         };
 
@@ -70,7 +83,6 @@ export default {
             title.value = '';
         };
 
-        // Thêm cảnh quan sát cho biến 'title'
         watch(title, (newVal) => {
             if (newVal === '') {
                 searchAttempted.value = false;

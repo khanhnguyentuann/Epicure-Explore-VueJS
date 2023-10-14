@@ -8,8 +8,11 @@
                 <a class="ml-2 mr-3" href="#">
                     <img src="@/assets/logos/main_logo.png" alt="Logo" width="50" height="40">
                 </a>
-                <div class="d-flex align-items-center justify-content-center">
-                    <strong>Epicure Explore</strong>
+                <div class="form">
+                    <i class="fa fa-search"></i>
+                    <input type="text" class="form-control form-input" placeholder="Search title..."
+                        @keyup.enter="redirectToTitleSearch('TitleSearch')" v-model="searchTitle">
+                    <span class="left-pan"><i class="fa fa-microphone"></i></span>
                 </div>
             </div>
             <div class="navbar-center">
@@ -248,6 +251,8 @@ export default {
         const likeNotifications = ref([]);
         const contentBox = ref(null);
         const scrollBox = ref(null);
+        const searchTitle = ref('');
+
 
         const pagecontentBox = ref(null);
         const pagescrollBox = ref(null);
@@ -437,6 +442,17 @@ export default {
             router.push('/login');
         };
 
+        const redirectToTitleSearch = (tabName) => {
+            console.log("Redirecting with title:", searchTitle.value);
+            router.push({
+                name: 'TitleSearch',
+                query: { title: searchTitle.value }
+            });
+            selectedTab.value = tabName;
+            isNotificationVisible.value = false;
+        };
+
+
         const userName = computed(() => {
             return userStore.user?.name || '';
         });
@@ -466,7 +482,9 @@ export default {
             pagescrollBox,
             rightsidebarcontentBox,
             rightsidebarscrollBox,
-            markAllAsRead
+            markAllAsRead,
+            searchTitle,
+            redirectToTitleSearch
         };
     }
 }
@@ -705,5 +723,52 @@ i.bi.bi-bookmarks-fill.mr-2::before {
 .notifications-item .text p {
     color: #aaa;
     font-size: 12px
+}
+
+/* search */
+.form {
+    width: 265px;
+    position: relative;
+}
+
+.form .fa-search {
+
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    color: #9ca3af;
+
+}
+
+.form span {
+
+    position: absolute;
+    right: 17px;
+    top: 13px;
+    padding: 2px;
+    border-left: 1px solid #d1d5db;
+
+}
+
+.left-pan {
+    padding-left: 7px;
+}
+
+.left-pan i {
+
+    padding-left: 10px;
+}
+
+.form-input {
+
+    height: 55px;
+    text-indent: 33px;
+    border-radius: 10px;
+}
+
+.form-input:focus {
+
+    box-shadow: none;
+    border: none;
 }
 </style>
