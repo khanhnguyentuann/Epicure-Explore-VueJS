@@ -180,25 +180,7 @@
                         <i class="bi bi-search mr-2"></i>
                         <div>Tìm kiếm nâng cao</div>
                     </div>
-                    <!-- Nhóm -->
-                    <div @click="navigateTo('/', 'Groups')"
-                        :class="['sidebar-item', selectedTab === 'Groups' ? 'selected' : '']">
-                        <i class="bi bi-people-fill mr-2"></i>
-                        <div>Nhóm</div>
-                    </div>
-                    <!-- Videos -->
-                    <div @click="navigateTo('/', 'Videos')"
-                        :class="['sidebar-item', selectedTab === 'Videos' ? 'selected' : '']">
-                        <i class="bi bi-play-circle-fill mr-2"></i>
-                        <div>Video</div>
-                    </div>
-                    <!-- Sự kiện -->
-                    <div @click="navigateTo('/', 'Events')"
-                        :class="['sidebar-item', selectedTab === 'Events' ? 'selected' : '']">
-                        <i class="bi bi-calendar-event-fill mr-2"></i>
-                        <div>Sự kiện</div>
-                    </div>
-                    <footer class="footer mt-3">
+                    <footer class="footer mt-2">
                         <div class="container">
                             <p class="mb-0">Quyền riêng tư . Điều khoản . Quảng cáo . Lựa chọn quảng cáo . Cookie . Xem
                                 thêm.
@@ -222,14 +204,6 @@
 
             <div class="app-layout-right-sidebar col-3">
                 <div class="rightsidebar-content" ref="rightsidebarcontentBox">
-                    <FriendRequestCard />
-                    <hr class="my-4 hr-thick">
-                    <FriendRequestCard />
-                    <hr class="my-4 hr-thick">
-                    <FriendRequestCard />
-                    <hr class="my-4 hr-thick">
-                    <FriendRequestCard />
-                    <hr class="my-4 hr-thick">
                     <FriendRequestCard />
                     <hr class="my-4 hr-thick">
                 </div>
