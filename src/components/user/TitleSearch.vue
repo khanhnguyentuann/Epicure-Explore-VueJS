@@ -50,15 +50,14 @@ export default {
         const title = ref('');
         const recipes = ref([]);
         const searchAttempted = ref(false);
-        const route = useRouter();
+        const router = useRouter();
 
         const apiURL = (relativePath) => {
             return window.baseURL + '/' + relativePath;
         };
 
         onMounted(() => {
-            const titleFromQuery = route.currentRoute.value.query.title;
-            console.log("Title from onMounted:", titleFromQuery);
+            const titleFromQuery = router.currentRoute.value.query.title;
             if (titleFromQuery) {
                 title.value = titleFromQuery;
                 searchByTitle();
@@ -66,14 +65,14 @@ export default {
         });
 
         const searchByTitle = async () => {
-            console.log("Searching by title:", title.value);
             searchAttempted.value = true;
             try {
                 const response = await axios.get(apiURL(ROUTES.searchByTitle), {
                     params: { title: title.value }
                 });
                 recipes.value = response.data.recipes;
-                console.log("Received recipes:", recipes.value);
+                // Cập nhật URL sau khi tìm kiếm
+                router.push({ path: '/titlesearch', query: { title: title.value } });
             } catch (error) {
                 console.error('Error while fetching data:', error);
             }

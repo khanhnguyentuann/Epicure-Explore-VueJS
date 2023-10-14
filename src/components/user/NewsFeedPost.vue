@@ -246,7 +246,6 @@ export default {
 
         onMounted(async () => {
             await fetchInitialData();
-            console.log("Loaded recipes:", recipes.value);
             $(document).ready(function () {
                 $('#exampleModal').modal({
                     show: false

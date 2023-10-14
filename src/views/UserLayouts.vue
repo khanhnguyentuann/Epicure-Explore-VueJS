@@ -443,11 +443,7 @@ export default {
         };
 
         const redirectToTitleSearch = (tabName) => {
-            console.log("Redirecting with title:", searchTitle.value);
-            router.push({
-                name: 'TitleSearch',
-                query: { title: searchTitle.value }
-            });
+            router.push({ name: 'TitleSearch', query: { title: searchTitle.value } });
             selectedTab.value = tabName;
             isNotificationVisible.value = false;
         };

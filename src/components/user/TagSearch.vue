@@ -53,6 +53,7 @@
 <script>
 import { ref, onMounted, watch } from 'vue';
 import axios from 'axios';
+import { useRouter } from 'vue-router';
 
 const ROUTES = {
     searchByTag: `search/searchByTag`,
@@ -67,6 +68,7 @@ export default {
         const searchAttempted = ref(false);
         const allTags = ref([]);
         const selectedTags = ref([]);
+        const router = useRouter();
 
         const apiURL = (relativePath) => {
             return window.baseURL + '/' + relativePath;
@@ -112,6 +114,7 @@ export default {
                     params: { tag: tag.value }
                 });
                 recipes.value = data.recipes;
+                router.push({ path: '/tagsearch', query: { tag: tag.value } });
             } catch (error) {
                 console.error('An error occurred while fetching data:', error);
             }
