@@ -3,14 +3,14 @@
 <template>
     <div class="container mt-3">
         <div class="text-center mb-4">
-            <h2>Tất cả bạn bè</h2>
+            <h2>All Friends</h2>
             <!-- Search form -->
             <div class="form-group d-flex justify-content-center mt-3">
                 <div class="input-group w-50">
                     <div class="input-group-prepend">
                         <span class="input-group-text"><i class="fas fa-search"></i></span>
                     </div>
-                    <input type="text" class="click form-control" placeholder="Search" aria-label="Search"
+                    <input type="text" class="click form-control" placeholder="Type your friend's name" aria-label="Search"
                         v-model="searchTerm">
                     <div class="input-group-append" v-if="searchTerm">
                         <span class="click input-group-text cursor-pointer" @click="clearSearch"><i
@@ -21,18 +21,18 @@
         </div>
 
         <ul class="list-group mt-3">
-            <p class="text-muted">{{ filteredFriends.length }} người bạn</p>
+            <p class="text-muted">{{ filteredFriends.length }} friends</p>
 
             <li v-for="friend in filteredFriends" :key="friend.id"
                 class="list-group-item d-flex align-items-center shadow-sm rounded" @click="goToUserProfile(friend.id)">
-                <img :src="'http://localhost:3000/' + friend.avatar" alt="Friend Avatar" class="rounded-circle mr-3"
+                <img :src="'http://localhost:3000/' + friend.avatar" alt="Friend's Avatar" class="rounded-circle mr-3"
                     width="50" height="50">
                 <span class="ml-3 font-weight-bold">{{ friend.name }}</span>
             </li>
         </ul>
 
         <div v-if="filteredFriends.length === 0" class="text-muted text-center mt-3">
-            Không tìm thấy kết quả
+            No results found
         </div>
     </div>
 </template>

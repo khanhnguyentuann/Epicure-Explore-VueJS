@@ -138,7 +138,7 @@
 
             <div class="app-layout-sidebar col-3">
                 <div class="sidebar-menu" ref="contentBox">
-                    <!-- Trang cá nhân -->
+                    <!-- User Profile -->
                     <div @click="navigateTo('/myprofile', 'MyProfile')"
                         :class="['sidebar-item', selectedTab === 'MyProfile' ? 'selected' : '']">
                         <img :src="apiURL(userStore.user?.avatar)" alt="User Avatar" width="40" height="40"
@@ -146,47 +146,51 @@
                         <div>{{ userName }}</div>
                     </div>
 
-                    <!-- Bạn bè -->
+                    <!-- Friends -->
                     <div @click="navigateTo('/friends', 'Friends')"
                         :class="['sidebar-item', selectedTab === 'Friends' ? 'selected' : '']">
                         <i class="bi bi-person-check-fill mr-2"></i>
-                        <div>Bạn bè</div>
+                        <div>Friends</div>
                     </div>
 
-                    <!-- Yêu thích -->
+                    <!-- Favorites -->
                     <div @click="navigateTo('/favorites', 'Favorites')"
                         :class="['sidebar-item', selectedTab === 'Favorites' ? 'selected' : '']">
                         <i class="bi bi-bookmarks-fill mr-2"></i>
-                        <div>Yêu thích</div>
+                        <div>Favorites</div>
                     </div>
-                    <!-- Bảng Feed -->
+
+                    <!-- News Feed -->
                     <div @click="navigateTo('/', 'NewsFeed')"
                         :class="['sidebar-item', selectedTab === 'NewsFeed' ? 'selected' : '']">
                         <i class="bi bi-newspaper mr-2"></i>
-                        <div>Bảng Feed</div>
+                        <div>News Feed</div>
                     </div>
-                    <!-- Tìm kiếm theo tag -->
+
+                    <!-- Search by hashtag -->
                     <div @click="navigateTo('/tagsearch', 'TagSearch')"
                         :class="['sidebar-item', selectedTab === 'TagSearch' ? 'selected' : '']">
                         <i class="bi bi-search mr-2"></i>
-                        <div>Tìm kiếm theo hashtag</div>
+                        <div>Search by hashtag</div>
                     </div>
-                    <!-- Tìm kiếm theo title -->
+
+                    <!-- Search by title -->
                     <div @click="navigateTo('/titlesearch', 'TitleSearch')"
                         :class="['sidebar-item', selectedTab === 'TitleSearch' ? 'selected' : '']">
                         <i class="bi bi-search mr-2"></i>
-                        <div>Tìm kiếm theo tittle</div>
+                        <div>Search by title</div>
                     </div>
-                    <!-- Tìm kiếm nâng cao -->
+
+                    <!-- Advanced search -->
                     <div @click="navigateTo('/advancedsearch', 'AdvancedSearch')"
                         :class="['sidebar-item', selectedTab === 'AdvancedSearch' ? 'selected' : '']">
                         <i class="bi bi-search mr-2"></i>
-                        <div>Tìm kiếm nâng cao</div>
+                        <div>Advanced search</div>
                     </div>
+
                     <footer class="footer mt-2">
                         <div class="container">
-                            <p class="mb-0">Quyền riêng tư . Điều khoản . Quảng cáo . Lựa chọn quảng cáo . Cookie . Xem
-                                thêm.
+                            <p class="mb-0">Privacy . Terms . Ads . Ad Choices . Cookies . More.
                             </p>
                         </div>
                     </footer>
@@ -252,7 +256,6 @@ export default {
         const contentBox = ref(null);
         const scrollBox = ref(null);
         const searchTitle = ref('');
-
 
         const pagecontentBox = ref(null);
         const pagescrollBox = ref(null);
@@ -480,7 +483,7 @@ export default {
             rightsidebarscrollBox,
             markAllAsRead,
             searchTitle,
-            redirectToTitleSearch
+            redirectToTitleSearch,
         };
     }
 }

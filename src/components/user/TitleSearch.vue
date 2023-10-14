@@ -1,13 +1,12 @@
 <!-- eslint-disable vue/attributes-order -->
 <template>
     <div class="container mt-3">
-        <h3 class="display-4">Tìm kiếm theo Title:</h3>
         <form @submit.prevent="searchByTitle" class="mb-3">
             <div class="inner-form">
                 <div class="input-field first-wrap">Title</div>
                 <div class="input-field second-wrap">
                     <div class="input-field second-wrap position-relative">
-                        <input id="search" type="text" placeholder="Enter Title?" v-model="title" />
+                        <input id="search" type="text" placeholder="Enter the title?" v-model="title" />
                         <span v-if="title" class="clear-btn position-absolute" @click="clearSearch">
                             <i class="fas fa-times"></i>
                         </span>
@@ -20,17 +19,21 @@
                 </div>
             </div>
         </form>
+        <!-- Thông báo kết quả tìm kiếm cho tiêu đề cụ thể -->
+        <div v-if="searchAttempted" class="mt-3">
+            <p>Search results for the title: "{{ title }}"</p>
+        </div>
+
         <div v-if="recipes.length > 0">
-            <h2 class="display-6">Search Results:</h2>
             <ul class="list-group">
                 <li class="list-group-item" v-for="recipe in recipes" :key="recipe.id">
                     {{ recipe.name }}
                 </li>
             </ul>
         </div>
-        <!-- Thêm thông báo khi không có kết quả -->
+        <!-- Thông báo khi không có kết quả -->
         <div v-else-if="searchAttempted" class="alert alert-warning mt-3" role="alert">
-            <p>No results found for the title "{{ title }}"</p>
+            No results found.
         </div>
     </div>
 </template>

@@ -2,18 +2,16 @@
 <!-- eslint-disable vue/attributes-order -->
 <template>
     <div class="container mt-3">
-        <h3 class="display-4">Tìm kiếm theo hashtag:</h3>
         <form @submit.prevent="searchByTag" class="mb-3">
             <div class="inner-form">
                 <div class="input-field first-wrap">Hashtag</div>
                 <div class="input-field second-wrap">
                     <div class="input-field second-wrap position-relative">
-                        <input id="search" type="text" placeholder="Enter Hashtag?" v-model="tag" />
+                        <input id="search" type="text" placeholder="Enter the hashtag?" v-model="tag" />
                         <span v-if="tag" class="clear-btn position-absolute" @click="clearSearch">
                             <i class="fas fa-times"></i>
                         </span>
                     </div>
-
                 </div>
                 <div class="input-field third-wrap">
                     <button class="btn-search" type="submit">
@@ -23,9 +21,14 @@
             </div>
         </form>
 
-        <!-- Below the form -->
+        <!-- Display message for the search criteria -->
+        <div v-if="searchAttempted" class="mt-3">
+            <p>Search results for the hashtag: "{{ tag }}"</p>
+        </div>
+
+        <!-- Display popular hashtags when no search is made -->
         <div v-if="!searchAttempted">
-            <h3 class="display-5">Hashtag phổ biến:</h3>
+            <h3 class="display-5">Popular Hashtags:</h3>
             <div class="d-flex flex-wrap">
                 <span class="badge badge-success m-1" style="cursor: pointer;" v-for="tagItem in allTags" :key="tagItem.id"
                     @click="selectTag(tagItem.tag_name)">
@@ -36,16 +39,16 @@
 
         <!-- Display the search results -->
         <div v-if="recipes.length > 0">
-            <h2 class="display-6">Search Results:</h2>
             <ul class="list-group">
                 <li class="list-group-item" v-for="recipe in recipes" :key="recipe.id">
                     {{ recipe.name }}
                 </li>
             </ul>
         </div>
+
         <!-- Message when no results are found -->
         <div v-else-if="searchAttempted" class="alert alert-warning mt-3" role="alert">
-            <p>No results found for the tag "{{ tag }}".</p>
+            No results found.
         </div>
     </div>
 </template>
