@@ -5,7 +5,7 @@
         <h2 class="text-center mb-4"
             style="color: #2d3748; font-weight: 700; letter-spacing: -0.5px; text-shadow: 2px 2px 5px rgba(0,0,0,0.1);">
             <i class="fas fa-star text-warning mr-2"></i>
-            Danh sách công thức đã lưu
+            Saved Recipes List
         </h2>
 
         <div v-if="savedRecipes.length" class="row row-cols-1 row-cols-md-2 g-4">
@@ -25,8 +25,8 @@
                         <div class="card-body">
                             <h5 class="card-title">{{ recipe.name }}</h5>
                             <div class="row">
-                                <p class="card-text col-6">Thời gian nấu: {{ recipe.preparationTime }} phút</p>
-                                <p class="card-text col-6">Dành cho: {{ recipe.servingFor }} người</p>
+                                <p class="card-text col-6">Cooking Time: {{ recipe.preparationTime }} minutes</p>
+                                <p class="card-text col-6">Serves: {{ recipe.servingFor }} people</p>
                             </div>
                         </div>
                     </router-link>
@@ -34,24 +34,24 @@
             </div>
         </div>
         <div v-else class="text-center mt-3">
-            <span>Danh sách ưa thích trống!</span>
+            <span>Favorites list is empty!</span>
         </div>
     </div>
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Xác nhận</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    Bạn chắc chắn muốn xóa công thức này khỏi danh sách ưa thích?
+                    Are you sure you want to remove this recipe from the favorites list?
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
-                    <button type="button" class="btn btn-danger" @click="confirmDelete(recipeId)">Xóa</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" @click="confirmDelete(recipeId)">Delete</button>
                 </div>
             </div>
         </div>
