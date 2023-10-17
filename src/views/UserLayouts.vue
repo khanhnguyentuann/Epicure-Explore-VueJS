@@ -190,7 +190,7 @@
 
                     <footer class="footer mt-2">
                         <div class="container">
-                            <p class="mb-0">Privacy . Terms . Ads . Ad Choices . Cookies . More.
+                            <p class="mb-0 text-muted small">Privacy . Terms . Ads . Ad Choices . Cookies . More.
                             </p>
                         </div>
                     </footer>

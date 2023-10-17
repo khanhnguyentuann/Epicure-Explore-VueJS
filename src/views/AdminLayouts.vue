@@ -14,7 +14,7 @@
           <strong>Admin Dashboard</strong>
         </div>
       </div>
-      <div class="navbar-center">Center</div>
+      <div class="navbar-center"></div>
       <div class="navbar-right">
         <div class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="dropdownUser1" role="button" data-toggle="dropdown"
@@ -66,7 +66,7 @@
             <i class="icon fas fa-leaf"></i>
             <div>Ingredients</div>
           </div>
-          <div @click="navigateTo('/admin/recipes', 'Recipes')"
+          <div @click="navigateTo('/admin/recipes-list', 'Recipes')"
             :class="['sidebar-item', selectedTab === 'Recipes' ? 'selected' : '']">
             <i class="icon fas fa-utensils"></i>
             <div>Recipes</div>

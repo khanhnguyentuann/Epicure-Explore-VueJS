@@ -154,9 +154,15 @@ const routes = [
         component: () => import('../components/admin/notifications/Notifications.vue')
       },
       {
-        path: 'recipes',
-        name: 'RecipeList',
-        component: () => import('../components/admin/recipes/Recipes.vue')
+        path: 'recipes-list',
+        name: 'RecipesList',
+        component: () => import('../components/admin/recipes/RecipesList.vue')
+      },
+      {
+        path: 'recipes-list/:id',
+        name: 'RecipesDetail',
+        component: () => import('../components/admin/recipes/RecipesDetail.vue'),
+        props: true
       }
     ]
   }
