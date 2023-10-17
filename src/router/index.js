@@ -99,6 +99,11 @@ const routes = [
     component: () => import('../views/AdminLayouts.vue'),
     children: [
       {
+        path: '',
+        name: 'Dashboard',
+        component: () => import('../components/admin/dashboard/Dashboard.vue')
+      },
+      {
         path: 'user-list',
         name: 'UserList',
         component: () => import('../components/admin/users/UserList.vue')

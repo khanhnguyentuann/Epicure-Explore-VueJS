@@ -9,13 +9,13 @@
 
     <div v-if="displayedTags.length">
       <table class="table">
-        <thead>
+        <thead class="thead-dark">
           <tr>
-            <th>Name</th>
-            <th>Actions</th>
+            <th scope="col">Name</th>
+            <th scope="col">Actions</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody style="color: #fff;">
           <tr v-for="tag in displayedTags" :key="tag.id">
             <td>{{ tag.tag_name }}</td>
             <td>

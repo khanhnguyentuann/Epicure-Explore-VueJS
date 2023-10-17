@@ -1,21 +1,21 @@
 <!-- eslint-disable vue/attributes-order -->
 <!-- eslint-disable vue/max-attributes-per-line -->
 <template>
-  <div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+  <div class="container mt-3">
+    <div class="d-flex justify-content-between align-items-center mb-3">
       <h3>List of Ingredients</h3>
       <button class="btn btn-primary" @click="addIngredient">Add Ingredient</button>
     </div>
 
     <div v-if="displayedIngredients.length">
       <table class="table">
-        <thead>
+        <thead class="thead-dark">
           <tr>
-            <th>Name</th>
-            <th>Actions</th>
+            <th scope="col">Name</th>
+            <th scope="col">Actions</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody style="color: #fff;">
           <tr v-for="ingredient in displayedIngredients" :key="ingredient.id">
             <td>{{ ingredient.name }}</td>
             <td>

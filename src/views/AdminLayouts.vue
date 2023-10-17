@@ -21,7 +21,8 @@
             aria-haspopup="true" aria-expanded="false">
             <img :src="apiURL(userStore.user?.avatar)" alt="User Avatar" width="32" height="32" class="rounded-circle">
           </a>
-          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownUser1">
+          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownUser1"
+            style="background-color: #333;color: #fff;">
             <li class="hover-li" @click="goTo('/profile')">
               <a type="button" class="dropdown-item">
                 <img :src="apiURL(userStore.user?.avatar)" alt="User Avatar" width="25" height="25"
@@ -33,7 +34,7 @@
               <hr class="dropdown-divider">
             </li>
             <li>
-              <a class="dropdown-item" href="#" @click.prevent="logout">
+              <a class="dropdown-item" style="color: #fff;" href="#" @click.prevent="logout">
                 <i class="fas fa-sign-out-alt mr-3"></i> Đăng xuất
               </a>
             </li>
@@ -43,9 +44,26 @@
     </header>
     <!-- Body -->
     <div class="app-layout-content">
-
       <div class="app-layout-sidebar">
-        <div class="sidebar-menu">
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+          <div class="image">
+            <img :src="apiURL(userStore.user?.avatar)" class="img-circle elevation-2" alt="User Image">
+          </div>
+          <div class="info">
+            <a href="#" class="d-block" style="color: #c2c7d0;">{{ userName }}</a>
+          </div>
+        </div>
+        <div class="form-inline">
+          <div class="input-group" data-widget="sidebar-search">
+            <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
+            <div class="input-group-append">
+              <button class="btn btn-sidebar">
+                <i class="fas fa-search fa-fw"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="sidebar-menu mt-3">
           <div @click="navigateTo('/admin', 'Dashboard')"
             :class="['sidebar-item', selectedTab === 'Dashboard' ? 'selected' : '']">
             <i class="icon fas fa-tachometer-alt"></i>
@@ -140,8 +158,8 @@ export default {
 .app-layout-navbar {
   height: 73px;
   padding: 0.1rem 1rem;
-  background-color: rgb(255, 255, 255);
-  color: rgb(38, 40, 36);
+  background-color: #343a40;
+  color: #fff;
   fill: rgb(38, 40, 36);
   box-shadow: 0 .25rem .5rem 0 rgba(0, 0, 0, 0.12);
   z-index: 2;
@@ -170,8 +188,8 @@ export default {
 }
 
 .sidebar-menu {
+  font-family: "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   width: 16rem;
-  padding: 2rem 0;
 }
 
 .app-layout-content {
@@ -181,9 +199,11 @@ export default {
 }
 
 .app-layout-sidebar {
+  color: #c2c7d0;
   position: relative;
   height: 100%;
-  background-color: rgb(236, 240, 241);
+  background-color: #343a40;
+  padding: 0px 8px;
 }
 
 .sidebar-item {
@@ -192,16 +212,17 @@ export default {
   display: flex;
   padding: 15px;
   min-height: 58px;
+  border-radius: .25rem;
   transition: all 0.2s ease-in;
 }
 
 .sidebar-item:hover {
-  background-color: #b3d4fc;
+  background-color: rgba(255, 255, 255, .1);
 }
 
 .sidebar-item.selected {
-  background-color: #154EC1;
-  color: #fff;
+  background-color: #fff;
+  color: #212529;
 }
 
 .icon {
@@ -216,10 +237,42 @@ export default {
 .app-layout-page {
   flex-grow: 2;
   overflow-y: scroll;
-  background-color: #f6f6f6;
+  background-color: #454d55;
+  color: #fff;
 }
 
 .nav-link.dropdown-toggle::after {
   display: none;
+}
+
+.user-panel {
+  border-bottom: 1px solid #4f5962;
+  position: relative;
+}
+
+.user-panel,
+.info {
+  overflow: hidden;
+  white-space: nowrap;
+  transition: margin-left .3s linear, opacity .3s ease, visibility .3s ease;
+  display: inline-block;
+  padding: 5px 5px 5px 10px;
+}
+
+.img-circle {
+  border-radius: 50%;
+  height: auto;
+  width: 2.1rem;
+}
+
+.elevation-2 {
+  box-shadow: 0 3px 6px rgba(0, 0, 0, .16), 0 3px 6px rgba(0, 0, 0, .23) !important;
+}
+
+.btn-sidebar,
+.form-control-sidebar {
+  background-color: #3f474e;
+  border: 1px solid #56606a;
+  color: #fff;
 }
 </style>

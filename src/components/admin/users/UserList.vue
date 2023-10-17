@@ -4,24 +4,24 @@
 <!-- eslint-disable vue/html-closing-bracket-newline -->
 <!-- eslint-disable vue/max-attributes-per-line -->
 <template>
-  <div class="container mt-4">
+  <div class="container mt-3">
     <div class="d-flex justify-content-between align-items-center">
       <h3>List of Users</h3>
       <button class="btn btn-primary" @click="goToAddUser">Add User</button>
     </div>
 
-    <table class="table mt-4">
-      <thead>
+    <table class="table mt-3">
+      <thead class="thead-dark">
         <tr>
-          <th>Avatar</th>
-          <th>Username</th>
-          <th>Email</th>
-          <th>Role</th>
-          <th>Join Date</th>
-          <th>Actions</th>
+          <th scope="col">Avatar</th>
+          <th scope="col">Username</th>
+          <th scope="col">Email</th>
+          <th scope="col">Role</th>
+          <th scope="col">Join Date</th>
+          <th scope="col">Actions</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody style="color: #fff;">
         <tr v-for="user in displayedUsers" :key="user.id">
           <td>
             <img :src="'http://localhost:3000/' + user.avatar" alt="User Avatar" class="rounded-circle"

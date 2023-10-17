@@ -18,7 +18,7 @@
           <th scope="col">Thao tác</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody style="color: #fff;">
         <tr v-for="(recipe, index) in recipes" :key="recipe.id" class="hover-effect">
           <th scope="row">{{ (currentPage - 1) * 5 + index + 1 }}</th>
           <td>{{ recipe.id }}</td>
@@ -31,7 +31,7 @@
       </tbody>
     </table>
 
-    <nav aria-label="Page navigation example">
+    <nav aria-label="Page navigation example" style="color: #333;">
       <ul class="pagination justify-content-center">
         <li :class="{ 'page-item': true, disabled: currentPage === 1 }">
           <a class="page-link" @click="if (currentPage > 1) { currentPage--; fetchRecipes(); }">Previous</a>
