@@ -1,7 +1,8 @@
 <!-- eslint-disable vue/attributes-order -->
 <!-- eslint-disable vue/first-attribute-linebreak -->
 <template>
-    <div v-for="recipe in recipes" :key="recipe.id" class="recipe-card card mb-4 p-3">
+    <div v-for="recipe in recipes" :key="recipe.id" class="recipe-card card mb-4 p-3"
+        style="background-color: rgba(255, 255, 255, 0.12);">
         <!-- Post Header -->
         <div class="d-flex align-items-center mb-1">
             <img :src="apiURL(recipe.user.avatar)" alt="User Avatar" class="click user-avatar"
@@ -12,10 +13,11 @@
 
             <span class="ml-2 text-muted">{{ formatTime(recipe.created_at) }}</span>
             <div class="ml-auto dropdown">
-                <button class="btn btn-light btn-sm" type="button" data-toggle="dropdown">
+                <div class="btn btn-sm" data-toggle="dropdown"
+                    style="background-color: rgba(255, 255, 255, 0.12); color: #fff;">
                     ...
-                </button>
-                <div class=" click dropdown-menu dropdown-menu-right">
+                </div>
+                <div class=" click dropdown-menu dropdown-menu-right" aria-labelledby="Action">
                     <a class="dropdown-item" v-if="!recipe.isSaved" @click="saveRecipe(recipe.id)">Lưu bài viết</a>
                     <a class="dropdown-item" v-else @click="unsaveRecipe(recipe.id)">Hủy lưu bài viết</a>
                     <a class="dropdown-item" v-if="userStore.user && recipe.user_id === userStore.user.id"
@@ -99,7 +101,8 @@
 
                 <div v-if="showSteps[recipe.id]">
                     <ul class="list-group list-group-flush">
-                        <li v-for="(step, index) in recipe.steps" :key="index" class="list-group-item">
+                        <li v-for="(step, index) in recipe.steps" :key="index" class="list-group-item"
+                            style="background-color: rgba(255, 255, 255, 0.12); color: #fff;">
                             <strong>Bước {{ index + 1 }}:</strong> {{ step }}
                         </li>
                     </ul>
@@ -120,38 +123,34 @@
 
         <!-- Post Footer -->
         <div class="card-footer mt-3">
-
             <div class="row">
-                <div class="col-6">
-                    <i class="btn" :class="{ 'btn-primary': recipe.isLiked, '': !recipe.isLiked }">
-                        <i class="fas fa-thumbs-up"></i>
-                        {{ recipe.likesCount }} Thích
-                    </i>
+                <div v-if="recipe.likesCount >= 1" class="col-6" style="color: #fff;">
+                    <i class="fas fa-thumbs-up"></i>
+                    {{ recipe.likesCount }}
+                </div>
+
+                <div v-else class="col-6" style="color: #fff;">
+                    Be the first to like this post!
                 </div>
 
                 <div class="col-6 text-right">
-                    <i class="far fa-comment"></i>
                     {{ recipe.commentsCount }} Bình luận
                 </div>
             </div>
 
             <div class="row mt-3 text-center">
-                <div class="col-4">
-                    <button class="btn btn-hover" @click="toggleLike(recipe)">
-                        <i class="far fa-thumbs-up"></i> Thích
-                    </button>
+                <div v-if="recipe.isLiked" class="col-4 btn btn-hover" @click="toggleLike(recipe)">
+                    <i class="far fa-thumbs-up" style="color: blue;"></i> Thích
+                </div>
+                <div v-else class="col-4 btn btn-hover" @click="toggleLike(recipe)">
+                    <i class="far fa-thumbs-up"></i> Thích
                 </div>
 
-                <div class="col-4">
-                    <button class="btn btn-hover" @click="toggleComments(recipe)">
-                        <i class="far fa-comment-alt"></i> Bình luận
-                    </button>
+                <div class="col-4 btn btn-hover" @click="toggleComments(recipe)">
+                    <i class="far fa-comment-alt"></i> Bình luận
                 </div>
-
-                <div class="col-4">
-                    <button type="button" class="btn btn-hover" data-toggle="modal" data-target="#shareModal">
-                        <i class="fas fa-share"></i> Chia sẻ
-                    </button>
+                <div type="button" class="col-4 btn btn-hover" data-toggle="modal" data-target="#shareModal">
+                    <i class="fas fa-share"></i> Chia sẻ
                 </div>
             </div>
 
@@ -162,7 +161,7 @@
 
         </div>
 
-        <div class="card mt-3" v-if="showComments[recipe.id]">
+        <div class="card mt-3" style="background-color: rgba(255, 255, 255, 0.12);" v-if="showComments[recipe.id]">
 
             <div class="card-header">
                 <i class="far fa-comment-alt mr-2"></i>
@@ -195,8 +194,8 @@
                 <div class="d-flex align-items-center">
                     <img :src="apiURL(userStore.user.avatar)" class="rounded-circle mr-2" width="40">
 
-                    <textarea class="form-control" v-model="newCommentText[recipe.id]" rows="3"
-                        placeholder="Viết bình luận..."></textarea>
+                    <textarea style="background-color: rgba(255, 255, 255, 0.12); color: #fff;" class="form-control"
+                        v-model="newCommentText[recipe.id]" rows="3" placeholder="Viết bình luận..."></textarea>
 
                     <button class="btn btn-primary btn-sm ml-2" @click="addComment(recipe)">Gửi</button>
                 </div>
@@ -255,6 +254,7 @@ export default {
                     $('#exampleModal').modal('show');
                 });
             });
+            $('#Action').dropdown();
         });
 
         const fetchInitialData = async () => {
@@ -443,8 +443,12 @@ export default {
     border-radius: 50%;
 }
 
+.btn-hover {
+    color: #fff;
+}
+
 .btn-hover:hover {
-    background-color: #e2e6ea;
+    background-color: rgba(112, 120, 131, 0.15);
 }
 
 .click {

@@ -3,14 +3,15 @@
 <template>
     <div class="container mt-3">
         <h2 class="text-center mb-4"
-            style="color: #2d3748; font-weight: 700; letter-spacing: -0.5px; text-shadow: 2px 2px 5px rgba(0,0,0,0.1);">
+            style="color: #dbe2ef; font-weight: 700; letter-spacing: -0.5px; text-shadow: 2px 2px 5px rgba(0,0,0,0.1);">
             <i class="fas fa-star text-warning mr-2"></i>
             Saved Recipes List
         </h2>
 
         <div v-if="savedRecipes.length" class="row row-cols-1 row-cols-md-2 g-4">
             <div v-for="recipe in savedRecipes" :key="recipe.id" class="col mt-3">
-                <div class="card h-100 rounded shadow-sm position-relative">
+                <div class="card h-100 rounded shadow-sm position-relative"
+                    style="background-color: rgba(255, 255, 255, 0.12);">
 
                     <button type="button" class="btn btn-link text-danger position-absolute m-2 bg-transparent"
                         data-toggle="modal" data-target="#exampleModal" @click="openModal(recipe.id)">
@@ -22,11 +23,11 @@
                             class="card-img-top rounded-top img-fluid" alt="Recipe Image"
                             v-if="recipe.firstImage || recipe.image">
 
-                        <div class="card-body">
+                        <div class="card-body text-light">
                             <h5 class="card-title">{{ recipe.name }}</h5>
                             <div class="row">
-                                <p class="card-text col-6">Cooking Time: {{ recipe.preparationTime }} minutes</p>
-                                <p class="card-text col-6">Serves: {{ recipe.servingFor }} people</p>
+                                <p class="card-text col-6 text-light">Cooking Time: {{ recipe.preparationTime }} minutes</p>
+                                <p class="card-text col-6 text-light">Serves: {{ recipe.servingFor }} people</p>
                             </div>
                         </div>
                     </router-link>

@@ -1,13 +1,13 @@
 <!-- eslint-disable vue/attributes-order -->
 <!-- eslint-disable vue/first-attribute-linebreak -->
 <template>
-    <div class="container my-5">
+    <div class="container mt-3">
         <div class="bordered-container">
             <form>
                 <div class="mb-4">
                     <label for="ingredients" class="form-label">Enter Ingredient Name:</label>
                     <input v-model="ingredientQuery" @input="filterIngredients" type="text"
-                        placeholder="Type to search ingredients..." class="form-control mb-3">
+                        placeholder="Type to search ingredients..." class="form-control form-input mb-3">
                     <div class="row gy-3">
                         <div v-for="ingredient in filteredIngredients" :key="ingredient.id" class="col-md-3">
                             <div class="form-check">
@@ -32,7 +32,8 @@
             No recipes found with the selected ingredients.
         </div>
         <ul class="list-group mt-4" v-else>
-            <li v-for="recipe in recipes" :key="recipe.id" class="list-group-item">{{ recipe.name }}</li>
+            <li v-for="recipe in recipes" :key="recipe.id" class="list-group-item"
+                style="background-color: rgb(18, 18, 18); background: rgba(255, 255, 255, 0.12);">{{ recipe.name }}</li>
         </ul>
     </div>
 </template>
@@ -117,5 +118,31 @@ export default {
     border: 1px solid #ddd;
     border-radius: 10px;
     padding: 20px;
+}
+
+/* search */
+.form {
+    width: 100%;
+    position: relative;
+}
+
+.form .fa-search {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    color: #9ca3af;
+}
+
+.form-input {
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    height: 55px;
+    text-indent: 33px;
+    border-radius: 10px;
+}
+
+.form-input:focus {
+    box-shadow: none;
+    border: none;
 }
 </style>

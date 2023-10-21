@@ -2,24 +2,17 @@
 <!-- eslint-disable vue/attributes-order -->
 <template>
     <div class="container mt-3">
-        <form @submit.prevent="searchByTag" class="mb-3">
-            <div class="inner-form">
-                <div class="input-field first-wrap">Hashtag</div>
-                <div class="input-field second-wrap">
-                    <div class="input-field second-wrap position-relative">
-                        <input id="search" type="text" placeholder="Enter the hashtag?" v-model="tag" />
-                        <span v-if="tag" class="clear-btn position-absolute" @click="clearSearch">
-                            <i class="fas fa-times"></i>
-                        </span>
-                    </div>
-                </div>
-                <div class="input-field third-wrap">
-                    <button class="btn-search" type="submit">
-                        <i class="fa fa-search"></i>
-                    </button>
-                </div>
+        <div class="form">
+            <i class="fa fa-search"></i>
+
+            <div class="input-field second-wrap position-relative">
+                <input type="text" class="form-control form-input" placeholder="Type or select below name tag!"
+                    v-model="tag" @keyup.enter="searchByTag">
+                <span v-if="tag" class="clear-btn position-absolute" @click="clearSearch">
+                    <i class="fas fa-times"></i>
+                </span>
             </div>
-        </form>
+        </div>
 
         <!-- Display message for the search criteria -->
         <div v-if="searchAttempted" class="mt-3">
@@ -40,7 +33,8 @@
         <!-- Display the search results -->
         <div v-if="recipes.length > 0">
             <ul class="list-group">
-                <li class="list-group-item" v-for="recipe in recipes" :key="recipe.id">
+                <li class="list-group-item" style="background-color: rgba(255, 255, 255, 0.12);" v-for="recipe in recipes"
+                    :key="recipe.id">
                     {{ recipe.name }}
                 </li>
             </ul>
@@ -139,60 +133,6 @@ export default {
 </script>
 
 <style scoped>
-form {
-    width: 100%;
-    margin-bottom: 0;
-}
-
-.inner-form {
-    background: #fff;
-    display: -ms-flexbox;
-    display: flex;
-    width: 100%;
-    -ms-flex-pack: justify;
-    justify-content: space-between;
-    -ms-flex-align: center;
-    align-items: center;
-    box-shadow: 0 8px 20px 0 rgba(0, 0, 0, .15);
-    border-radius: 3px;
-}
-
-.input-field.first-wrap {
-    border-right: 3px solid rgba(162, 141, 141, 0.1);
-    height: 100%;
-    padding: 10px 32px;
-}
-
-.input-field {
-    height: 68px;
-}
-
-.input-field.second-wrap {
-    -ms-flex-positive: 1;
-    flex-grow: 1;
-}
-
-.inner-form .input-field input {
-    height: 100%;
-    border: 0;
-    width: 100%;
-    padding: 10px 32px;
-}
-
-.inner-form .input-field.third-wrap {
-    width: 74px;
-}
-
-.inner-form .input-field.third-wrap .btn-search {
-    height: 100%;
-    width: 100%;
-    color: #fff;
-    border: 0;
-    cursor: pointer;
-    background: #63c76a;
-    transition: all .2s ease-out, color .2s ease-out;
-}
-
 /* Clearserach ---------- */
 .position-relative {
     position: relative;
@@ -207,5 +147,31 @@ form {
     top: 50%;
     transform: translateY(-50%);
     cursor: pointer;
+}
+
+/* search */
+.form {
+    width: 100%;
+    position: relative;
+}
+
+.form .fa-search {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    color: #9ca3af;
+}
+
+.form-input {
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    height: 55px;
+    text-indent: 33px;
+    border-radius: 10px;
+}
+
+.form-input:focus {
+    box-shadow: none;
+    border: none;
 }
 </style>

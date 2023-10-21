@@ -5,7 +5,7 @@
         <div class="text-center mb-4">
             <h2>All Friends</h2>
             <!-- Search form -->
-            <div class="form-group d-flex justify-content-center mt-3">
+            <!-- <div class="form-group d-flex justify-content-center mt-3">
                 <div class="input-group w-50">
                     <div class="input-group-prepend">
                         <span class="input-group-text"><i class="fas fa-search"></i></span>
@@ -16,6 +16,18 @@
                         <span class="click input-group-text cursor-pointer" @click="clearSearch"><i
                                 class="fas fa-times"></i></span>
                     </div>
+                </div>
+            </div> -->
+
+            <div class="form">
+                <i class="fa fa-search"></i>
+
+                <div class="input-field second-wrap position-relative">
+                    <input type="text" class="form-control form-input" placeholder="Type your friend's name!"
+                        v-model="searchTerm">
+                    <span v-if="searchTerm" class="clear-btn position-absolute" @click="clearSearch">
+                        <i class="fas fa-times"></i>
+                    </span>
                 </div>
             </div>
         </div>
@@ -103,5 +115,47 @@ export default {
 
 .click {
     cursor: pointer;
+}
+
+/* Clearserach ---------- */
+.position-relative {
+    position: relative;
+}
+
+.position-absolute {
+    position: absolute;
+}
+
+.clear-btn {
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+/* search */
+.form {
+    width: 100%;
+    position: relative;
+}
+
+.form .fa-search {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    color: #9ca3af;
+}
+
+.form-input {
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    height: 55px;
+    text-indent: 33px;
+    border-radius: 10px;
+}
+
+.form-input:focus {
+    box-shadow: none;
+    border: none;
 }
 </style>

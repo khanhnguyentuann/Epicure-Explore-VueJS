@@ -4,7 +4,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content col-12">
             <div class="modal-header">
-                <h5 class="modal-title">Share</h5>
+                <h5 class="modal-title text-dark">Share</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -54,12 +54,12 @@
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer text-dark">
                 <label style="font-weight: 600">Page Link <span class="message"></span></label><br />
                 <div class="row">
                     <input class="col-10 ur" type="url" placeholder="http://localhost:8080/" id="myInput"
                         aria-describedby="inputGroup-sizing-default" style="height: 40px;">
-                    <button class="cpy" @click="$emit('shareLinkCopy')"><i class="far fa-clone"></i></button>
+                    <button class="col-2" @click="$emit('shareLinkCopy')"><i class="far fa-clone"></i></button>
                 </div>
             </div>
         </div>

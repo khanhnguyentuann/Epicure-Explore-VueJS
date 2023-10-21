@@ -33,19 +33,25 @@
 
                 <!-- Yêu cầu kết bạn -->
                 <div @click="navigateTo('/friends/requests', 'FriendRequest')"
-                    :class="['navbar-center-item', selectedTab === 'FriendRequest' ? 'selected' : '']" data-toggle="tooltip"
-                    data-placement="bottom" title="Yêu cầu kết bạn">
+                    :class="['navbar-center-item', selectedTab === 'FriendRequest' ? 'selected' : '', 'position-relative']"
+                    data-toggle="tooltip" data-placement="bottom" title="Yêu cầu kết bạn">
                     <i class="bi bi-person-plus-fill"></i>
-                    <span v-if="friendRequestsCount > 0" class="badge-notification">
+                    <span v-if="friendRequestsCount > 0"
+                        class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                        style="top: 17%; right: 10%;">
                         {{ friendRequestsCount }}
                     </span>
                 </div>
 
                 <!-- Message -->
                 <div @click="navigateTo('/', 'Message')"
-                    :class="['navbar-center-item', selectedTab === 'Message' ? 'selected' : '']" data-toggle="tooltip"
-                    data-placement="bottom" title="Trò chuyện">
+                    :class="['navbar-center-item', selectedTab === 'Message' ? 'selected' : '', 'position-relative']"
+                    data-toggle="tooltip" data-placement="bottom" title="Trò chuyện">
                     <i class="bi bi-wechat"></i>
+                    <span
+                        class="position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle"
+                        style="top: 17%; right: 10%;">
+                    </span>
                 </div>
             </div>
             <div class="navbar-right">
@@ -55,6 +61,7 @@
                     <i class="bi bi-bell-fill"></i>
                     <span v-if="likeNotificationCount > 0" class="badge-notification">
                         {{ likeNotificationCount }}
+                        <span class="visually-hidden">unread messages</span>
                     </span>
                 </div>
 
@@ -314,6 +321,7 @@ export default {
             observeHeightChange('.sidebar-menu', setScrollContentHeight);
             observeHeightChange('.page-content', setScrollContentHeight);
             observeHeightChange('.rightsidebar-content', setScrollContentHeight);
+            $('#Profile').dropdown();
         });
 
         const initializeFriendshipStore = async () => {
@@ -494,10 +502,9 @@ export default {
     position: relative;
     height: 73px;
     padding: 0.1rem 1rem;
-    background-color: rgb(255, 255, 255);
     color: rgb(38, 40, 36);
-    fill: rgb(38, 40, 36);
-    box-shadow: 0 .25rem .5rem 0 rgba(0, 0, 0, 0.12);
+    background: rgb(18, 18, 18);
+    box-shadow: rgba(255, 255, 255, 0.12) 0px 1px 1px;
     z-index: 2;
     display: grid;
     grid-template: "left center right" /1fr auto 1fr;
@@ -516,18 +523,15 @@ export default {
 }
 
 .navbar-center-item {
-    background-color: #E4E6EB;
-    border-radius: 50%;
+    color: rgba(255, 255, 255, .9);
     align-items: center;
     margin-right: 10px;
     display: flex;
-    padding: 20px;
-    transition: all 0.2s ease-in;
+    padding: 10px;
 }
 
 .navbar-center-item.selected {
-    background-color: #154EC1;
-    color: #fff;
+    color: rgba(255, 59, 92, 1);
 }
 
 .badge-notification {
@@ -556,7 +560,8 @@ export default {
 }
 
 .app-layout-content {
-    background-color: #F0F2F5;
+    background-color: rgb(18, 18, 18);
+    color: rgba(255, 255, 255, .9);
     box-sizing: border-box;
     display: flex;
     height: calc(100vh - 73px);
@@ -617,8 +622,7 @@ export default {
 }
 
 .sidebar-item.selected {
-    background-color: #154EC1;
-    color: #fff;
+    color: rgba(255, 59, 92, 1);
 }
 
 .icon {
@@ -740,7 +744,7 @@ i.bi.bi-bookmarks-fill.mr-2::before {
 }
 
 .form span {
-
+    color: rgba(255, 255, 255, 0.9);
     position: absolute;
     right: 17px;
     top: 13px;
@@ -749,17 +753,12 @@ i.bi.bi-bookmarks-fill.mr-2::before {
 
 }
 
-.left-pan {
-    padding-left: 7px;
-}
-
 .left-pan i {
-
     padding-left: 10px;
 }
 
 .form-input {
-
+    background: rgba(255, 255, 255, 0.12);
     height: 55px;
     text-indent: 33px;
     border-radius: 10px;

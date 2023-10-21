@@ -2,7 +2,8 @@
 <!-- eslint-disable vue/attributes-order -->
 <template>
     <div class="mt-3">
-        <div class="click thought-box card mb-4 p-3" @click="goToCreateRecipe">
+        <div class="click thought-box card mb-4 p-3"
+            style="background-color: rgb(18, 18, 18); background: rgba(255, 255, 255, 0.12);" @click="goToCreateRecipe">
             <div class="d-flex align-items-center">
                 <img :src="userAvatar" alt="User Avatar" class="user-avatar">
                 <span class="ml-3 font-weight-bold">{{ userName }} ơi, bạn đang nghĩ gì thế!</span>

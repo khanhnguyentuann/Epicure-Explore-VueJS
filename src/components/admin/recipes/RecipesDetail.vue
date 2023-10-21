@@ -4,7 +4,7 @@
     <div class="container">
         <button @click="goBack" class="btn btn-secondary mb-3">Quay lại</button>
 
-        <div class="card">
+        <div class="card" style="color: #FFFFFF;background-color: #343a40;">
             <div class="card-header">
                 <h1>{{ recipe.name }}</h1>
             </div>
