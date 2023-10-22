@@ -4,20 +4,6 @@
     <div class="container mt-3">
         <div class="text-center mb-4">
             <h2>All Friends</h2>
-            <!-- Search form -->
-            <!-- <div class="form-group d-flex justify-content-center mt-3">
-                <div class="input-group w-50">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text"><i class="fas fa-search"></i></span>
-                    </div>
-                    <input type="text" class="click form-control" placeholder="Type your friend's name" aria-label="Search"
-                        v-model="searchTerm">
-                    <div class="input-group-append" v-if="searchTerm">
-                        <span class="click input-group-text cursor-pointer" @click="clearSearch"><i
-                                class="fas fa-times"></i></span>
-                    </div>
-                </div>
-            </div> -->
 
             <div class="form">
                 <i class="fa fa-search"></i>
@@ -103,14 +89,15 @@ export default {
     position: relative;
     display: block;
     padding: 0.75rem 1.25rem;
-    background-color: #fff;
     border: 1px solid rgba(0, 0, 0, .125);
     cursor: pointer;
     transition: background-color 0.3s ease;
+    background-color: rgba(255, 255, 255, 0.12);
+    color: #fff;
 }
 
 .list-group-item:hover {
-    background-color: #c9c9d1;
+    background-color: #616164;
 }
 
 .click {
@@ -157,5 +144,7 @@ export default {
 .form-input:focus {
     box-shadow: none;
     border: none;
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
 }
 </style>

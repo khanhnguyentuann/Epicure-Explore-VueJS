@@ -6,16 +6,17 @@
             <div class="col-8">
                 <h4>Lời mời kết bạn</h4>
             </div>
-            <div class="click col-4 text-right" @click="goToFriendRequest()">
-                Xem tất cả
+            <div class="click col-4 text-right" @click="goToFriendRequest()" style="z-index: 10;">
+                <p>Xem tất cả</p>
             </div>
         </div>
 
-        <ul class="list-group mt-2">
+        <ul class=" list-group mt-2">
             <li v-if="friendRequests.length === 0" class="mt-3 mb-3 d-flex justify-content-center">
                 Bạn chưa có lời mời kết bạn nào!
             </li>
-            <li v-else v-for="request in friendRequests" :key="request.user_id1" class="list-group-item d-flex row">
+            <li v-else v-for="request in friendRequests" :key="request.user_id1" class="list-group-item d-flex row"
+                style="background-color: rgba(255, 255, 255, 0.12);">
                 <div class="col-4">
                     <img :src="'http://localhost:3000/' + request.avatar" alt="User Avatar" class="rounded-circle"
                         style="width: 100%; height: auto; cursor: pointer;" @click="goToOtherProfile(request.user_id1)">

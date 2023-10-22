@@ -3,7 +3,7 @@
 <!-- eslint-disable vue/attributes-order -->
 <template>
     <div class="container mt-3">
-        <div class="card">
+        <div class="card" style="background-color: rgba(255, 255, 255, 0.12);">
             <div class="card-header text-center">
                 <strong>Tạo Công Thức</strong>
             </div>
@@ -374,6 +374,12 @@ export default {
     padding: 5px 10px;
     border-radius: 50%;
     font-weight: bold;
+}
+
+input,
+textarea {
+    background-color: rgba(255, 255, 255, 0.12);
+    color: #fff;
 }
 
 .form-group {

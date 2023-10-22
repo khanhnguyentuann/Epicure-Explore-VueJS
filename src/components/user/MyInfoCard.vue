@@ -37,9 +37,7 @@ export default {
     border-radius: 8px;
     margin: 20px 0;
     box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.05);
-}
-
-.profile-header {
-    background-color: #f5f6f7;
+    background-color: rgba(255, 255, 255, 0.12);
+    color: #fff;
 }
 </style>

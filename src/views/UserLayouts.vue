@@ -56,12 +56,13 @@
             </div>
             <div class="navbar-right">
                 <div @click="selectTab('Notification')"
-                    :class="['navbar-center-item', selectedTab === 'Notification' ? 'selected' : '']" data-toggle="tooltip"
-                    data-placement="bottom" title="Thông báo" id="bell">
+                    :class="['navbar-center-item', selectedTab === 'Notification' ? 'selected' : '', 'position-relative']"
+                    data-toggle="tooltip" data-placement="bottom" title="Thông báo" id="bell">
                     <i class="bi bi-bell-fill"></i>
-                    <span v-if="likeNotificationCount > 0" class="badge-notification">
+                    <span v-if="likeNotificationCount > 0"
+                        class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                        style="top: 17%; right: 10%;">
                         {{ likeNotificationCount }}
-                        <span class="visually-hidden">unread messages</span>
                     </span>
                 </div>
 

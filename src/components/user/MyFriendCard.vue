@@ -4,7 +4,7 @@
         <ul class="list-group mt-3">
             <p class="text-muted">{{ friends.length }} người bạn</p>
 
-            <li v-for="friend in friends" :key="friend.id"
+            <li v-for="friend in friends" :key="friend.id" style="background-color: rgba(255, 255, 255, 0.12);"
                 class="list-group-item d-flex align-items-center shadow-sm rounded" @click="goToUserProfile(friend.id)">
                 <img :src="'http://localhost:3000/' + friend.avatar" alt="Friend Avatar" class="rounded-circle mr-3"
                     width="50" height="50">

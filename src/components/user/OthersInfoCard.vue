@@ -7,32 +7,32 @@
         </div>
         <div class="col-md-8 d-flex flex-column justify-content-center">
             <h2>{{ userName }}</h2>
-        </div>
-        <div class="ml-auto">
-            <button class="btn btn-light" v-if="friendshipStatus === 'none'" @click="sendFriendRequest">
-                Thêm bạn bè
-            </button>
-            <button class="btn btn-light" v-if="friendshipStatus === 'pending' && requestDirection === 'outgoing'"
-                @click="cancelRequest">
-                Huỷ lời mời
-            </button>
-            <button class="btn btn-light" @click="acceptRequest"
-                v-if="friendshipStatus === 'pending' && requestDirection === 'incoming'">
-                Chấp nhận lời mời
-            </button>
-            <button class="btn btn-light" @click="cancelRequest"
-                v-if="friendshipStatus === 'pending' && requestDirection === 'incoming'">
-                Xoá lời mời
-            </button>
-            <button class="btn btn-light" @click="unfriend" v-if="friendshipStatus === 'accepted'">
-                Hủy kết bạn
-            </button>
-            <button class="btn btn-light" disabled v-if="friendshipStatus === 'accepted'">
-                Bạn bè
-            </button>
-            <button class="btn btn-light">
-                Nhắn tin
-            </button>
+            <div class="text-left">
+                <button class="btn btn-light" v-if="friendshipStatus === 'none'" @click="sendFriendRequest">
+                    Thêm bạn bè
+                </button>
+                <button class="btn btn-light" v-if="friendshipStatus === 'pending' && requestDirection === 'outgoing'"
+                    @click="cancelRequest">
+                    Huỷ lời mời
+                </button>
+                <button class="btn btn-light" @click="acceptRequest"
+                    v-if="friendshipStatus === 'pending' && requestDirection === 'incoming'">
+                    Chấp nhận lời mời
+                </button>
+                <button class="btn btn-light" @click="cancelRequest"
+                    v-if="friendshipStatus === 'pending' && requestDirection === 'incoming'">
+                    Xoá lời mời
+                </button>
+                <button class="btn btn-light" @click="unfriend" v-if="friendshipStatus === 'accepted'">
+                    Hủy kết bạn
+                </button>
+                <button class="btn btn-light" disabled v-if="friendshipStatus === 'accepted'">
+                    Bạn bè
+                </button>
+                <button class="btn btn-light">
+                    Nhắn tin
+                </button>
+            </div>
         </div>
     </div>
 </template>
@@ -133,9 +133,7 @@ export default {
     border-radius: 8px;
     margin: 20px 0;
     box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.05);
-}
-
-.profile-header {
-    background-color: #f5f6f7;
+    background-color: rgba(255, 255, 255, 0.12);
+    color: #fff;
 }
 </style>

@@ -20,6 +20,7 @@
                 Bạn chưa có lời mời kết bạn nào!
             </li>
             <li v-else v-for="request in friendRequests" :key="request.user_id1"
+                style="background-color: rgba(255, 255, 255, 0.12);"
                 class="list-group-item d-flex justify-content-between align-items-center">
                 <div @click="goToOtherProfile(request.user_id1)">
                     <img :src="'http://localhost:3000/' + request.avatar" alt="User Avatar" width="50" height="50"

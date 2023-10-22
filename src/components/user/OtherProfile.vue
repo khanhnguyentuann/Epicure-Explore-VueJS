@@ -97,4 +97,20 @@ export default {
     max-width: 800px;
     margin: 0 auto;
 }
+
+.nav-tabs {
+    border-bottom: 1px solid #dee2e6;
+    padding-bottom: 1px;
+}
+
+.nav-link {
+    color: #fff;
+}
+
+.nav-link.active {
+    background-color: rgba(255, 255, 255, 0.12);
+    color: rgba(255, 59, 92, 1);
+    border-bottom: 1px solid rgb(18, 18, 18);
+    ;
+}
 </style>

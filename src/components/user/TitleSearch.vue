@@ -21,9 +21,8 @@
 
         <div v-if="recipes.length > 0">
             <ul class="list-group">
-                <li class="list-group-item"
-                    style="background-color: rgb(18, 18, 18); background: rgba(255, 255, 255, 0.12);"
-                    v-for="recipe in recipes" :key="recipe.id">
+                <li class="list-group-item" style="background-color: rgba(255, 255, 255, 0.12);" v-for="recipe in recipes"
+                    :key="recipe.id">
                     {{ recipe.name }}
                 </li>
             </ul>
