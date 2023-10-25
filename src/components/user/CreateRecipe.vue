@@ -435,6 +435,8 @@ i.far.fa-star {
     left: 0;
     width: 100%;
     border: 1px solid #ccc;
+    background-color: #fff;
+    color: #333;
     z-index: 1000;
 }
 </style>

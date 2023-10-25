@@ -44,7 +44,7 @@
                 </div>
 
                 <!-- Message -->
-                <div @click="navigateTo('/', 'Message')"
+                <div @click="navigateTo('/messages', 'Message')"
                     :class="['navbar-center-item', selectedTab === 'Message' ? 'selected' : '', 'position-relative']"
                     data-toggle="tooltip" data-placement="bottom" title="Trò chuyện">
                     <i class="bi bi-wechat"></i>
@@ -492,7 +492,6 @@ export default {
             rightsidebarscrollBox,
             markAllAsRead,
             searchTitle,
-            redirectToTitleSearch,
         };
     }
 }

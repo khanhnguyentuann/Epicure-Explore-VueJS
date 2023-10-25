@@ -18,7 +18,7 @@
                     <div class="card2 card border-0 px-4 py-5">
                         <div class="row mb-4 px-3">
                             <h6 class="mb-0 mr-4 mt-2">Sign up with</h6>
-                            <div class="facebook text-center mr-3">
+                            <!-- <div class="facebook text-center mr-3">
                                 <div class="fa fa-facebook"></div>
                             </div>
                             <div class="twitter text-center mr-3">
@@ -26,7 +26,7 @@
                             </div>
                             <div class="linkedin text-center mr-3">
                                 <div class="fa fa-linkedin"></div>
-                            </div>
+                            </div> -->
                         </div>
                         <div class="row px-3 mb-4">
                             <div class="line"></div>
@@ -76,7 +76,7 @@
 
             <div class="bg-blue py-4">
                 <div class="row px-3">
-                    <small class="ml-4 ml-sm-5 mb-2">Copyright &copy; 2023. All rights reserved.</small>
+                    <!-- <small class="ml-4 ml-sm-5 mb-2">Copyright &copy; 2023. All rights reserved.</small> -->
                     <div class="social-contact ml-4 ml-sm-auto">
                         <span class="fa fa-facebook mr-4 text-sm"></span>
                         <span class="fa fa-google-plus mr-4 text-sm"></span>

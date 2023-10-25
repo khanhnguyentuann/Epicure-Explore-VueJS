@@ -92,6 +92,11 @@ const routes = [
         name: 'AdvancedSearch',
         component: () => import('../components/user/AdvancedSearch.vue')
       },
+      {
+        path: 'messages',
+        name: 'ChatBox',
+        component: () => import('../components/user/ChatBox.vue')
+      }
     ]
   },
   {
