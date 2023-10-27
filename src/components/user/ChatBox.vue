@@ -10,85 +10,63 @@
             </div>
         </div>
         <div class="card-body contacts_body">
-            <ui class="contacts">
-                <li class="active">
+            <ul class="contacts">
+                <li v-for="conversation in conversations" :key="conversation.id">
                     <div class="d-flex bd-highlight">
                         <div class="img_cont">
-                            <img src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg"
-                                class="rounded-circle user_img">
+                            <img :src="apiURL(conversation.otherUserAvatar)" class="rounded-circle user_img">
                             <span class="online_icon"></span>
+                            <!-- <span class="online_icon offline"></span> -->
                         </div>
                         <div class="user_info">
-                            <span>Khalid</span>
-                            <p>Kalid is online</p>
+                            <span>{{ conversation.otherUserName }}</span>
+                            <p>{{ conversation.otherUserName }} is online</p>
+                            <!-- Cần cập nhật logic để kiểm tra online/offline -->
                         </div>
                     </div>
                 </li>
-                <li>
-                    <div class="d-flex bd-highlight">
-                        <div class="img_cont">
-                            <img src="https://2.bp.blogspot.com/-8ytYF7cfPkQ/WkPe1-rtrcI/AAAAAAAAGqU/FGfTDVgkcIwmOTtjLka51vineFBExJuSACLcBGAs/s320/31.jpg"
-                                class="rounded-circle user_img">
-                            <span class="online_icon offline"></span>
-                        </div>
-                        <div class="user_info">
-                            <span>Taherah Big</span>
-                            <p>Taherah left 7 mins ago</p>
-                        </div>
-                    </div>
-                </li>
-                <li>
-                    <div class="d-flex bd-highlight">
-                        <div class="img_cont">
-                            <img src="https://i.pinimg.com/originals/ac/b9/90/acb990190ca1ddbb9b20db303375bb58.jpg"
-                                class="rounded-circle user_img">
-                            <span class="online_icon"></span>
-                        </div>
-                        <div class="user_info">
-                            <span>Sami Rafi</span>
-                            <p>Sami is online</p>
-                        </div>
-                    </div>
-                </li>
-                <li>
-                    <div class="d-flex bd-highlight">
-                        <div class="img_cont">
-                            <img src="http://profilepicturesdp.com/wp-content/uploads/2018/07/sweet-girl-profile-pictures-9.jpg"
-                                class="rounded-circle user_img">
-                            <span class="online_icon offline"></span>
-                        </div>
-                        <div class="user_info">
-                            <span>Nargis Hawa</span>
-                            <p>Nargis left 30 mins ago</p>
-                        </div>
-                    </div>
-                </li>
-                <li>
-                    <div class="d-flex bd-highlight">
-                        <div class="img_cont">
-                            <img src="https://static.turbosquid.com/Preview/001214/650/2V/boy-cartoon-3D-model_D.jpg"
-                                class="rounded-circle user_img">
-                            <span class="online_icon offline"></span>
-                        </div>
-                        <div class="user_info">
-                            <span>Rashid Samim</span>
-                            <p>Rashid left 50 mins ago</p>
-                        </div>
-                    </div>
-                </li>
-            </ui>
+            </ul>
         </div>
         <div class="card-footer"></div>
     </div>
 </template>
 
 <script>
+import { useRoute } from 'vue-router';
+import axios from 'axios';
+import { ref, onMounted } from 'vue';
+import { useUserStore } from '../../store/userStore';
+
+const ROUTES = {
+    getUserConversations: 'conversation/get-user-conversations'
+};
+
 export default {
     name: "ChatBox",
-    methods: {
-        closeModal() {
-            this.$emit('close');
-        }
+    setup() {
+        const conversations = ref([]);
+        const userStore = useUserStore();
+
+        const apiURL = (relativePath) => {
+            return window.baseURL + '/' + relativePath;
+        };
+
+        const fetchConversations = async () => {
+            try {
+                const userId = userStore.user.id;
+                const response = await axios.get(apiURL(ROUTES.getUserConversations) + `/${userId}`);
+                conversations.value = response.data;
+            } catch (error) {
+                console.error("Failed to fetch conversations", error);
+            }
+        };
+
+        onMounted(fetchConversations);
+
+        return {
+            conversations,
+            apiURL
+        };
     }
 }
 </script>
@@ -185,8 +163,16 @@ export default {
 
 .contacts li {
     width: 100% !important;
-    padding: 5px 10px;
-    margin-bottom: 15px !important;
+    padding: 5px 40px;
+}
+
+.contacts li div {
+    border-radius: 33px;
+}
+
+.contacts li div:hover {
+    background-color: #434444;
+    cursor: pointer;
 }
 
 .active {

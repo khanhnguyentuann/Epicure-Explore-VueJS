@@ -29,7 +29,7 @@
                 <button class="btn btn-light" disabled v-if="friendshipStatus === 'accepted'">
                     Bạn bè
                 </button>
-                <button class="btn btn-light">
+                <button class="btn btn-light" @click="navigateToChat">
                     Nhắn tin
                 </button>
             </div>
@@ -42,8 +42,12 @@ import { computed } from 'vue';
 import { useUserStore } from '../../store/userStore';
 import { useFriendshipStore } from '../../store/friendshipStore';
 import axios from 'axios';
+import { useRouter } from 'vue-router';
 
-const BASE_URL = 'http://localhost:3000';
+const ROUTES = {
+    conversationCheck: `conversation/conversation-check`,
+    createConversation: `conversation/create-conversation`,
+};
 
 export default {
     props: {
@@ -63,9 +67,41 @@ export default {
     setup(props) {
         const userStore = useUserStore();
         const friendshipStore = useFriendshipStore();
+        const router = useRouter();
 
         const friendshipStatus = computed(() => friendshipStore.friendshipStatus);
         const requestDirection = computed(() => friendshipStore.requestDirection);
+
+        const apiURL = (relativePath) => {
+            return window.baseURL + '/' + relativePath;
+        };
+
+        async function navigateToChat() {
+            try {
+                // Kiểm tra xem cuộc trò chuyện đã tồn tại chưa
+                let response = await axios.get(apiURL(ROUTES.conversationCheck), {
+                    params: { user1_id: userStore.user.id, user2_id: props.userId }
+                });
+
+                let conversationId = response.data ? response.data.id : null;
+
+                // Nếu chưa tồn tại, tạo cuộc trò chuyện mới
+                if (!conversationId) {
+                    response = await axios.post(apiURL(ROUTES.createConversation), {
+                        user1_id: userStore.user.id,
+                        user2_id: props.userId
+                    });
+                    conversationId = response.data.id;
+                }
+
+                // Điều hướng đến ChatBox.vue
+                router.push({
+                    name: 'ChatBox',
+                });
+            } catch (error) {
+                handleErrors('Failed to create or find conversation', error);
+            }
+        }
 
         async function sendFriendRequest() {
             try {
@@ -117,11 +153,13 @@ export default {
 
         return {
             friendshipStatus,
+            apiURL,
             requestDirection,
             sendFriendRequest,
             acceptRequest,
             cancelRequest,
             unfriend,
+            navigateToChat
         };
     },
 };
