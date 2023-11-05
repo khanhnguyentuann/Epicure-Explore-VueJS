@@ -93,9 +93,15 @@ const routes = [
         component: () => import('../components/user/AdvancedSearch.vue')
       },
       {
-        path: 'messages',
+        path: 'conversations',
+        name: 'Conversations',
+        component: () => import('../components/user/Conversations.vue')
+      },
+      {
+        path: 'conversations/chat/:otherUserId',
         name: 'ChatBox',
-        component: () => import('../components/user/ChatBox.vue')
+        component: () => import('../components/user/ChatBox.vue'),
+        props: true
       }
     ]
   },

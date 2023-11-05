@@ -94,9 +94,9 @@ export default {
                     conversationId = response.data.id;
                 }
 
-                // Điều hướng đến ChatBox.vue
+                // Điều hướng đến Conversations.vue
                 router.push({
-                    name: 'ChatBox',
+                    name: 'Conversations',
                 });
             } catch (error) {
                 handleErrors('Failed to create or find conversation', error);

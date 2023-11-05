@@ -1,111 +1,80 @@
 <!-- eslint-disable vue/first-attribute-linebreak -->
 <template>
-    <div class="container-fluid h-100">
-        <div class="justify-content-center h-100">
-            <div class="chat">
-                <div class="mt-3 card">
-                    <div class="card-header msg_head">
-                        <div class="d-flex bd-highlight">
-                            <router-link to="/conversations">
-                                <i class="bi bi-reply-fill pr-3" style="font-size: 24px; color: grey;"></i>
-                            </router-link>
-                            <div class="img_cont">
-                                <img :src="apiURL(user?.avatar)" class="rounded-circle user_img">
-                                <span class="online_icon"></span>
-                            </div>
-                            <div class="user_info">
-                                <span>Chat with {{ user?.name }}</span>
-                                <!-- <p>{{ user?.messagesCount }} Messages</p> -->
-                                <p>1767 Messages</p>
-                            </div>
-                            <div class="video_cam">
-                                <span><i class="fas fa-video"></i></span>
-                                <span><i class="fas fa-phone"></i></span>
-                            </div>
-                        </div>
-                        <span id="action_menu_btn"><i class="fas fa-ellipsis-v"></i></span>
-                        <div class="action_menu">
-                            <ul>
-                                <li><i class="fas fa-user-circle"></i> View profile</li>
-                                <li><i class="fas fa-users"></i> Add to close friends</li>
-                                <li><i class="fas fa-plus"></i> Add to group</li>
-                                <li><i class="fas fa-ban"></i> Block</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="card-body msg_card_body">
-                        <div class="d-flex justify-content-start mb-4">
-                            <div class="img_cont_msg">
-                                <img :src="apiURL(user?.avatar)" class="rounded-circle user_img_msg">
-                            </div>
-                            <div class="msg_cotainer">
-                                Hi, how are you samim?
-                                <span class="msg_time">8:40 AM, Today</span>
-                            </div>
-                        </div>
-                        <div class="d-flex justify-content-end mb-4">
-                            <div class="msg_cotainer_send">
-                                Hi Khalid i am good tnx how about you?
-                                <span class="msg_time_send">8:55 AM, Today</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-footer">
-                        <div class="input-group">
-                            <div class="input-group-append">
-                                <span class="input-group-text attach_btn"><i class="fas fa-paperclip"></i></span>
-                            </div>
-                            <textarea name="" class="form-control type_msg" placeholder="Type your message..."></textarea>
-                            <div class="input-group-append">
-                                <span class="input-group-text send_btn"><i class="fas fa-location-arrow"></i></span>
-                            </div>
-                        </div>
-                    </div>
+    <div class="card mb-sm-3 mb-md-0 contacts_card mt-3">
+        <div class="card-header">
+            <div class="input-group">
+                <input type="text" placeholder="Search..." name="" class="form-control search">
+                <div class="input-group-prepend">
+                    <span class="input-group-text search_btn"><i class="fas fa-search"></i></span>
                 </div>
             </div>
         </div>
+        <div class="card-body contacts_body">
+            <ul class="contacts">
+                <li v-for="conversation in conversations" :key="conversation.id" @click="openConversation(conversation)">
+                    <div class="d-flex bd-highlight">
+                        <div class="img_cont">
+                            <img :src="apiURL(conversation.otherUserAvatar)" class="rounded-circle user_img">
+                            <span class="online_icon"></span>
+                            <!-- <span class="online_icon offline"></span> -->
+                        </div>
+                        <div class="user_info">
+                            <span>{{ conversation.otherUserName }}</span>
+                            <p>{{ conversation.otherUserName }} is online</p>
+                            <!-- Cần cập nhật logic để kiểm tra online/offline -->
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="card-footer"></div>
     </div>
 </template>
 
 <script>
-import { onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
 import axios from 'axios';
+import { ref, onMounted } from 'vue';
+import { useUserStore } from '../../store/userStore';
 
 const ROUTES = {
-    getUserChatInfo: id => `userchat/${id}`
+    getUserConversations: 'conversation/get-user-conversations'
 };
 
 export default {
-    name: "ChatBox",
-    props: {
-        otherUserId: {
-            type: String,
-            required: true
-        }
-    },
-    setup(props) {
-        const user = ref(null);
-        // Chuyển đổi prop từ string sang number
-        const otherUserId = Number(props.otherUserId);
+    name: "Conversations",
+    setup() {
+        const conversations = ref([]);
+        const userStore = useUserStore();
+        const router = useRouter();
 
         const apiURL = (relativePath) => {
             return window.baseURL + '/' + relativePath;
         };
 
-        const fetchUserChatDetails = async () => {
+        const openConversation = (conversation) => {
+            router.push({
+                name: 'ChatBox',
+                params: { otherUserId: conversation.otherUserId }
+            });
+        };
+
+        const fetchConversations = async () => {
             try {
-                const response = await axios.get(apiURL(ROUTES.getUserChatInfo(props.otherUserId)));
-                user.value = response.data;
+                const userId = userStore.user.id;
+                const response = await axios.get(apiURL(ROUTES.getUserConversations) + `/${userId}`);
+                conversations.value = response.data;
             } catch (error) {
-                console.error("Failed to fetch user details", error);
+                console.error("Failed to fetch conversations", error);
             }
         };
 
-        onMounted(fetchUserChatDetails);
+        onMounted(fetchConversations);
 
         return {
-            user,
-            apiURL
+            conversations,
+            apiURL,
+            openConversation
         };
     }
 }
@@ -203,8 +172,16 @@ export default {
 
 .contacts li {
     width: 100% !important;
-    padding: 5px 10px;
-    margin-bottom: 15px !important;
+    padding: 5px 40px;
+}
+
+.contacts li div {
+    border-radius: 33px;
+}
+
+.contacts li div:hover {
+    background-color: #434444;
+    cursor: pointer;
 }
 
 .active {
