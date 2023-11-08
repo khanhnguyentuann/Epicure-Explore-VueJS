@@ -11,7 +11,7 @@
                 </a>
                 <div class="form">
                     <i class="fa fa-search"></i>
-                    <input type="text" class="form-control form-input" placeholder="Search title..."
+                    <input type="text" class="form-control form-input text-white" placeholder="Search title..."
                         @keyup.enter="redirectToTitleSearch('TitleSearch')" v-model="searchTitle">
                     <span class="left-pan"><i class="fa fa-microphone"></i></span>
                 </div>
@@ -176,36 +176,24 @@
                         <div>News Feed</div>
                     </div>
 
-                    <!-- Search by hashtag -->
-                    <div @click="navigateTo('/tagsearch', 'TagSearch')"
-                        :class="['sidebar-item', selectedTab === 'TagSearch' ? 'selected' : '']">
-                        <i class="bi bi-search mr-2"></i>
-                        <div>Search by hashtag</div>
-                    </div>
-
-                    <!-- Search by title -->
-                    <div @click="navigateTo('/titlesearch', 'TitleSearch')"
-                        :class="['sidebar-item', selectedTab === 'TitleSearch' ? 'selected' : '']">
-                        <i class="bi bi-search mr-2"></i>
-                        <div>Search by title</div>
-                    </div>
-
-                    <!-- Advanced search -->
-                    <div @click="navigateTo('/advancedsearch', 'AdvancedSearch')"
-                        :class="['sidebar-item', selectedTab === 'AdvancedSearch' ? 'selected' : '']">
-                        <i class="bi bi-search mr-2"></i>
-                        <div>Advanced search</div>
-                    </div>
-
-
                     <div class='dashboard-nav-dropdown'>
-                        <a href="#!" class="dashboard-nav-dropdown-toggle">
+                        <div class="dashboard-nav-dropdown-toggle">
                             <i class="bi bi-search mr-2"></i>
                             <div>Search</div>
-                        </a>
+                        </div>
                         <div class='dashboard-nav-dropdown-menu'>
-                            <a href="#" class="dashboard-nav-dropdown-item">All</a>
-                            <a href="#" class="dashboard-nav-dropdown-item">Subscribed</a>
+                            <div @click="navigateTo('/tagsearch', 'TagSearch')"
+                                :class="['dashboard-nav-dropdown-item', selectedTab === 'TagSearch' ? 'selected' : '']">
+                                Search by hashtag
+                            </div>
+                            <div @click="navigateTo('/titlesearch', 'TitleSearch')"
+                                :class="['dashboard-nav-dropdown-item', selectedTab === 'TitleSearch' ? 'selected' : '']">
+                                Search by title
+                            </div>
+                            <div @click="navigateTo('/advancedsearch', 'AdvancedSearch')"
+                                :class="['dashboard-nav-dropdown-item', selectedTab === 'AdvancedSearch' ? 'selected' : '']">
+                                Advanced search
+                            </div>
                         </div>
                     </div>
 
@@ -519,6 +507,7 @@ export default {
             rightsidebarscrollBox,
             markAllAsRead,
             searchTitle,
+            redirectToTitleSearch
         };
     }
 }
@@ -798,18 +787,15 @@ i.bi.bi-bookmarks-fill.mr-2::before {
 }
 
 /* Css for submenu */
-.dashboard-nav-list {
-    display: flex;
-    flex-direction: column;
-}
-
 .dashboard-nav-dropdown {
-    display: flex;
-    flex-direction: column;
+    border-radius: 18px;
+    padding: 15px;
+    min-height: 58px;
+    transition: all 0.2s ease-in;
 }
 
-.dashboard-nav-dropdown.show {
-    background: rgba(255, 255, 255, 0.04);
+.dashboard-nav-dropdown:hover {
+    background-color: rgb(68 73 80 / 15%);
 }
 
 .dashboard-nav-dropdown.show>.dashboard-nav-dropdown-toggle {
@@ -845,6 +831,13 @@ i.bi.bi-bookmarks-fill.mr-2::before {
     flex-direction: column;
 }
 
+.dashboard-nav-dropdown-toggle {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+
 .dashboard-nav-dropdown-item {
     min-height: 40px;
     padding: 8px 20px 8px 70px;
@@ -855,5 +848,9 @@ i.bi.bi-bookmarks-fill.mr-2::before {
 
 .dashboard-nav-dropdown-item:hover {
     background: rgba(255, 255, 255, 0.04);
+}
+
+.dashboard-nav-dropdown-item.selected {
+    color: rgba(255, 59, 92, 1);
 }
 </style>

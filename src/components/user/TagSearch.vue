@@ -31,14 +31,29 @@
         </div>
 
         <!-- Display the search results -->
-        <div v-if="recipes.length > 0">
-            <ul class="list-group">
-                <li class="list-group-item" style="background-color: rgba(255, 255, 255, 0.12);" v-for="recipe in recipes"
-                    :key="recipe.id">
-                    {{ recipe.name }}
-                </li>
-            </ul>
+        <div v-if="recipes.length > 0" class="row row-cols-1 row-cols-md-2 g-4">
+            <div class="col-3 mt-3" v-for="recipe in recipes" :key="recipe.id">
+                <div class="card h-100 rounded shadow-sm position-relative"
+                    style="background-color: rgba(255, 255, 255, 0.12);">
+                    <img :src="apiURL(recipe.firstImage)" class="card-img-top rounded-top img-fluid" alt="Post Image">
+                    <div class="card-body text-light">
+                        <h5 class="card-title" style="font-weight: bold;">{{ recipe.name }}</h5>
+                        <div class="row">
+                            <p class="card-text col-6 text-light" style="color: #555; font-size: 13px;">Cooking Time: {{
+                                recipe.cookingTime }} minutes</p>
+                            <p class="card-text col-6 text-light" style="color: #555; font-size: 13px;">Serves: {{
+                                recipe.servingFor }} people</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+
+
+        <!-- <router-link :to="'/favorites/' + recipe.id" class="text-decoration-none text-dark">
+
+        </router-link> -->
+
 
         <!-- Message when no results are found -->
         <div v-else-if="searchAttempted" class="alert alert-warning mt-3" role="alert">
@@ -134,10 +149,6 @@ export default {
 
 <style scoped>
 /* Clearserach ---------- */
-.position-relative {
-    position: relative;
-}
-
 .position-absolute {
     position: absolute;
 }
@@ -173,5 +184,17 @@ export default {
 .form-input:focus {
     box-shadow: none;
     border: none;
+}
+
+/* Search results */
+.card-img-top {
+    height: 200px;
+    object-fit: cover;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 </style>

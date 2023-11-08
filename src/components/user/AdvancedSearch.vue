@@ -5,7 +5,7 @@
         <div class="bordered-container">
             <form>
                 <div class="mb-4">
-                    <label for="ingredients" class="form-label">Enter Ingredient Name:</label>
+                    <label for="ingredients" class="form-label">Type the ingredient name:</label>
                     <input v-model="ingredientQuery" @input="filterIngredients" type="text"
                         placeholder="Type to search ingredients..." class="form-control form-input mb-3">
                     <div class="row gy-3">
@@ -25,16 +25,30 @@
                 </div>
             </form>
         </div>
-        <div v-if="searchedIngredients" class="mt-4">
+        <div v-if="searchedIngredients && hasSearched" class="mt-3">
             Search results for ingredients: "{{ searchedIngredients }}"
         </div>
-        <div v-if="recipes.length === 0 && hasSearched" class="mt-4 alert alert-warning text-center">
+        <div v-if="recipes.length === 0 && hasSearched" class="mt-3 alert alert-warning text-center">
             No recipes found with the selected ingredients.
         </div>
-        <ul class="list-group mt-4" v-else>
-            <li v-for="recipe in recipes" :key="recipe.id" class="list-group-item"
-                style="background-color: rgb(18, 18, 18); background: rgba(255, 255, 255, 0.12);">{{ recipe.name }}</li>
-        </ul>
+
+        <div v-if="recipes.length > 0 && hasSearched" class="row row-cols-1 row-cols-md-2 mt-3 mb-3">
+            <div class="col-3 mt-3" v-for="recipe in recipes" :key="recipe.id">
+                <div class="card h-100 rounded shadow-sm position-relative"
+                    style="background-color: rgba(255, 255, 255, 0.12);">
+                    <img :src="apiURL(recipe.firstImage)" class="card-img-top rounded-top img-fluid" alt="Post Image">
+                    <div class="card-body text-light">
+                        <h5 class="card-title" style="font-weight: bold;">{{ recipe.name }}</h5>
+                        <div class="row">
+                            <p class="card-text col-6 text-light" style="color: #555; font-size: 13px;">Cooking Time: {{
+                                recipe.cookingTime }} minutes</p>
+                            <p class="card-text col-6 text-light" style="color: #555; font-size: 13px;">Serves: {{
+                                recipe.servingFor }} people</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -91,6 +105,7 @@ export default {
         const resetSelection = () => {
             selectedIngredients.value = [];
             recipes.value = [];
+            hasSearched.value = false;
         };
 
         onMounted(() => {
@@ -145,5 +160,17 @@ export default {
 .form-input:focus {
     box-shadow: none;
     border: none;
+}
+
+/* Search results */
+.card-img-top {
+    height: 200px;
+    object-fit: cover;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 </style>
