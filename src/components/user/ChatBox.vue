@@ -1,66 +1,65 @@
 <!-- eslint-disable vue/first-attribute-linebreak -->
 <template>
-    <div class="container-fluid h-100">
-        <div class="justify-content-center h-100">
-            <div class="chat">
-                <div class="mt-3 card">
-                    <div class="card-header msg_head">
-                        <div class="d-flex bd-highlight">
-                            <router-link to="/conversations">
-                                <i class="bi bi-reply-fill pr-3" style="font-size: 24px; color: grey;"></i>
-                            </router-link>
-                            <div class="img_cont">
-                                <img :src="apiURL(user?.avatar)" class="rounded-circle user_img">
-                                <span class="online_icon"></span>
-                            </div>
-                            <div class="user_info">
-                                <span>Chat with {{ user?.name }}</span>
-                                <!-- <p>{{ user?.messagesCount }} Messages</p> -->
-                                <p>1767 Messages</p>
-                            </div>
-                            <div class="video_cam">
-                                <span><i class="fas fa-video"></i></span>
-                                <span><i class="fas fa-phone"></i></span>
-                            </div>
-                        </div>
-                        <span id="action_menu_btn"><i class="fas fa-ellipsis-v"></i></span>
-                        <div class="action_menu">
-                            <ul>
-                                <li><i class="fas fa-user-circle"></i> View profile</li>
-                                <li><i class="fas fa-users"></i> Add to close friends</li>
-                                <li><i class="fas fa-plus"></i> Add to group</li>
-                                <li><i class="fas fa-ban"></i> Block</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="card-body msg_card_body">
-                        <div class="d-flex justify-content-start mb-4">
-                            <div class="img_cont_msg">
-                                <img :src="apiURL(user?.avatar)" class="rounded-circle user_img_msg">
-                            </div>
-                            <div class="msg_cotainer">
-                                Hi, how are you samim?
-                                <span class="msg_time">8:40 AM, Today</span>
-                            </div>
-                        </div>
-                        <div class="d-flex justify-content-end mb-4">
-                            <div class="msg_cotainer_send">
-                                Hi Khalid i am good tnx how about you?
-                                <span class="msg_time_send">8:55 AM, Today</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-footer">
-                        <div class="input-group">
-                            <div class="input-group-append">
-                                <span class="input-group-text attach_btn"><i class="fas fa-paperclip"></i></span>
-                            </div>
-                            <textarea name="" class="form-control type_msg" placeholder="Type your message..."></textarea>
-                            <div class="input-group-append">
-                                <span class="input-group-text send_btn"><i class="fas fa-location-arrow"></i></span>
-                            </div>
-                        </div>
-                    </div>
+    <div class="mt-3 card">
+        <div class="card-header msg_head">
+            <div class="d-flex bd-highlight">
+                <router-link to="/conversations">
+                    <i class="bi bi-reply-fill pr-3" style="font-size: 24px; color: grey;"></i>
+                </router-link>
+                <div class="img_cont">
+                    <img :src="apiURL(user?.avatar)" class="rounded-circle user_img">
+                    <span class="online_icon"></span>
+                </div>
+                <div class="user_info">
+                    <span>Chat with {{ user?.name }}</span>
+                    <!-- <p>{{ user?.messagesCount }} Messages</p> -->
+                    <p>1767 Messages</p>
+                </div>
+                <div class="video_cam">
+                    <span><i class="fas fa-video"></i></span>
+                    <span><i class="fas fa-phone"></i></span>
+                </div>
+            </div>
+            <span id="action_menu_btn"><i class="fas fa-ellipsis-v"></i></span>
+            <div class="action_menu">
+                <ul>
+                    <li><i class="fas fa-user-circle"></i> View profile</li>
+                    <li><i class="fas fa-users"></i> Add to close friends</li>
+                    <li><i class="fas fa-plus"></i> Add to group</li>
+                    <li><i class="fas fa-ban"></i> Block</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card-body msg_card_body">
+            <div v-for="message in messages" :key="message.id" class="d-flex mb-4"
+                :class="{ 'justify-content-start': message.sender_id !== userStore.user.id, 'justify-content-end': message.sender_id === userStore.user.id }">
+
+                <div v-if="message.sender_id !== userStore.user.id" class="img_cont_msg">
+                    <img :src="apiURL(user?.avatar)" class="rounded-circle user_img_msg">
+                </div>
+                <div
+                    :class="{ 'msg_cotainer': message.sender_id !== userStore.user.id, 'msg_cotainer_send': message.sender_id === userStore.user.id }">
+                    {{ message.content }}
+                    <span
+                        :class="{ 'msg_time': message.sender_id !== userStore.user.id, 'msg_time_send': message.sender_id === userStore.user.id }">
+                        {{ formatTime(message.sent_at) }}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-footer">
+            <div class="input-group">
+                <div class="input-group-append">
+                    <span class="input-group-text attach_btn"><i class="fas fa-paperclip"></i></span>
+                </div>
+
+                <textarea v-model="messageText" class="form-control type_msg" placeholder="Type your message..."></textarea>
+
+                <div class="input-group-append">
+                    <span class="input-group-text send_btn" @click="sendMessage"><i
+                            class="fas fa-location-arrow"></i></span>
                 </div>
             </div>
         </div>
@@ -70,9 +69,12 @@
 <script>
 import { onMounted, ref } from 'vue';
 import axios from 'axios';
+import { io } from 'socket.io-client';
+import { useUserStore } from '../../store/userStore';
 
 const ROUTES = {
-    getUserChatInfo: id => `userchat/${id}`
+    getUserChatInfo: id => `userchat/${id}`,
+    getMessages: id => `userchat/conversations/${id}/messages`
 };
 
 export default {
@@ -81,42 +83,120 @@ export default {
         otherUserId: {
             type: String,
             required: true
+        },
+        conversationId: {
+            type: String,
+            required: true
         }
     },
     setup(props) {
+        const userStore = useUserStore();
         const user = ref(null);
-        // Chuyển đổi prop từ string sang number
+        const messageText = ref(''); // Lấy giá trị từ textarea
+        const messages = ref([]);
         const otherUserId = Number(props.otherUserId);
+        const conversationId = Number(props.conversationId);
+
+        // Kết nối đến Socket.io server
+        const socket = io('http://localhost:3000');
+
+        // Hàm để gửi tin nhắn mới
+        const sendMessage = () => {
+            const messageContent = messageText.value.trim();
+            const senderId = userStore.user.id;
+
+            if (senderId && conversationId && messageContent) {
+                const newMessage = {
+                    content: messageContent,
+                    sender_id: senderId,
+                    sent_at: new Date().toISOString(),
+                    id: Date.now()
+                };
+                messages.value.push(newMessage);
+                socket.emit('chat message', {
+                    content: messageContent,
+                    senderId: senderId,
+                    conversationId: conversationId
+                });
+                messageText.value = '';
+            } else {
+                console.error("Thông tin người dùng hoặc cuộc trò chuyện bị thiếu hoặc nội dung tin nhắn trống.");
+            }
+        };
 
         const apiURL = (relativePath) => {
             return window.baseURL + '/' + relativePath;
         };
 
+        // Format thời gian
+        const formatTime = (isoString) => {
+            const date = new Date(isoString);
+            const now = new Date();
+            let formattedTime;
+
+            // So sánh ngày hiện tại với ngày của tin nhắn để xác định format
+            if (date.toDateString() === now.toDateString()) {
+                // Nếu là cùng ngày thì chỉ hiển thị giờ và phút
+                formattedTime = date.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+            } else if (date.getFullYear() === now.getFullYear()) {
+                // Nếu là cùng năm thì hiển thị ngày và giờ
+                formattedTime = date.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }) + ', ' + date.toLocaleDateString('vi-VN', { day: '2-digit', month: 'short' });
+            } else {
+                // Nếu là các năm khác nhau thì hiển thị ngày, tháng và năm
+                formattedTime = date.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }) + ', ' + date.toLocaleDateString('vi-VN', { day: '2-digit', month: 'short', year: 'numeric' });
+            }
+
+            return formattedTime;
+        };
+
         const fetchUserChatDetails = async () => {
             try {
-                const response = await axios.get(apiURL(ROUTES.getUserChatInfo(props.otherUserId)));
+                const response = await axios.get(apiURL(ROUTES.getUserChatInfo(otherUserId)));
                 user.value = response.data;
             } catch (error) {
                 console.error("Failed to fetch user details", error);
             }
         };
 
-        onMounted(fetchUserChatDetails);
+        const fetchMessages = async () => {
+            try {
+                const response = await axios.get(apiURL(ROUTES.getMessages(conversationId)));
+                messages.value = response.data;
+            } catch (error) {
+                console.error("Failed to fetch messages:", error);
+            }
+        };
+
+        onMounted(async () => {
+            await fetchUserChatDetails();
+            await fetchMessages();
+            socket.emit('join conversation', conversationId);
+
+            // Lắng nghe tin nhắn mới từ server qua socket
+            socket.on('chat message', (newMessage) => {
+                // Kiểm tra xem tin nhắn mới có thuộc cuộc trò chuyện hiện tại không
+                if (newMessage.conversation_id === conversationId) {
+                    // Cập nhật danh sách tin nhắn
+                    messages.value.push(newMessage);
+                }
+            });
+        });
+
 
         return {
             user,
-            apiURL
+            apiURL,
+            sendMessage,
+            messageText,
+            messages,
+            userStore,
+            formatTime
         };
     }
 }
 </script>
 
 <style scoped>
-.chat {
-    margin-top: auto;
-    margin-bottom: auto;
-}
-
 .card {
     height: 630px;
     border-radius: 15px !important;

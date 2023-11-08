@@ -55,7 +55,10 @@ export default {
         const openConversation = (conversation) => {
             router.push({
                 name: 'ChatBox',
-                params: { otherUserId: conversation.otherUserId }
+                params: {
+                    otherUserId: conversation.otherUserId,
+                    conversationId: conversation.id
+                }
             });
         };
 

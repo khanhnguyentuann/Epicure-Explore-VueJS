@@ -98,7 +98,7 @@ const routes = [
         component: () => import('../components/user/Conversations.vue')
       },
       {
-        path: 'conversations/chat/:otherUserId',
+        path: 'conversations/chat/:otherUserId/:conversationId',
         name: 'ChatBox',
         component: () => import('../components/user/ChatBox.vue'),
         props: true

@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/html-quotes -->
 <!-- eslint-disable vue/attributes-order -->
 <!-- eslint-disable vue/first-attribute-linebreak -->
 <template>
@@ -144,7 +145,7 @@
         <!-- Body -->
         <div class="app-layout-content">
 
-            <div class="app-layout-sidebar col-3">
+            <div class="app-layout-sidebar col-3 col-sm-3">
                 <div class="sidebar-menu" ref="contentBox">
                     <!-- User Profile -->
                     <div @click="navigateTo('/myprofile', 'MyProfile')"
@@ -196,6 +197,18 @@
                         <div>Advanced search</div>
                     </div>
 
+
+                    <div class='dashboard-nav-dropdown'>
+                        <a href="#!" class="dashboard-nav-dropdown-toggle">
+                            <i class="bi bi-search mr-2"></i>
+                            <div>Search</div>
+                        </a>
+                        <div class='dashboard-nav-dropdown-menu'>
+                            <a href="#" class="dashboard-nav-dropdown-item">All</a>
+                            <a href="#" class="dashboard-nav-dropdown-item">Subscribed</a>
+                        </div>
+                    </div>
+
                     <footer class="footer mt-2">
                         <div class="container">
                             <p class="mb-0 text-muted small">Privacy . Terms . Ads . Ad Choices . Cookies . More.
@@ -208,7 +221,7 @@
                 </div>
             </div>
 
-            <div class="app-layout-page col-6">
+            <div class="app-layout-page col-9 col-sm-9 col-lg-6">
                 <div class="page-content" ref="pagecontentBox">
                     <router-view />
                 </div>
@@ -217,14 +230,14 @@
                 </div>
             </div>
 
-            <div class="app-layout-right-sidebar col-3">
+            <div cclass="app-layout-right-sidebar col-3 d-none d-lg-block col-lg-3">
                 <div class="rightsidebar-content" ref="rightsidebarcontentBox">
                     <FriendRequestCard />
                     <hr class="my-4 hr-thick">
                 </div>
-                <div class="rightsidebar-scroll-box" ref="rightsidebarscrollBox">
+                <!-- <div class="rightsidebar-scroll-box" ref="rightsidebarscrollBox">
                     <div class="rightsidebar-scroll-content"></div>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>
@@ -323,6 +336,20 @@ export default {
             observeHeightChange('.page-content', setScrollContentHeight);
             observeHeightChange('.rightsidebar-content', setScrollContentHeight);
             $('#Profile').dropdown();
+            $(document).ready(function () {
+                $(".dashboard-nav-dropdown-toggle").click(function () {
+                    $(this).closest(".dashboard-nav-dropdown")
+                        .toggleClass("show")
+                        .find(".dashboard-nav-dropdown")
+                        .removeClass("show");
+                    $(this).parent()
+                        .siblings()
+                        .removeClass("show");
+                });
+                $(".menu-toggle").click(function () {
+                    $(".dashboard").toggleClass("dashboard-compact");
+                });
+            });
         });
 
         const initializeFriendshipStore = async () => {
@@ -347,9 +374,9 @@ export default {
                 pagecontentBox.value.scrollTop = pagescrollBox.value.scrollTop;
             });
 
-            rightsidebarscrollBox.value.addEventListener('scroll', function () {
-                rightsidebarcontentBox.value.scrollTop = rightsidebarscrollBox.value.scrollTop;
-            });
+            // rightsidebarscrollBox.value.addEventListener('scroll', function () {
+            //     rightsidebarcontentBox.value.scrollTop = rightsidebarscrollBox.value.scrollTop;
+            // });
         };
 
         const setScrollContentHeight = () => {
@@ -365,11 +392,11 @@ export default {
                 pagescrollContent.style.height = `${pageContent.scrollHeight}px`;
             }
 
-            const rightsidebarContent = document.querySelector('.rightsidebar-content');
-            const rightsidebarscrollContent = document.querySelector('.rightsidebar-scroll-content');
-            if (rightsidebarContent && rightsidebarscrollContent) {
-                rightsidebarscrollContent.style.height = `${rightsidebarContent.scrollHeight}px`;
-            }
+            // const rightsidebarContent = document.querySelector('.rightsidebar-content');
+            // const rightsidebarscrollContent = document.querySelector('.rightsidebar-scroll-content');
+            // if (rightsidebarContent && rightsidebarscrollContent) {
+            //     rightsidebarscrollContent.style.height = `${rightsidebarContent.scrollHeight}px`;
+            // }
         };
 
         const fetchUnreadLikeNotifications = async () => {
@@ -768,5 +795,65 @@ i.bi.bi-bookmarks-fill.mr-2::before {
 
     box-shadow: none;
     border: none;
+}
+
+/* Css for submenu */
+.dashboard-nav-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.dashboard-nav-dropdown {
+    display: flex;
+    flex-direction: column;
+}
+
+.dashboard-nav-dropdown.show {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.dashboard-nav-dropdown.show>.dashboard-nav-dropdown-toggle {
+    font-weight: bold;
+}
+
+.dashboard-nav-dropdown.show>.dashboard-nav-dropdown-toggle:after {
+    transform: none;
+}
+
+.dashboard-nav-dropdown.show>.dashboard-nav-dropdown-menu {
+    display: flex;
+}
+
+.dashboard-nav-dropdown-toggle:after {
+    content: "";
+    margin-left: auto;
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid rgba(81, 81, 81, 0.8);
+    transform: rotate(90deg);
+}
+
+.dashboard-nav .dashboard-nav-dropdown-toggle:after {
+    border-top-color: rgba(255, 255, 255, 0.72);
+}
+
+.dashboard-nav-dropdown-menu {
+    display: none;
+    flex-direction: column;
+}
+
+.dashboard-nav-dropdown-item {
+    min-height: 40px;
+    padding: 8px 20px 8px 70px;
+    display: flex;
+    align-items: center;
+    transition: ease-out 0.5s;
+}
+
+.dashboard-nav-dropdown-item:hover {
+    background: rgba(255, 255, 255, 0.04);
 }
 </style>
