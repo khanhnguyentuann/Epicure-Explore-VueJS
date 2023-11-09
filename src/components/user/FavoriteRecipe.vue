@@ -12,9 +12,8 @@
             <div v-for="recipe in savedRecipes" :key="recipe.id" class="col mt-3">
                 <div class="card h-100 rounded shadow-sm position-relative"
                     style="background-color: rgba(255, 255, 255, 0.12);">
-
                     <button type="button" class="btn btn-link text-danger position-absolute m-2 bg-transparent"
-                        data-toggle="modal" data-target="#exampleModal" @click="openModal(recipe.id)">
+                        @click="confirmDelete(recipe.id)">
                         <i class="fas fa-times"></i>
                     </button>
 
@@ -38,90 +37,63 @@
             <span>Favorites list is empty!</span>
         </div>
     </div>
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    Are you sure you want to remove this recipe from the favorites list?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-danger" @click="confirmDelete(recipeId)">Delete</button>
-                </div>
-            </div>
-        </div>
-    </div>
 </template>
 
 <script>
 import axios from 'axios';
+import { ref, onMounted } from 'vue';
 import { useUserStore } from '../../store/userStore';
-import $ from 'jquery';
 
-const BASE_URL = 'http://localhost:3000';
+const ROUTES = {
+    favorite: `favorite`,
+    unsave: id => `favorite/${id}`
+};
 
 export default {
     name: 'FavoriteRecipe',
     setup() {
-        return {
-            userStore: useUserStore(),
+        const userStore = useUserStore();
+        const savedRecipes = ref([]);
+
+        const apiURL = (relativePath) => {
+            return window.baseURL + '/' + relativePath;
         };
-    },
 
-    data() {
-        return {
-            savedRecipes: [],
-            recipeToDelete: null,
-        };
-    },
-
-    async created() {
-        await this.fetchSavedRecipes();
-    },
-    methods: {
-        async fetchSavedRecipes() {
-            const { userStore } = this;
-            const { user: { id: userId }, token } = userStore;
-
+        const fetchSavedRecipes = async () => {
             try {
-                const { data } = await axios.get(`${BASE_URL}/favorite`, {
-                    params: { userId },
-                    headers: { Authorization: `Bearer ${token}` },
+                const { data } = await axios.get(apiURL(ROUTES.favorite), {
+                    params: { userId: userStore.user.id }
                 });
-                this.savedRecipes = data;
+                savedRecipes.value = data;
             } catch (error) {
                 console.error('Lỗi khi lấy danh sách công thức đã lưu:', error);
             }
-        },
-        async unsaveRecipe(recipeId) {
-            const { user: { id: userId }, token } = this.userStore;
+        };
 
+        const unsaveRecipe = async (recipeId) => {
             try {
-                await axios.delete(`${BASE_URL}/favorite/${recipeId}`, {
-                    params: { userId },
-                    headers: { Authorization: `Bearer ${token}` },
+                await axios.delete(apiURL(ROUTES.unsave(recipeId)), {
+                    params: { userId: userStore.user.id }
                 });
-                await this.fetchSavedRecipes();
+                await fetchSavedRecipes();
             } catch (error) {
                 console.error('Lỗi khi hủy lưu công thức:', error);
             }
-        },
-        openModal(recipeId) {
-            this.recipeToDelete = recipeId;
-        },
-        async confirmDelete() {
-            $('#exampleModal').modal('hide');
-            if (this.recipeToDelete !== null) {
-                await this.unsaveRecipe(this.recipeToDelete);
-                this.recipeToDelete = null;
+        };
+
+        const confirmDelete = async (recipeId) => {
+            if (recipeId !== null) {
+                await unsaveRecipe(recipeId);
             }
-        },
+        };
+
+        onMounted(fetchSavedRecipes);
+
+        return {
+            savedRecipes,
+            confirmDelete,
+            apiURL
+        };
     },
 };
 </script>
