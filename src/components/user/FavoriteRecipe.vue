@@ -18,7 +18,7 @@
                         <i class="fas fa-times"></i>
                     </button>
 
-                    <router-link :to="'/favorites/' + recipe.id" class="text-decoration-none text-dark">
+                    <router-link :to="'/postdetails/' + recipe.id" class="text-decoration-none text-dark">
                         <img :src="'http://localhost:3000/' + (recipe.firstImage ? recipe.firstImage : recipe.image)"
                             class="card-img-top rounded-top img-fluid" alt="Recipe Image"
                             v-if="recipe.firstImage || recipe.image">

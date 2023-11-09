@@ -23,16 +23,18 @@
             <div class="col-3 mt-3" v-for="recipe in recipes" :key="recipe.id">
                 <div class="card h-100 rounded shadow-sm position-relative"
                     style="background-color: rgba(255, 255, 255, 0.12);">
-                    <img :src="apiURL(recipe.firstImage)" class="card-img-top rounded-top img-fluid" alt="Post Image">
-                    <div class="card-body text-light">
-                        <h5 class="card-title" style="font-weight: bold;">{{ recipe.name }}</h5>
-                        <div class="row">
-                            <p class="card-text col-6 text-light" style="color: #555; font-size: 13px;">Cooking Time: {{
-                                recipe.cookingTime }} minutes</p>
-                            <p class="card-text col-6 text-light" style="color: #555; font-size: 13px;">Serves: {{
-                                recipe.servingFor }} people</p>
+                    <router-link :to="'/postdetails/' + recipe.id" class="text-decoration-none text-dark">
+                        <img :src="apiURL(recipe.firstImage)" class="card-img-top rounded-top img-fluid" alt="Post Image">
+                        <div class="card-body text-light">
+                            <h5 class="card-title" style="font-weight: bold;">{{ recipe.name }}</h5>
+                            <div class="row">
+                                <p class="card-text col-6 text-light" style="color: #555; font-size: 13px;">Cooking Time: {{
+                                    recipe.cookingTime }} minutes</p>
+                                <p class="card-text col-6 text-light" style="color: #555; font-size: 13px;">Serves: {{
+                                    recipe.servingFor }} people</p>
+                            </div>
                         </div>
-                    </div>
+                    </router-link>
                 </div>
             </div>
         </div>

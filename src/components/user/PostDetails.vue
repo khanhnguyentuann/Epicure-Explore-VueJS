@@ -5,9 +5,7 @@
 
         <!-- Post Header -->
         <div class="d-flex align-items-center mb-1">
-            <router-link to="/favorites">
-                <i class="bi bi-reply-fill" style="font-size: 24px; color: grey;"></i>
-            </router-link>
+            <i class="bi bi-reply-fill click" style="font-size: 24px; color: grey;" @click="goBack"></i>
             <img :src="apiURL(recipe.user.avatar)" alt="User Avatar" class="ml-3 click user-avatar"
                 @click="goToUserProfile(recipe.user_id)">
 
@@ -161,8 +159,9 @@
             <div class="card-body">
                 <div v-for="comment in recipe.comments" :key="comment.id">
                     <div class="d-flex flex-start mb-2">
-                        <img :src="apiURL(comment.userAvatar)" alt="User Avatar" class="rounded-circle shadow-1-strong me-3"
-                            width="40" height="40">
+                        <img v-if="comment.userAvatar" :src="apiURL(comment.userAvatar)" alt="User Avatar"
+                            class="rounded-circle shadow-1-strong me-3" width="40" height="40">
+
                         <div class="flex-grow-1 flex-shrink-1 ml-3">
                             <div>
                                 <div class="d-flex justify-content-between align-items-center">
@@ -216,7 +215,7 @@ const ROUTES = {
 };
 
 export default {
-    name: 'FavoriteRecipeDetail',
+    name: 'PostDetails',
     components: {
         ShareModal,
     },
@@ -231,6 +230,10 @@ export default {
 
         const apiURL = (relativePath) => {
             return window.baseURL + '/' + relativePath;
+        };
+
+        const goBack = () => {
+            router.go(-1);
         };
 
         onMounted(async () => {
@@ -318,6 +321,7 @@ export default {
         };
 
         const reloadComments = async (recipeId) => {
+
             try {
                 const { data: commentsData } = await axios.get(apiURL(ROUTES.comment(recipeId)));
                 if (recipe.value && recipe.value.id === recipeId) {
@@ -365,7 +369,8 @@ export default {
             goToUserProfile,
             userName: computed(() => user?.name),
             userStore,
-            shareLinkCopy
+            shareLinkCopy,
+            goBack
         };
     }
 }

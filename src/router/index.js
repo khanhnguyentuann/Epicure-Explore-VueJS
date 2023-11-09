@@ -73,9 +73,9 @@ const routes = [
         component: () => import('../components/user/FavoriteRecipe.vue')
       },
       {
-        path: 'favorites/:id',
-        name: 'FavoriteRecipeDetail',
-        component: () => import('../components/user/FavoriteRecipeDetail.vue'),
+        path: 'postdetails/:id',
+        name: 'PostDetails',
+        component: () => import('../components/user/PostDetails.vue'),
       },
       {
         path: 'tagsearch',
