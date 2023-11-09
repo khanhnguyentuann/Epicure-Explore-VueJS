@@ -14,6 +14,20 @@
             </div>
         </div>
 
+        <!-- Hiển thị lịch sử tìm kiếm -->
+        <div v-if="searchHistory.length && !searchAttempted" class="mt-3">
+            <h5>Recent Searches:</h5>
+            <ul class="list-group">
+                <li v-for="(item, index) in searchHistory" :key="index"
+                    class="list-group-item list-group-item-action list-group-item-dark d-flex justify-content-between align-items-center">
+                    <span style="cursor: pointer;" @click="title = item; searchByTitle()">{{ item }}</span>
+                    <span @click="removeFromSearchHistory(index)" style="cursor: pointer;">
+                        <i class="fas fa-times"></i>
+                    </span>
+                </li>
+            </ul>
+        </div>
+
         <!-- Thông báo kết quả tìm kiếm cho tiêu đề cụ thể -->
         <div v-if="searchAttempted" class="mt-3">
             <p>Search results for the title: "{{ title }}"</p>
@@ -62,12 +76,14 @@ export default {
         const recipes = ref([]);
         const searchAttempted = ref(false);
         const router = useRouter();
+        const searchHistory = ref([]);
 
         const apiURL = (relativePath) => {
             return window.baseURL + '/' + relativePath;
         };
 
         onMounted(() => {
+            searchHistory.value = JSON.parse(localStorage.getItem('searchHistory')) || [];
             const titleFromQuery = router.currentRoute.value.query.title;
             if (titleFromQuery) {
                 title.value = titleFromQuery;
@@ -75,13 +91,33 @@ export default {
             }
         });
 
+        const updateSearchHistory = (newSearch) => {
+            let searches = JSON.parse(localStorage.getItem('searchHistory')) || [];
+            if (!searches.includes(newSearch)) {
+                searches.unshift(newSearch); // Thêm vào đầu danh sách
+                searches = searches.slice(0, 5); // Giữ chỉ 5 mục tìm kiếm gần đây
+                localStorage.setItem('searchHistory', JSON.stringify(searches)); // Cập nhật localStorage
+                searchHistory.value = searches; // Cập nhật trạng thái reactive
+            }
+        };
+
+        const removeFromSearchHistory = (index) => {
+            let searches = searchHistory.value;
+            searches.splice(index, 1); // Xoá item ở vị trí index
+            localStorage.setItem('searchHistory', JSON.stringify(searches)); // Cập nhật localStorage
+            searchHistory.value = searches; // Cập nhật trạng thái reactive
+        };
+
+
         const searchByTitle = async () => {
             searchAttempted.value = true;
+            updateSearchHistory(title.value);
             try {
                 const response = await axios.get(apiURL(ROUTES.searchByTitle), {
                     params: { title: title.value }
                 });
                 recipes.value = response.data.recipes;
+
                 // Cập nhật URL sau khi tìm kiếm
                 router.push({ path: '/titlesearch', query: { title: title.value } });
             } catch (error) {
@@ -113,7 +149,9 @@ export default {
             searchAttempted,
             clearSearch,
             title,
-            recipes
+            recipes,
+            searchHistory,
+            removeFromSearchHistory
         };
     }
 }
@@ -165,4 +203,6 @@ export default {
     transition: all 0.3s ease;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
+
+/* Hover for recent searches */
 </style>
