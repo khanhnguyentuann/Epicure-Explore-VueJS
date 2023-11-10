@@ -342,7 +342,16 @@ export default {
 
         const toggleReplyComments = async (comment) => {
             await nextTick();
-            showReplyInput.value[comment.id] = !showReplyInput.value[comment.id];
+            const isCurrentlyOpen = showReplyInput.value[comment.id];
+
+            // Đặt tất cả các input trả lời về trạng thái đóng
+            Object.keys(showReplyInput.value).forEach(key => {
+                showReplyInput.value[key] = false;
+            });
+
+            if (!isCurrentlyOpen) {
+                showReplyInput.value[comment.id] = true;
+            }
         };
 
         const toggleLike = async (recipe) => {
