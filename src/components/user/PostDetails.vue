@@ -157,22 +157,56 @@
             </div>
 
             <div class="card-body">
-                <div v-for="comment in recipe.comments" :key="comment.id">
-                    <div class="d-flex flex-start mb-2">
-                        <img v-if="comment.userAvatar" :src="apiURL(comment.userAvatar)" alt="User Avatar"
-                            class="rounded-circle shadow-1-strong me-3" width="40" height="40">
-
-                        <div class="flex-grow-1 flex-shrink-1 ml-3">
-                            <div>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <p class="mb-1">
-                                        <strong>{{ comment.userName }}</strong>
-                                        - <span class="small">{{ formatTime(comment.created_at) }}</span>
-                                    </p>
-                                </div>
-                                <p class="small mb-0">
-                                    {{ comment.content }}
+                <div v-for="comment in recipe.comments" :key="comment.id" class="row mb-3">
+                    <!-- Bình luận gốc -->
+                    <div class="col">
+                        <div class="d-flex flex-start">
+                            <img :src="apiURL(comment.userAvatar)" alt="User Avatar"
+                                class="rounded-circle shadow-1-strong me-3" width="40" height="40">
+                            <div class="flex-grow-1">
+                                <p class="mb-1">
+                                    <strong>{{ comment.userName }}</strong> - <span class="small">{{
+                                        formatTime(comment.created_at) }}</span>
                                 </p>
+                                <p class="small mb-2">{{ comment.content }}</p>
+                            </div>
+                            <div class="col-4 btn btn-hover d-flex justify-content-center align-items-center"
+                                @click="toggleReplyComments(comment)">
+                                <i class="far fa-comment-alt"></i> Trả lời
+                            </div>
+                        </div>
+
+                        <!-- Trường nhập để trả lời -->
+                        <div class="reply-input d-flex align-items-center" v-if="showReplyInput[comment.id]">
+                            <div class="row">
+                                <div class="col-md-10">
+                                    <textarea v-model="replyText[comment.id]" placeholder="Trả lời..."
+                                        style="background-color: rgba(255, 255, 255, 0.12); color: #fff;"
+                                        class="form-control" rows="1"></textarea>
+                                </div>
+                                <div class="col-md-2 d-flex justify-content-center align-items-center">
+                                    <button @click="addReply(recipe.id, comment.id)" class="btn btn-primary btn-sm mt-2">
+                                        Trả lời
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                    <!-- Hiển thị các bình luận trả lời -->
+                    <div v-if="comment.replies && comment.replies.length" class="col-11 offset-1">
+                        <div v-for="reply in comment.replies" :key="reply.id" class="reply mt-2">
+                            <img :src="apiURL(reply.userAvatar)" alt="User Avatar"
+                                class="rounded-circle shadow-1-strong me-3" width="30" height="30">
+                            <div class="flex-grow-1">
+                                <p class="mb-1">
+                                    <strong>{{ reply.userName }}</strong> - <span class="small">{{
+                                        formatTime(reply.created_at) }}</span>
+                                </p>
+                                <p class="small mb-0">{{ reply.content }}</p>
                             </div>
                         </div>
                     </div>
@@ -210,6 +244,7 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 const ROUTES = {
     favoriteDetail: id => `favorite/${id}`,
     comment: id => `newsfeed/${id}/comments`,
+    replycomment: id => `newsfeed/comments/${id}/replies`,
     unlike: id => `newsfeed/unlike/${id}`,
     like: id => `newsfeed/like/${id}`
 };
@@ -227,6 +262,8 @@ export default {
         const newCommentText = ref({});
         const showComments = ref({});
         const showSteps = ref({});
+        const replyText = ref({});
+        const showReplyInput = ref({});
 
         const apiURL = (relativePath) => {
             return window.baseURL + '/' + relativePath;
@@ -289,6 +326,20 @@ export default {
             });
         };
 
+        const toggleReplyComments = async (comment) => {
+            await nextTick();
+            const isCurrentlyOpen = showReplyInput.value[comment.id];
+
+            // Đặt tất cả các input trả lời về trạng thái đóng
+            Object.keys(showReplyInput.value).forEach(key => {
+                showReplyInput.value[key] = false;
+            });
+
+            if (!isCurrentlyOpen) {
+                showReplyInput.value[comment.id] = true;
+            }
+        };
+
         const toggleLike = async (recipe) => {
             try {
                 if (recipe.isLiked) {
@@ -332,6 +383,26 @@ export default {
             }
         };
 
+        const addReply = async (recipeId, commentId) => {
+            try {
+                // Kiểm tra xem nội dung trả lời có trống không
+                if (!replyText.value[commentId]) {
+                    console.log('Nội dung trả lời không được trống');
+                    return; // Ngừng thực thi hàm nếu trường trả lời trống
+                }
+                const { data } = await axios.post(apiURL(ROUTES.replycomment(commentId)), {
+                    userId: userStore.user.id,
+                    content: replyText.value[commentId],
+                });
+
+                // Cập nhật UI sau khi thêm trả lời
+                replyText.value[commentId] = '';
+                reloadComments(recipeId);
+            } catch (error) {
+                console.error('Lỗi khi thêm trả lời:', error);
+            }
+        };
+
         const difficultyToStars = (difficulty) => {
             const difficultyMap = { 'dễ': 1, 'trung bình': 2, 'khó': 3 };
             return difficultyMap[difficulty] || 1;
@@ -370,7 +441,11 @@ export default {
             userName: computed(() => user?.name),
             userStore,
             shareLinkCopy,
-            goBack
+            goBack,
+            replyText,
+            addReply,
+            toggleReplyComments,
+            showReplyInput
         };
     }
 }
@@ -441,5 +516,25 @@ i.fas.fa-star {
 
 i.far.fa-star {
     color: lightgray;
+}
+
+/* Reply comment */
+.reply-input textarea {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.reply {
+    display: flex;
+    align-items: flex-start;
+}
+
+.reply img {
+    margin-right: 10px;
+}
+
+.card-body .col-11.offset-1 {
+    padding-left: 20px;
+    border-left: 1px solid #eee;
 }
 </style>

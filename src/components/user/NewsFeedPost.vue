@@ -13,11 +13,11 @@
 
             <span class="ml-2 text-muted">{{ formatTime(recipe.created_at) }}</span>
             <div class="ml-auto dropdown">
-                <div class="btn btn-sm" data-toggle="dropdown"
+                <div class="btn btn-sm" :id="'dropdownMenuButton-' + recipe.id" data-toggle="dropdown"
                     style="background-color: rgba(255, 255, 255, 0.12); color: #fff;">
                     ...
                 </div>
-                <div class=" click dropdown-menu dropdown-menu-right" aria-labelledby="Action">
+                <div class=" click dropdown-menu dropdown-menu-right" :aria-labelledby="'dropdownMenuButton-' + recipe.id">
                     <a class="dropdown-item" v-if="!recipe.isSaved" @click="saveRecipe(recipe.id)">Lưu bài viết</a>
                     <a class="dropdown-item" v-else @click="unsaveRecipe(recipe.id)">Hủy lưu bài viết</a>
                     <a class="dropdown-item" v-if="userStore.user && recipe.user_id === userStore.user.id"
@@ -243,7 +243,7 @@
 <script>
 import ShareModal from './ShareModal.vue';
 import axios from 'axios';
-import { ref, onMounted, nextTick } from 'vue';
+import { ref, onMounted, watch, nextTick } from 'vue';
 import moment from 'moment';
 import 'moment/locale/vi';
 import { useRouter } from 'vue-router';
@@ -280,6 +280,17 @@ export default {
             return window.baseURL + '/' + relativePath;
         };
 
+        const initializeDropdowns = () => {
+            nextTick(() => {
+                recipes.value.forEach(recipe => {
+                    $('#dropdownMenuButton-' + recipe.id).dropdown();
+                });
+            });
+        };
+
+        watch(recipes, () => {
+            initializeDropdowns();
+        });
 
         onMounted(async () => {
             await fetchInitialData();
@@ -292,7 +303,7 @@ export default {
                     $('#exampleModal').modal('show');
                 });
             });
-            $('#Action').dropdown();
+            initializeDropdowns();
         });
 
         const fetchInitialData = async () => {
