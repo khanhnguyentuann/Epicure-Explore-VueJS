@@ -1,45 +1,56 @@
 <!-- eslint-disable vue/attributes-order -->
 <!-- eslint-disable vue/first-attribute-linebreak -->
 <template>
-    <div class="container">
+    <div class="container my-4">
         <button @click="goBack" class="btn btn-secondary mb-3">Quay lại</button>
 
-        <div class="card" style="color: #FFFFFF;background-color: #343a40;">
+        <div class="card bg-dark text-white">
             <div class="card-header">
-                <h1>{{ recipe.name }}</h1>
+                <h1 class="text-center">{{ recipe.name }}</h1>
             </div>
             <div class="card-body">
-                <p><strong>ID công thức:</strong> {{ recipe.id }}</p>
-                <p><strong>Người tạo:</strong> {{ recipe.creator }}</p>
-                <p><strong>Thời gian chuẩn bị:</strong> {{ recipe.preparationTime }}</p>
-                <p><strong>Thời gian chế biến:</strong> {{ recipe.cookingTime }}</p>
-                <p><strong>Dành cho:</strong> {{ recipe.servingFor }}</p>
-                <p><strong>Mức độ khó:</strong> {{ recipe.difficulty }}</p>
-                <p><strong>Ngày tạo:</strong> {{ formatDate(recipe.created_at) }}</p>
-                <p>
-                    <strong>Các bước chế biến:</strong>
-                <ul v-if="recipe.steps && recipe.steps.length">
-                    <li v-for="step in recipe.steps" :key="step">{{ step }}</li>
-                </ul>
-
-                </p>
-
-                <h5>Các nguyên liệu chính:</h5>
-                <ul v-if="recipe.ingredients && recipe.ingredients.length">
-                    <li v-for="ingredient in recipe.ingredients" :key="ingredient.name">{{ ingredient.name }} - {{
-                        ingredient.amount }}</li>
-                </ul>
-
-                <h5>Hashtags:</h5>
-                <ul v-if="recipe.tags && recipe.tags.length">
-                    <li v-for="tag in recipe.tags" :key="tag">{{ tag }}</li>
-                </ul>
-
-                <h5>Hình ảnh minh hoạ:</h5>
-                <div v-if="recipe.images && recipe.images.length">
-                    <img v-for="image in recipe.images" :key="image" :src="apiURL(image)" class="img-fluid"
-                        alt="Recipe Image">
+                <div class="row">
+                    <div class="col-md-3">
+                        <p class="card-text"><strong>ID công thức:</strong> {{ recipe.id }}</p>
+                        <p class="card-text"><strong>Người tạo:</strong> {{ recipe.creator }}</p>
+                    </div>
+                    <div class="col-md-3">
+                        <p class="card-text"><strong>Thời gian chuẩn bị:</strong> {{ recipe.preparationTime }}</p>
+                        <p class="card-text"><strong>Thời gian chế biến:</strong> {{ recipe.cookingTime }}</p>
+                    </div>
+                    <div class="col-md-3">
+                        <p class="card-text"><strong>Mức độ khó:</strong> {{ recipe.difficulty }}</p>
+                        <p class="card-text"><strong>Ngày tạo:</strong> {{ formatDate(recipe.created_at) }}</p>
+                    </div>
+                    <div class="col-md-3">
+                        <p class="card-text"><strong>Dành cho:</strong> {{ recipe.servingFor }}</p>
+                    </div>
                 </div>
+
+
+                <h5 class="card-title mt-4">Các bước chế biến:</h5>
+                <ul class="list-group list-group-flush">
+                    <li v-for="(step, index) in recipe.steps" :key="index" class="list-group-item"
+                        style="background-color: rgba(255, 255, 255, 0.12); color: #fff;">
+                        <strong>Step {{ index + 1 }}:</strong> {{ step }}
+                    </li>
+                </ul>
+
+                <h5 class="card-title mt-4">Hashtags:</h5>
+                <div class="row">
+                    <div class="col-md-2" v-for="tag in recipe.tags" :key="tag">
+                        <span class="badge bg-dark text-white">{{ tag }}</span>
+                    </div>
+                </div>
+
+
+                <h5 class="card-title mt-4">Hình ảnh minh hoạ:</h5>
+                <div class="row">
+                    <div class="col-md-4" v-for="image in recipe.images" :key="image">
+                        <img :src="apiURL(image)" class="img-fluid img-thumbnail my-2" alt="Recipe Image">
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>

@@ -1,14 +1,17 @@
+<!-- eslint-disable vue/attributes-order -->
 <!-- eslint-disable vue/max-attributes-per-line -->
 <!-- eslint-disable vue/html-self-closing -->
 <!-- eslint-disable vue/html-indent -->
 <template>
     <div class="add-tag-container">
+        <button @click="goBack" class="btn btn-secondary mb-3">Quay lại</button>
+
         <div class="header-section">
             <h3>Add Tag</h3>
         </div>
         <div class="card">
             <div class="card-body">
-                <form @submit.prevent="addCategory">
+                <form @submit.prevent="addHashtag">
                     <div class="mb-3">
                         <label for="tagName" class="form-label">Name the tag</label>
                         <input id="tagName" v-model="name" type="text" class="form-control" required>
@@ -21,34 +24,52 @@
         </div>
     </div>
 </template>
-  
+
 <script>
+import { ref } from 'vue';
 import axios from 'axios';
+import { useRouter } from 'vue-router';
+
+const ROUTES = {
+    addHashtag: `tags`
+};
 
 export default {
-    data() {
-        return {
-            name: '',
+    setup() {
+        const name = ref('');
+        const router = useRouter();
+
+        const apiURL = (relativePath) => {
+            return window.baseURL + '/' + relativePath;
         };
-    },
-    methods: {
-        async addCategory() {
+
+        const goBack = () => {
+            router.back();  // điều hướng quay lại trang trước
+        };
+
+        const addHashtag = async () => {
             try {
-                const response = await axios.post('http://localhost:3000/tags', {
-                    name: this.name,
+                const response = await axios.post(apiURL(ROUTES.addHashtag), {
+                    name: name.value,
                 });
                 if (response.status === 201) {
-                    alert('Tag added successfully');
-                    this.$router.push('/admin/tag-list');
+                    alert('Hashtag added successfully');
                 } else {
-                    alert('Failed to add tag. Please try again.');
+                    alert('Failed to add hashtag. Please try again.');
                 }
             } catch (error) {
-                console.error("Error adding tag:", error);
-                alert('Error adding tag. Please try again.');
+                console.error("Error adding hashtag:", error);
+                alert('Error adding hashtag. Please try again.');
             }
-        }
-    }
+        };
+
+        return {
+            name,
+            addHashtag,
+            apiURL,
+            goBack
+        };
+    },
 };
 </script>
   
@@ -64,5 +85,10 @@ export default {
 .header-section {
     margin-bottom: 2rem;
     text-align: center;
+}
+
+.card {
+    background-color: #6c757d;
+    border-color: #6c757d;
 }
 </style>

@@ -16,21 +16,17 @@
 
                 <div class="col-lg-6">
                     <div class="card2 card border-0 px-4 py-5">
-                        <div class="row mb-4 px-3">
-                            <h6 class="mb-0 mr-4 mt-2">Sign up with</h6>
-                            <!-- <div class="facebook text-center mr-3">
-                                <div class="fa fa-facebook"></div>
+                        <div class="row px-3">
+                            <h6 class="mb-0 col mr-4 mt-2">Login with </h6>
+                            <div class="social-contact ml-4 ml-sm-5 mb-2 col">
+                                <span class="fab fa-facebook-f mr-4 text-sm"></span>
+                                <span class="fab fa-google-plus-g mr-4 text-sm"></span>
+                                <span class="fab fa-linkedin-in mr-4 text-sm"></span>
+                                <span class="fab fa-twitter mr-4 mr-sm-5 text-sm"></span>
                             </div>
-                            <div class="twitter text-center mr-3">
-                                <div class="fa fa-twitter"></div>
-                            </div>
-                            <div class="linkedin text-center mr-3">
-                                <div class="fa fa-linkedin"></div>
-                            </div> -->
                         </div>
-                        <div class="row px-3 mb-4">
+                        <div class="row px-2 mb-4">
                             <div class="line"></div>
-                            <small class="or text-center">Or</small>
                             <div class="line"></div>
                         </div>
                         <form @submit.prevent="register">
@@ -76,12 +72,11 @@
 
             <div class="bg-blue py-4">
                 <div class="row px-3">
-                    <!-- <small class="ml-4 ml-sm-5 mb-2">Copyright &copy; 2023. All rights reserved.</small> -->
-                    <div class="social-contact ml-4 ml-sm-auto">
-                        <span class="fa fa-facebook mr-4 text-sm"></span>
-                        <span class="fa fa-google-plus mr-4 text-sm"></span>
-                        <span class="fa fa-linkedin mr-4 text-sm"></span>
-                        <span class="fa fa-twitter mr-4 mr-sm-5 text-sm"></span>
+                    <div class="social-contact ml-4 ml-sm-5 mb-2">
+                        <span class="fab fa-facebook-f mr-4 text-sm"></span>
+                        <span class="fab fa-google-plus-g mr-4 text-sm"></span>
+                        <span class="fab fa-linkedin-in mr-4 text-sm"></span>
+                        <span class="fab fa-twitter mr-4 mr-sm-5 text-sm"></span>
                     </div>
                 </div>
             </div>

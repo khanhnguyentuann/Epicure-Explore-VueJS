@@ -8,29 +8,31 @@
         <div class="col-md-8 d-flex flex-column justify-content-center">
             <h2>{{ userName }}</h2>
             <div class="text-left">
-                <button class="btn btn-light" v-if="friendshipStatus === 'none'" @click="sendFriendRequest">
-                    Thêm bạn bè
+                <button class="btn btn-light mr-2" v-if="friendshipStatus === 'none'" @click="sendFriendRequest">
+                    Add Friend
                 </button>
-                <button class="btn btn-light" v-if="friendshipStatus === 'pending' && requestDirection === 'outgoing'"
+                <button class="btn btn-light mr-2" v-if="friendshipStatus === 'pending' && requestDirection === 'outgoing'"
                     @click="cancelRequest">
-                    Huỷ lời mời
+                    Cancel Request
                 </button>
-                <button class="btn btn-light" @click="acceptRequest"
+                <button class="btn btn-light mr-2" @click="acceptRequest"
                     v-if="friendshipStatus === 'pending' && requestDirection === 'incoming'">
-                    Chấp nhận lời mời
+                    Accept Request
                 </button>
-                <button class="btn btn-light" @click="cancelRequest"
+                <button class="btn btn-light mr-2" @click="cancelRequest"
                     v-if="friendshipStatus === 'pending' && requestDirection === 'incoming'">
-                    Xoá lời mời
+                    Decline Request
                 </button>
-                <button class="btn btn-light" @click="unfriend" v-if="friendshipStatus === 'accepted'">
-                    Hủy kết bạn
+                <button class="btn btn-light dropdown-toggle mr-2" v-if="friendshipStatus === 'accepted'"
+                    :key="friendshipStatus" id="friendDropdown" data-toggle="dropdown">
+                    Friend
                 </button>
-                <button class="btn btn-light" disabled v-if="friendshipStatus === 'accepted'">
-                    Bạn bè
-                </button>
-                <button class="btn btn-light" @click="navigateToChat">
-                    Nhắn tin
+
+                <div class="dropdown-menu">
+                    <button class="dropdown-item" @click="unfriend">Unfriend</button>
+                </div>
+                <button class="btn btn-light mr-2" @click="navigateToChat">
+                    Message
                 </button>
             </div>
         </div>
@@ -47,6 +49,10 @@ import { useRouter } from 'vue-router';
 const ROUTES = {
     conversationCheck: `conversation/conversation-check`,
     createConversation: `conversation/create-conversation`,
+    sendFriendRequest: `friendship/send-request`,
+    acceptRequest: `friendship/accept-request`,
+    cancelRequest: `friendship/cancel-request`,
+    unfriend: `friendship/unfriend`
 };
 
 export default {
@@ -105,7 +111,7 @@ export default {
 
         async function sendFriendRequest() {
             try {
-                await axios.post(`${BASE_URL}/friendship/send-request`, { userId1: userStore.user.id, userId2: props.userId });
+                await axios.post(apiURL(ROUTES.sendFriendRequest), { userId1: userStore.user.id, userId2: props.userId });
                 friendshipStore.setFriendshipStatus('pending');
                 friendshipStore.setRequestDirection('outgoing');
             } catch (error) {
@@ -115,7 +121,7 @@ export default {
 
         async function acceptRequest() {
             try {
-                await axios.post(`${BASE_URL}/friendship/accept-request`, { userId1: userStore.user.id, userId2: props.userId });
+                await axios.post(apiURL(ROUTES.acceptRequest), { userId1: userStore.user.id, userId2: props.userId });
                 friendshipStore.setFriendshipStatus('accepted');
                 alert('Cả hai đã trở thành bạn bè!');
             } catch (error) {
@@ -125,7 +131,7 @@ export default {
 
         async function cancelRequest() {
             try {
-                await axios.delete(`${BASE_URL}/friendship/cancel-request`, { params: { userId1: userStore.user.id, userId2: props.userId } });
+                await axios.delete(apiURL(ROUTES.cancelRequest), { params: { userId1: userStore.user.id, userId2: props.userId } });
                 friendshipStore.setFriendshipStatus('none');
             } catch (error) {
                 handleErrors('Failed to cancel friend request', error);
@@ -135,7 +141,7 @@ export default {
         async function unfriend() {
             try {
                 if (window.confirm('Bạn có chắc chắn muốn hủy kết bạn không?')) {
-                    await axios.delete(`${BASE_URL}/friendship/unfriend`, {
+                    await axios.delete(apiURL(ROUTES.unfriend), {
                         params: { userId1: userStore.user.id, userId2: props.userId }
                     });
 

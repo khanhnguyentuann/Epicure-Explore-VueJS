@@ -6,6 +6,7 @@
 <!-- eslint-disable vue/html-indent -->
 <template>
     <div class="edit-user-container">
+        <button @click="goBack" class="btn btn-secondary mb-3">Quay lại</button>
         <div class="header-section">
             <h3>Update For This User</h3>
         </div>
@@ -79,6 +80,9 @@ export default {
         }
     },
     methods: {
+        goBack() {
+            this.$router.go(-1); // Điều hướng người dùng quay lại trang trước đó
+        },
         uploadAvatar(event) {
             const file = event.target.files[0];
             if (file) {

@@ -20,8 +20,7 @@
                         </div>
                         <div class="user_info">
                             <span>{{ conversation.otherUserName }}</span>
-                            <p>{{ conversation.otherUserName }} is online</p>
-                            <!-- Cần cập nhật logic để kiểm tra online/offline -->
+                            <p>{{ conversation.latestMessage }}</p>
                         </div>
                     </div>
                 </li>

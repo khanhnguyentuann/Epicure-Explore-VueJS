@@ -1,8 +1,11 @@
+<!-- eslint-disable vue/attributes-order -->
 <!-- eslint-disable vue/max-attributes-per-line -->
 <!-- eslint-disable vue/html-self-closing -->
 <!-- eslint-disable vue/html-indent -->
 <template>
     <div class="add-ingredient-container">
+        <button @click="goBack" class="btn btn-secondary mb-3">Quay lại</button>
+
         <div class="header-section">
             <h3>Add Ingredient</h3>
         </div>
@@ -23,23 +26,34 @@
 </template>
   
 <script>
+import { ref } from 'vue';
 import axios from 'axios';
+import { useRouter } from 'vue-router';
+
+const ROUTES = {
+    addIngredient: `ingredients`,
+};
 
 export default {
-    data() {
-        return {
-            name: '',
+    setup() {
+        const name = ref('');
+        const router = useRouter();
+
+        const apiURL = (relativePath) => {
+            return window.baseURL + '/' + relativePath;
         };
-    },
-    methods: {
-        async addIngredient() {
+
+        const goBack = () => {
+            router.back();  // điều hướng quay lại trang trước
+        };
+
+        const addIngredient = async () => {
             try {
-                const response = await axios.post('http://localhost:3000/ingredients', {
-                    name: this.name,
+                const response = await axios.post(apiURL(ROUTES.addIngredient), {
+                    name: name.value,
                 });
                 if (response.status === 201) {
                     alert('Ingredient added successfully');
-                    // this.$router.push('/admin/ingredient-list');
                 } else {
                     alert('Failed to add ingredient. Please try again.');
                 }
@@ -47,8 +61,15 @@ export default {
                 console.error("Error adding ingredient:", error);
                 alert('Error adding ingredient. Please try again.');
             }
-        }
-    }
+        };
+
+        return {
+            name,
+            addIngredient,
+            apiURL,
+            goBack,
+        };
+    },
 };
 </script>
   
@@ -64,5 +85,10 @@ export default {
 .header-section {
     margin-bottom: 2rem;
     text-align: center;
+}
+
+.card {
+    background-color: #6c757d;
+    border-color: #6c757d;
 }
 </style>

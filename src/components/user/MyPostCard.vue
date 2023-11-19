@@ -1,10 +1,10 @@
 <!-- eslint-disable vue/attributes-order -->
 <!-- eslint-disable vue/first-attribute-linebreak -->
 <template>
-    <!-- Khi không có bài viết -->
-    <p v-if="!userRecipes.length" class="text-center mt-5">Bạn chưa đăng bài viết nào!</p>
+    <!-- When there are no posts -->
+    <p v-if="!userRecipes.length" class="text-center mt-5">You haven't posted anything yet!</p>
 
-    <!-- Hiển thị danh sách bài đăng của người dùng -->
+    <!-- Display user's recipe list -->
     <div v-for="recipe in userRecipes" :key="recipe.id" class="recipe-card card mb-4 p-3">
 
         <!-- Post Header -->
@@ -22,10 +22,9 @@
                     ...
                 </div>
                 <div class=" click dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" v-if="!recipe.isSaved" @click="saveRecipe(recipe.id)">Lưu bài
-                        viết</a>
-                    <a class="dropdown-item" v-else @click="unsaveRecipe(recipe.id)">Hủy lưu bài viết</a>
-                    <a class="dropdown-item" href="#" @click.prevent="deleteRecipe(recipe.id)">Xóa bài viết</a>
+                    <a class="dropdown-item" v-if="!recipe.isSaved" @click="saveRecipe(recipe.id)">Bookmark</a>
+                    <a class="dropdown-item" v-else @click="unsaveRecipe(recipe.id)">Unbookmark</a>
+                    <a class="dropdown-item" href="#" @click.prevent="deleteRecipe(recipe.id)">Delete Post</a>
                 </div>
             </div>
         </div>
@@ -38,19 +37,19 @@
 
             <div class="row">
                 <p class="col-6 font-weight-bold">
-                    Độ khó:
+                    Difficulty:
                     <i v-for="n in difficultyToStars(recipe.difficulty)" :key="n" class="fas fa-star"></i>
                 </p>
 
                 <p class="col-6 text-right font-weight-bold">
                     <i class="fas fa-users mr-2"></i>
-                    Dành cho: {{ recipe.servingFor }} người
+                    Serves: {{ recipe.servingFor }} people
                 </p>
             </div>
 
             <p class="font-weight-bold">
                 <i class="fas fa-utensils mr-2"></i>
-                Nguyên liệu chính:
+                Main Ingredients:
             </p>
             <div class="row ml-2 mb-3">
                 <div class="col-4 font-italic" v-for="ingredient in getMainIngredientsArray(recipe.ingredients)"
@@ -59,7 +58,7 @@
                 </div>
             </div>
 
-            <!-- Carousel hiển thị ảnh bài viết -->
+            <!-- Carousel displaying recipe images -->
             <div v-if="recipe.images && recipe.images.length" :id="`carousel-${recipe.id}`" class="carousel slide"
                 data-ride="carousel">
                 <ol class="carousel-indicators">
@@ -85,33 +84,34 @@
             <div class="row mt-3">
                 <p class="col-6 font-weight-bold">
                     <i class="fas fa-clock"></i>
-                    Thời gian chuẩn bị: {{ recipe.preparationTime }} phút
+                    Preparation Time: {{ recipe.preparationTime }} minutes
                 </p>
                 <p class="col-6 text-right font-weight-bold">
                     <i class="fas fa-clock"></i>
-                    Thời gian chế biến: {{ recipe.cookingTime }} phút
+                    Cooking Time: {{ recipe.cookingTime }} minutes
                 </p>
             </div>
 
             <div class="text-justify mb-3">
                 <p class="font-weight-bold mb-2">
-                    <i class="fas fa-list-ul"></i> Các bước chế biến:
+                    <i class="fas fa-list-ul"></i> Cooking Steps:
                 </p>
 
                 <span class="click font-weight-bold font-italic text-primary mb-2 d-block" v-if="!showSteps[recipe.id]"
-                    @click="showSteps[recipe.id] = true">Xem thêm</span>
+                    @click="showSteps[recipe.id] = true">Read more</span>
 
                 <div v-if="showSteps[recipe.id]">
                     <ul class="list-group list-group-flush">
                         <li v-for="(step, index) in recipe.steps" :key="index" class="list-group-item"
                             style="background-color: rgba(255, 255, 255, 0.12); color: #fff;">
-                            <strong>Bước {{ index + 1 }}:</strong> {{ step }}
+                            <strong>Step {{ index + 1 }}:</strong> {{ step }}
                         </li>
                     </ul>
                     <span class="click font-weight-bold font-italic text-primary mt-2 d-block"
-                        @click="showSteps[recipe.id] = false">Ẩn bớt</span>
+                        @click="showSteps[recipe.id] = false">Hide</span>
                 </div>
             </div>
+
 
             <div class="row" v-if="getHashtags(recipe.tags).length">
                 <div class="col-3 font-weight-bold">
@@ -136,23 +136,23 @@
                 </div>
 
                 <div class="col-6 text-right">
-                    {{ recipe.commentsCount }} Bình luận
+                    {{ recipe.commentsCount }} Comments
                 </div>
             </div>
 
             <div class="row mt-3 text-center">
                 <div v-if="recipe.isLiked" class="col-4 btn btn-hover" @click="toggleLike(recipe)">
-                    <i class="far fa-thumbs-up" style="color: blue;"></i> Thích
+                    <i class="far fa-thumbs-up" style="color: blue;"></i> Like
                 </div>
                 <div v-else class="col-4 btn btn-hover" @click="toggleLike(recipe)">
-                    <i class="far fa-thumbs-up"></i> Thích
+                    <i class="far fa-thumbs-up"></i> Like
                 </div>
 
                 <div class="col-4 btn btn-hover" @click="toggleComments(recipe)">
-                    <i class="far fa-comment-alt"></i> Bình luận
+                    <i class="far fa-comment-alt"></i> Comment
                 </div>
                 <div type="button" class="col-4 btn btn-hover" data-toggle="modal" data-target="#shareModal">
-                    <i class="fas fa-share"></i> Chia sẻ
+                    <i class="fas fa-share"></i> Share
                 </div>
             </div>
 
@@ -167,16 +167,16 @@
 
             <div class="card-header">
                 <i class="far fa-comment-alt mr-2"></i>
-                <span class="ml-2">Bình luận</span>
+                <span class="ml-2">Comments</span>
             </div>
 
             <div class="card-body">
                 <div v-for="comment in recipe.comments" :key="comment.id" class="row mb-3">
-                    <!-- Bình luận gốc -->
+                    <!-- Root Comment -->
                     <div class="col">
                         <div class="d-flex flex-start">
                             <img :src="apiURL(comment.userAvatar)" alt="User Avatar"
-                                class="rounded-circle shadow-1-strong me-3" width="40" height="40">
+                                class="rounded-circle shadow-1-strong me-3 mr-2" width="40" height="40">
                             <div class="flex-grow-1">
                                 <p class="mb-1">
                                     <strong>{{ comment.userName }}</strong> - <span class="small">{{
@@ -186,31 +186,28 @@
                             </div>
                             <div class="col-4 btn btn-hover d-flex justify-content-center align-items-center"
                                 @click="toggleReplyComments(comment)">
-                                <i class="far fa-comment-alt"></i> Trả lời
+                                <i class="far fa-comment-alt mr-2"></i> Reply
                             </div>
                         </div>
 
-                        <!-- Trường nhập để trả lời -->
+                        <!-- Reply Input Field -->
                         <div class="reply-input d-flex align-items-center" v-if="showReplyInput[comment.id]">
                             <div class="row">
                                 <div class="col-md-10">
-                                    <textarea v-model="replyText[comment.id]" placeholder="Trả lời..."
+                                    <textarea v-model="replyText[comment.id]" placeholder="Reply..."
                                         style="background-color: rgba(255, 255, 255, 0.12); color: #fff;"
                                         class="form-control" rows="1"></textarea>
                                 </div>
                                 <div class="col-md-2 d-flex justify-content-center align-items-center">
                                     <button @click="addReply(recipe.id, comment.id)" class="btn btn-primary btn-sm mt-2">
-                                        Trả lời
+                                        Reply
                                     </button>
                                 </div>
-
                             </div>
                         </div>
-
-
                     </div>
 
-                    <!-- Hiển thị các bình luận trả lời -->
+                    <!-- Display Replies -->
                     <div v-if="comment.replies && comment.replies.length" class="col-11 offset-1">
                         <div v-for="reply in comment.replies" :key="reply.id" class="reply mt-2">
                             <img :src="apiURL(reply.userAvatar)" alt="User Avatar"
@@ -230,11 +227,9 @@
             <div class="card-footer">
                 <div class="d-flex align-items-center">
                     <img :src="apiURL(userStore.user.avatar)" class="rounded-circle mr-2" width="40">
-
                     <textarea style="background-color: rgba(255, 255, 255, 0.12); color: #fff;" class="form-control"
-                        v-model="newCommentText[recipe.id]" rows="3" placeholder="Viết bình luận..."></textarea>
-
-                    <button class="btn btn-primary btn-sm ml-2" @click="addComment(recipe)">Gửi</button>
+                        v-model="newCommentText[recipe.id]" rows="3" placeholder="Write a comment..."></textarea>
+                    <button class="btn btn-primary btn-sm ml-2" @click="addComment(recipe)">Send</button>
                 </div>
             </div>
 

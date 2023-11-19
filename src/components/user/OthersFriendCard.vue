@@ -4,7 +4,7 @@
 <template>
     <div class="container mt-3">
         <ul class="list-group mt-3">
-            <p class="text-muted">{{ friends.length }} người bạn</p>
+            <p class="text-muted">{{ friends.length }} friends</p>
 
             <li v-for="friend in friends" :key="friend.id" style="background-color: rgba(255, 255, 255, 0.12);"
                 class="list-group-item d-flex align-items-center shadow-sm rounded" @click="goToUserProfile(friend.id)">
@@ -15,7 +15,7 @@
         </ul>
 
         <div v-if="friends.length === 0" class="text-muted text-center mt-3">
-            Người dùng này chưa có bạn bè nào!
+            This user has no friends yet!
         </div>
     </div>
 </template>

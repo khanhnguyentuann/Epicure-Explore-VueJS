@@ -13,7 +13,7 @@
                 <div class="user_info">
                     <span>Chat with {{ user?.name }}</span>
                     <!-- <p>{{ user?.messagesCount }} Messages</p> -->
-                    <p>1767 Messages</p>
+                    <!-- <p>1767 Messages</p> -->
                 </div>
                 <div class="video_cam">
                     <span><i class="fas fa-video"></i></span>

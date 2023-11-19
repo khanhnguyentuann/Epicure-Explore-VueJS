@@ -4,20 +4,20 @@
     <div class="container mt-3">
         <div class="row">
             <div class="col-6">
-                <h2>Lời mời kết bạn <span style="color: red;">{{ friendRequests.length }}</span></h2>
+                <h2>Friend Requests <span style="color: red;">{{ friendRequests.length }}</span></h2>
             </div>
             <div class="col-6 text-right">
-                Sắp xếp theo:
+                Sort by:
                 <select v-model="sortOrder" @change="sortFriendRequests">
-                    <option value="newest">Mới nhất</option>
-                    <option value="oldest">Cũ nhất</option>
+                    <option value="newest">Newest</option>
+                    <option value="oldest">Oldest</option>
                 </select>
             </div>
         </div>
 
         <ul class="list-group">
             <li v-if="friendRequests.length === 0" class="d-flex justify-content-center mt-3">
-                Bạn chưa có lời mời kết bạn nào!
+                You have no friend requests!
             </li>
             <li v-else v-for="request in friendRequests" :key="request.user_id1"
                 style="background-color: rgba(255, 255, 255, 0.12);"
@@ -31,8 +31,8 @@
                     <span class="ml-2 text-muted">{{ request.timeAgo }}</span>
                 </div>
                 <div>
-                    <button @click="acceptRequest(request.user_id1)" class="btn btn-primary mr-2">Chấp nhận lời mời</button>
-                    <button @click="declineRequest(request.user_id1)" class="btn btn-secondary">Xoá lời mời</button>
+                    <button @click="acceptRequest(request.user_id1)" class="btn btn-primary mr-2">Accept Request</button>
+                    <button @click="declineRequest(request.user_id1)" class="btn btn-secondary">Decline Request</button>
                 </div>
             </li>
         </ul>

@@ -1,6 +1,9 @@
 <!-- eslint-disable vue/first-attribute-linebreak -->
 <template>
   <div class="container mt-3">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h3>List of posts</h3>
+    </div>
     <!-- Search form -->
     <form class="form-inline d-flex justify-content-center md-form form-sm">
       <input class="form-control form-control-sm mr-3 w-75" type="text" placeholder="Search" aria-label="Search">

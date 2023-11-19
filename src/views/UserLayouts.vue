@@ -18,24 +18,24 @@
             </div>
             <div class="navbar-center">
 
-                <!-- Trang chủ -->
+                <!-- Home -->
                 <div @click="navigateTo('/', 'NewsFeed')"
                     :class="['navbar-center-item', selectedTab === 'NewsFeed' ? 'selected' : '']" data-toggle="tooltip"
-                    data-placement="bottom" title="Trang chủ">
+                    data-placement="bottom" title="Home">
                     <i class="bi bi-house-fill"></i>
                 </div>
 
-                <!-- Đăng bài -->
+                <!-- Create Post -->
                 <div @click="navigateTo('/create-recipe', 'CreatePost')"
                     :class="['navbar-center-item', selectedTab === 'CreatePost' ? 'selected' : '']" data-toggle="tooltip"
-                    data-placement="bottom" title="Tạo bài viết">
+                    data-placement="bottom" title="Create Post">
                     <i class="bi bi-patch-plus-fill"></i>
                 </div>
 
-                <!-- Yêu cầu kết bạn -->
+                <!-- Friend Requests -->
                 <div @click="navigateTo('/friends/requests', 'FriendRequest')"
                     :class="['navbar-center-item', selectedTab === 'FriendRequest' ? 'selected' : '', 'position-relative']"
-                    data-toggle="tooltip" data-placement="bottom" title="Yêu cầu kết bạn">
+                    data-toggle="tooltip" data-placement="bottom" title="Friend Requests">
                     <i class="bi bi-person-plus-fill"></i>
                     <span v-if="friendRequestsCount > 0"
                         class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
@@ -44,10 +44,10 @@
                     </span>
                 </div>
 
-                <!-- Message -->
+                <!-- Messages -->
                 <div @click="navigateTo('/conversations', 'Conversations')"
                     :class="['navbar-center-item', selectedTab === 'Conversations' ? 'selected' : '', 'position-relative']"
-                    data-toggle="tooltip" data-placement="bottom" title="Trò chuyện">
+                    data-toggle="tooltip" data-placement="bottom" title="Conversations">
                     <i class="bi bi-wechat"></i>
                     <span
                         class="position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle"
@@ -58,7 +58,7 @@
             <div class="navbar-right">
                 <div @click="selectTab('Notification')"
                     :class="['navbar-center-item', selectedTab === 'Notification' ? 'selected' : '', 'position-relative']"
-                    data-toggle="tooltip" data-placement="bottom" title="Thông báo" id="bell">
+                    data-toggle="tooltip" data-placement="bottom" title="Notifications" id="bell">
                     <i class="bi bi-bell-fill"></i>
                     <span v-if="likeNotificationCount > 0"
                         class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
@@ -68,9 +68,9 @@
                 </div>
 
                 <div :style="notificationStyle" class="notifications" id="box">
-                    <h2>Thông báo</h2>
+                    <h2>Notifications</h2>
                     <div type="button" class="btn btn-secondary" style="width:90%; margin-left: 5%;" @click="markAllAsRead">
-                        <i class="bi bi-check2-all"></i> Đánh dấu tất cả là đã đọc
+                        <i class="bi bi-check2-all"></i> Mark All as Read
                     </div>
                     <div v-if="likeNotifications.length > 0">
                         <div v-for="notification in likeNotifications" :key="notification.id" class="notifications-item">
@@ -83,7 +83,7 @@
                     </div>
                     <div v-else>
                         <div class="no-notifications">
-                            <p class="text-center">Không có thông báo nào chưa đọc.</p>
+                            <p class="text-center">No unread notifications.</p>
                         </div>
                     </div>
                 </div>
@@ -108,36 +108,37 @@
                         </li>
                         <li>
                             <a class="dropdown-item" href="#">
-                                <i class="fas fa-cogs mr-3"></i> Cài đặt
+                                <i class="fas fa-cogs mr-3"></i> Settings
                             </a>
                         </li>
                         <li>
                             <a class="dropdown-item" href="#">
-                                <i class="fas fa-question-circle mr-3"></i> Trợ giúp & hỗ trợ
+                                <i class="fas fa-question-circle mr-3"></i> Help & Support
                             </a>
                         </li>
                         <li>
                             <a class="dropdown-item" href="#">
-                                <i class="fas fa-desktop mr-3"></i> Màn hình & trợ năng
+                                <i class="fas fa-desktop mr-3"></i> Display & Features
                             </a>
                         </li>
                         <li>
                             <a class="dropdown-item" href="#">
-                                <i class="fas fa-comment-dots mr-3"></i> Đóng góp ý kiến
+                                <i class="fas fa-comment-dots mr-3"></i> Provide Feedback
                             </a>
                         </li>
                         <li>
                             <a class="dropdown-item" href="#" @click.prevent="logout">
-                                <i class="fas fa-sign-out-alt mr-3"></i> Đăng xuất
+                                <i class="fas fa-sign-out-alt mr-3"></i> Log Out
                             </a>
                         </li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
                         <li class="container">
-                            <p class="mb-0 text-muted small">Quyền riêng tư . Điều khoản . Quảng cáo . Lựa chọn
-                                quảng cáo . Cookie . Xem thêm.</p>
+                            <p class="mb-0 text-muted small">Privacy . Terms . Advertising . Ad Choices . Cookies . Learn
+                                more.</p>
                         </li>
+
                     </div>
                 </div>
             </div>

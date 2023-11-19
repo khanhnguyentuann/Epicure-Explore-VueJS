@@ -1,22 +1,31 @@
 <!-- eslint-disable vue/attributes-order -->
 <!-- eslint-disable vue/max-attributes-per-line -->
 <template>
-  <div class="container mt-3">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <h3>List of Ingredients</h3>
+  <div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h3>List of cooking ingredients</h3>
       <button class="btn btn-primary" @click="addIngredient">Add Ingredient</button>
     </div>
 
+    <form class="d-flex justify-content-center md-form form-sm">
+      <input class="form-control form-control-sm mr-3 w-75" type="text" placeholder="Search" aria-label="Search">
+      <i class="fas fa-search" aria-hidden="true"></i>
+    </form>
+
     <div v-if="displayedIngredients.length">
-      <table class="table">
+      <table class="table mt-3">
         <thead class="thead-dark">
           <tr>
-            <th scope="col">Name</th>
+            <th scope="col">#</th>
+            <th scope="col">ID</th>
+            <th scope="col-8">Name</th>
             <th scope="col">Actions</th>
           </tr>
         </thead>
         <tbody style="color: #fff;">
-          <tr v-for="ingredient in displayedIngredients" :key="ingredient.id">
+          <tr v-for="(ingredient, index) in displayedIngredients" :key="ingredient.id">
+            <th>{{ (currentPage - 1) * ingredientsPerPage + index + 1 }}</th>
+            <td>{{ ingredient.id }}</td>
             <td>{{ ingredient.name }}</td>
             <td>
               <button class="btn btn-warning btn-sm mr-2" @click="editIngredient(ingredient.id)">Edit</button>
@@ -29,7 +38,7 @@
     <p v-else class="mt-4">No ingredients found.</p>
     <!-- Phân trang -->
     <nav aria-label="Page navigation" class="mt-4">
-      <ul class="pagination">
+      <ul class="pagination justify-content-center">
         <li class="page-item" :class="{ 'disabled': currentPage === 1 }">
           <a class="page-link" href="#" @click.prevent="currentPage--">Previous</a>
         </li>
@@ -53,7 +62,7 @@ export default {
     return {
       ingredients: [],
       currentPage: 1, // trang hiện tại
-      ingredientsPerPage: 7,
+      ingredientsPerPage: 6,
     };
   },
   computed: {
@@ -66,6 +75,7 @@ export default {
       return this.ingredients.slice(start, end);
     }
   },
+
   async mounted() {
     try {
       const response = await axios.get('http://localhost:3000/ingredients');

@@ -4,15 +4,21 @@
 <!-- eslint-disable vue/html-closing-bracket-newline -->
 <!-- eslint-disable vue/max-attributes-per-line -->
 <template>
-  <div class="container mt-3">
-    <div class="d-flex justify-content-between align-items-center">
-      <h3>List of Users</h3>
+  <div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h3>List of users</h3>
       <button class="btn btn-primary" @click="goToAddUser">Add User</button>
     </div>
+
+    <form class="form-inline d-flex justify-content-center md-form form-sm">
+      <input class="form-control form-control-sm mr-3 w-75" type="text" placeholder="Search" aria-label="Search">
+      <i class="fas fa-search" aria-hidden="true"></i>
+    </form>
 
     <table class="table mt-3">
       <thead class="thead-dark">
         <tr>
+          <th scope="col">ID</th>
           <th scope="col">Avatar</th>
           <th scope="col">Username</th>
           <th scope="col">Email</th>
@@ -23,6 +29,7 @@
       </thead>
       <tbody style="color: #fff;">
         <tr v-for="user in displayedUsers" :key="user.id">
+          <td>{{ user.id }}</td>
           <td>
             <img :src="'http://localhost:3000/' + user.avatar" alt="User Avatar" class="rounded-circle"
               style="width: 50px;">
@@ -65,7 +72,7 @@ export default {
     return {
       users: [],
       currentPage: 1, // trang hiện tại
-      usersPerPage: 5, // số người dùng trên mỗi trang
+      usersPerPage: 4, // số người dùng trên mỗi trang
     }
   },
   computed: {

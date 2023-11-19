@@ -6,11 +6,11 @@
         <ul class="nav nav-tabs" id="profileTabs" role="tablist">
             <li class="nav-item">
                 <a class=" nav-link active" id="posts-tab" data-toggle="tab" href="#posts" role="tab" aria-controls="posts"
-                    aria-selected="true">Bài đăng</a>
+                    aria-selected="true">Posts</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" id="friends-tab" data-toggle="tab" href="#friends" role="tab" aria-controls="friends"
-                    aria-selected="true">Bạn bè</a>
+                    aria-selected="true">Friends</a>
             </li>
         </ul>
         <div class="tab-content" id="profileTabsContent">

@@ -5,18 +5,18 @@
     <div class="container mt-3">
         <div class="card" style="background-color: rgba(255, 255, 255, 0.12);">
             <div class="card-header text-center">
-                <strong>Tạo Công Thức</strong>
+                <strong>Create Recipe</strong>
             </div>
             <div class="card-body">
                 <form @submit.prevent="submitRecipe">
                     <div class="form-row">
                         <div class="form-group col-md-6">
-                            <label for="recipe-name">Tên công thức</label>
+                            <label for="recipe-name">Enter recipe name</label>
                             <input type="text" class="form-control" id="recipe-name" v-model="recipe.name">
                             <small class="text-danger">{{ formErrors.name }}</small>
 
                             <div class="form-group ingredient-selector">
-                                <label>Chọn nguyên liệu</label>
+                                <label>Select ingredients</label>
                                 <div class="dropdown-wrapper" @click="toggleDropdown">
                                     <input class="form-control" v-model="ingredientInput" @input="onIngredientInput">
                                     <small class="text-danger">{{ formErrors.ingredient }}</small>
@@ -35,15 +35,15 @@
                                 class="mt-2 d-flex align-items-center">
                                 <label class="mr-2">{{ allIngredients.find(ing => ing.id == ingredientId).name }}</label>
                                 <input type="text" class="form-control mr-2" style="flex: 1;"
-                                    v-model="ingredientAmounts[ingredientId]" placeholder="Số lượng (ví dụ: 200 gr)">
+                                    v-model="ingredientAmounts[ingredientId]" placeholder="Quantity (e.g., 200 gr)">
                                 <button type="button" class="btn btn-danger btn-sm"
-                                    @click="removeIngredient(ingredientId)">Xóa</button>
+                                    @click="removeIngredient(ingredientId)">Remove</button>
                             </div>
 
                         </div>
 
                         <div class="form-group col-md-6">
-                            <label for="recipe-images">Ảnh</label>
+                            <label for="recipe-images">Images</label>
                             <input type="file" multiple class="form-control-file" id="recipe-images"
                                 @change="onImagesChange">
 
@@ -59,36 +59,36 @@
 
                     <div class="form-row">
                         <div class="form-group col-md-4">
-                            <label for="serving-for">Dành cho số người</label>
+                            <label for="serving-for">For how many people</label>
                             <input type="number" class="form-control" id="serving-for" v-model="recipe.servingFor"
-                                placeholder="Nhập số người...">
+                                placeholder="Enter number of people...">
                             <small class="text-danger">{{ formErrors.servingFor }}</small>
                         </div>
                         <div class="form-group col-md-4">
-                            <label for="preparation-time">Thời gian chuẩn bị</label>
+                            <label for="preparation-time">Preparation time</label>
                             <input type="number" class="form-control" id="preparation-time" v-model="recipe.preparationTime"
-                                placeholder="Nhập thời gian chuẩn bị (phút)...">
+                                placeholder="Enter preparation time (minutes)...">
                             <small class="text-danger">{{ formErrors.preparationTime }}</small>
                         </div>
 
                         <div class="form-group col-md-4">
-                            <label for="cooking-time">Thời gian chế biến</label>
+                            <label for="cooking-time">Cooking time</label>
                             <input type="number" class="form-control" id="cooking-time" v-model="recipe.cookingTime"
-                                placeholder="Nhập thời gian nấu (phút)...">
+                                placeholder="Enter cooking time (minutes)...">
                             <small class="text-danger">{{ formErrors.cookingTime }}</small>
                         </div>
                     </div>
 
                     <div class="form-group mb-3">
-                        <label for="recipe-steps">Các bước chế biến</label>
+                        <label for="recipe-steps">Cooking steps</label>
                         <div v-for="(step, index) in recipe.steps" :key="index" class="mb-2">
                             <div class="row">
                                 <div class="col-11">
-                                    <textarea class="form-control" :placeholder="'Bước ' + (index + 1)"
+                                    <textarea class="form-control" :placeholder="'Step ' + (index + 1)"
                                         v-model="recipe.steps[index]"></textarea>
                                 </div>
                                 <div class="col-1 d-flex align-items-center justify-content-center">
-                                    <!-- Chỉ hiển thị nút xoá khi đó là bước > 1 và là bước cuối cùng -->
+                                    <!-- Show delete button only if it's step > 1 and is the last step -->
                                     <button v-if="recipe.steps.length > 1 && index === recipe.steps.length - 1"
                                         type="button" class="btn btn-outline-danger" @click="removeStep(index)">
                                         <i class="bi bi-trash3-fill"></i>
@@ -106,11 +106,11 @@
                         <div class="form-group col-md-10">
                             <label for="tags">HashTags</label>
                             <input type="text" class="form-control" id="tags" v-model="recipe.tags"
-                                placeholder="Ví dụ: #fish #pork #beef    #fish,#pork,#beef   #fish#pork#beef">
+                                placeholder="Example: #fish #pork #beef    #fish,#pork,#beef   #fish#pork#beef">
                         </div>
 
                         <div class="form-group col-md-2">
-                            <label for="difficulty">Độ khó</label>
+                            <label for="difficulty">Difficulty</label>
                             <div class="star-container">
                                 <span v-for="star in [1, 2, 3]" :key="star">
                                     <i :class="star <= recipe.difficulty ? 'fas fa-star' : 'far fa-star'"
@@ -122,7 +122,7 @@
 
                     <div class="row">
                         <div class="col-9">
-                            <button type="submit" class="btn btn-primary w-100">Đăng Công Thức</button>
+                            <button type="submit" class="btn btn-primary w-100">Post Recipe</button>
                         </div>
                         <div v-if="isLoading" class="text-center col-3">
                             <div class="spinner-border" role="status">

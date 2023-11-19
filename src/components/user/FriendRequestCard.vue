@@ -4,16 +4,16 @@
     <div class="container mt-3">
         <div class="row">
             <div class="col-8">
-                <h4>Lời mời kết bạn</h4>
+                <h4>Friend Requests</h4>
             </div>
             <div class="click col-4 text-right" @click="goToFriendRequest()" style="z-index: 10;">
-                <p>Xem tất cả</p>
+                <p>See All</p>
             </div>
         </div>
 
         <ul class=" list-group mt-2">
             <li v-if="friendRequests.length === 0" class="mt-3 mb-3 d-flex justify-content-center">
-                Bạn chưa có lời mời kết bạn nào!
+                You have no friend requests!
             </li>
             <li v-else v-for="request in friendRequests" :key="request.user_id1" class="list-group-item d-flex row"
                 style="background-color: rgba(255, 255, 255, 0.12);">
@@ -32,8 +32,8 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div @click="acceptRequest(request.user_id1)" class="btn btn-primary col-7 mr-1">Chấp nhận</div>
-                        <div @click="declineRequest(request.user_id1)" class="btn btn-secondary col-4">Xoá</div>
+                        <div @click="acceptRequest(request.user_id1)" class="btn btn-primary col-7 mr-1">Accept</div>
+                        <div @click="declineRequest(request.user_id1)" class="btn btn-secondary col-4">Decline</div>
                     </div>
                 </div>
             </li>

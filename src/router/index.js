@@ -161,8 +161,13 @@ const routes = [
       },
       {
         path: 'comments',
-        name: 'CommentList',
+        name: 'Comments',
         component: () => import('../components/admin/comments/Comments.vue')
+      },
+      {
+        path: 'comments/:recipeId',
+        name: 'CommentList',
+        component: () => import('../components/admin/comments/CommentList.vue')
       },
       {
         path: 'notifications',

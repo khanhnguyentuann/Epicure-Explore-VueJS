@@ -2,33 +2,35 @@
 <!-- eslint-disable vue/max-attributes-per-line -->
 <template>
   <div class="add-user-container">
+
+    <button @click="goBack" class="btn btn-secondary mb-3">Quay lại</button>
     <div class="header-section">
       <h3>Add A New User</h3>
     </div>
     <div class="form-section">
       <form @submit.prevent="addUser">
-          <div class="form-group">
-            <label for="userName" class="form-label">Name</label>
-            <input id="userName" v-model="newUser.name" type="text" class="form-control">
-          </div>
-          <div class="form-group">
-            <label for="userEmail" class="form-label">Email</label>
-            <input id="userEmail" v-model="newUser.email" type="email" class="form-control">
-          </div>
-          <div class="form-group">
-            <label for="userPassword" class="form-label">Password</label>
-            <input id="userPassword" v-model="newUser.password" type="password" class="form-control">
-          </div>
-          <div class="form-group">
-            <label for="userRole" class="form-label">Role</label>
-            <select id="userRole" v-model="newUser.role" class="form-control">
-              <option value="user">User</option>
-              <option value="admin">Admin</option>
-            </select>
-          </div>
-          <div class="form-actions">
-            <button type="submit" class="btn btn-primary">Add User</button>
-          </div>
+        <div class="form-group">
+          <label for="userName" class="form-label">Name</label>
+          <input id="userName" v-model="newUser.name" type="text" class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="userEmail" class="form-label">Email</label>
+          <input id="userEmail" v-model="newUser.email" type="email" class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="userPassword" class="form-label">Password</label>
+          <input id="userPassword" v-model="newUser.password" type="password" class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="userRole" class="form-label">Role</label>
+          <select id="userRole" v-model="newUser.role" class="form-control">
+            <option value="user">User</option>
+            <option value="admin">Admin</option>
+          </select>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Add User</button>
+        </div>
       </form>
     </div>
   </div>
@@ -50,6 +52,9 @@ export default {
     }
   },
   methods: {
+    goBack() {
+      this.$router.go(-1); // Điều hướng người dùng quay lại trang trước đó
+    },
     async addUser() {
       const formData = new FormData();
 
@@ -112,5 +117,10 @@ export default {
 
 .form-actions {
   text-align: center;
+}
+
+.card {
+  background-color: #6c757d;
+  border-color: #6c757d;
 }
 </style>

@@ -18,46 +18,49 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12 col-sm-6 col-md-3">
-                    <!-- <div class="info-box">
-                        <span class="info-box-icon bg-info elevation-1"><i class="fas fa-cog"></i></span>
-                        <div class="info-box-content">
-                            <span class="info-box-text">CPU Traffic</span>
-                            <span class="info-box-number">10<small>%</small></span>
-                        </div>
-                    </div> -->
-                    <div class="info-box mb-3">
-                        <span class="info-box-icon bg-info elevation-1"><i class="far fa-comment"></i></span>
-                        <div class="info-box-content">
-                            <span class="info-box-text">Direct Messages</span>
-                            <span class="info-box-number">163,921</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-12 col-sm-6 col-md-3">
-                    <div class="info-box mb-3">
-                        <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-thumbs-up"></i></span>
-                        <div class="info-box-content">
-                            <span class="info-box-text">Likes</span>
-                            <span class="info-box-number">41,410</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 col-sm-6 col-md-3">
-                    <div class="info-box mb-3">
-                        <span class="info-box-icon bg-success elevation-1"><i class="fas fa-tag"></i></span>
-                        <div class="info-box-content">
-                            <span class="info-box-text">Inventory</span>
-                            <span class="info-box-number">5200</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 col-sm-6 col-md-3">
                     <div class="info-box mb-3">
                         <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-users"></i></span>
                         <div class="info-box-content">
-                            <span class="info-box-text">New Members</span>
-                            <span class="info-box-number">2,000</span>
+                            <span class="info-box-text">Members</span>
+                            <span class="info-box-number">{{ totalUsers }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-md-3">
+                    <div class="info-box mb-3">
+                        <span class="info-box-icon bg-info elevation-1"><i class="fas fa-file-text"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Posts</span>
+                            <span class="info-box-number">{{ totalPosts }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-md-3">
+                    <div class="info-box mb-3">
+                        <span class="info-box-icon bg-success elevation-1"><i class="fas fa-hashtag"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Hashtags</span>
+                            <span class="info-box-number">{{ totalHashtags }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-md-3">
+                    <div class="info-box mb-3">
+                        <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-carrot"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Ingredients</span>
+                            <span class="info-box-number">{{ totalIngredients }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 col-sm-6 col-md-3">
+                    <div class="info-box mb-3">
+                        <span class="info-box-icon bg-success elevation-1"><i class="fas fa-comments"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Comments</span>
+                            <span class="info-box-number">{{ totalComments }}</span>
                         </div>
                     </div>
                 </div>
@@ -67,10 +70,96 @@
 </template>
 
 <script>
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
+
+const ROUTES = {
+    totalUsers: `dashboard/total-users`,
+    totalHashtags: `dashboard/total-hashtags`,
+    totalPosts: `dashboard/total-posts`,
+    totalIngredients: `dashboard/total-ingredients`,
+    totalComments: `dashboard/total-comments`
+};
+
 export default {
     name: "Dashboard",
+    setup() {
+        const totalUsers = ref(0);
+        const totalHashtags = ref(0);
+        const totalPosts = ref(0);
+        const totalIngredients = ref(0);
+        const totalComments = ref(0);
+
+        const apiURL = (relativePath) => {
+            return window.baseURL + '/' + relativePath;
+        };
+
+        const fetchTotalUsers = async () => {
+            try {
+                const response = await axios.get(apiURL(ROUTES.totalUsers));
+                totalUsers.value = response.data.totalUsers; // Cập nhật số lượng người dùng từ phản hồi JSON
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        const fetchTotalHashtags = async () => {
+            try {
+                const response = await axios.get(apiURL(ROUTES.totalHashtags));
+                totalHashtags.value = response.data.totalHashtags; // Cập nhật số lượng hashtag từ phản hồi JSON
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        const fetchTotalPosts = async () => {
+            try {
+                const response = await axios.get(apiURL(ROUTES.totalPosts));
+                totalPosts.value = response.data.totalPosts;
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        const fetchTotalIngredients = async () => {
+            try {
+                const response = await axios.get(apiURL(ROUTES.totalIngredients));
+                totalIngredients.value = response.data.totalIngredients;
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        const fetchTotalComments = async () => {
+            try {
+                const response = await axios.get(apiURL(ROUTES.totalComments));
+                totalComments.value = response.data.totalComments;
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        // Gọi hàm fetchTotalUsers khi component được mounted
+        onMounted(() => {
+            fetchTotalUsers();
+            fetchTotalHashtags();
+            fetchTotalPosts();
+            fetchTotalIngredients();
+            fetchTotalComments();
+        });
+
+        return {
+            totalUsers,
+            totalHashtags,
+            totalPosts,
+            totalIngredients,
+            totalComments,
+            apiURL
+        };
+    }
 }
 </script>
+
 <style scoped>
 .content-header {
     color: #fff;

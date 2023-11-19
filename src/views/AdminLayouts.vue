@@ -35,7 +35,7 @@
             </li>
             <li>
               <a class="dropdown-item" style="color: #fff;" href="#" @click.prevent="logout">
-                <i class="fas fa-sign-out-alt mr-3"></i> Đăng xuất
+                <i class="fas fa-sign-out-alt mr-3"></i> Log out
               </a>
             </li>
           </div>
@@ -69,30 +69,30 @@
             <i class="icon fas fa-tachometer-alt"></i>
             <div>Dashboard</div>
           </div>
-          <div @click="navigateTo('/admin/tag-list', 'Tags')"
-            :class="['sidebar-item', selectedTab === 'Tags' ? 'selected' : '']">
-            <i class="icon fas fa-tags"></i>
-            <div>Tags</div>
-          </div>
           <div @click="navigateTo('/admin/user-list', 'Users')"
             :class="['sidebar-item', selectedTab === 'Users' ? 'selected' : '']">
             <i class="icon fas fa-users"></i>
-            <div>Users</div>
-          </div>
-          <div @click="navigateTo('/admin/ingredient-list', 'Ingredients')"
-            :class="['sidebar-item', selectedTab === 'Ingredients' ? 'selected' : '']">
-            <i class="icon fas fa-leaf"></i>
-            <div>Ingredients</div>
+            <div>User management</div>
           </div>
           <div @click="navigateTo('/admin/recipes-list', 'Recipes')"
             :class="['sidebar-item', selectedTab === 'Recipes' ? 'selected' : '']">
-            <i class="icon fas fa-utensils"></i>
-            <div>Recipes</div>
+            <i class="icon fas fa-file-text"></i>
+            <div>Post management</div>
+          </div>
+          <div @click="navigateTo('/admin/tag-list', 'Tags')"
+            :class="['sidebar-item', selectedTab === 'Tags' ? 'selected' : '']">
+            <i class="icon fas fa-hashtag"></i>
+            <div>Hashtag management</div>
+          </div>
+          <div @click="navigateTo('/admin/ingredient-list', 'Ingredients')"
+            :class="['sidebar-item', selectedTab === 'Ingredients' ? 'selected' : '']">
+            <i class="icon fas fa-carrot"></i>
+            <div>Ingredient management</div>
           </div>
           <div @click="navigateTo('/admin/comments', 'Comments')"
             :class="['sidebar-item', selectedTab === 'Comments' ? 'selected' : '']">
             <i class="icon fas fa-comments"></i>
-            <div>Comments</div>
+            <div>Comment management</div>
           </div>
         </div>
       </div>
